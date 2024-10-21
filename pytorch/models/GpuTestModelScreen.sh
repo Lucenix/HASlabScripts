@@ -1,13 +1,15 @@
 #!/bin/bash
 
+export SCRIPT_DIR="$(dirname -- "$0")"
+echo "Script found in $SCRIPT_DIR"
 SCRATCH="/home/gsd/andrelucena"
-MODEL_DIR="$SCRATCH/DL_pytorch_models"
+MAIN_PATH="$SCRIPT_DIR/../python/main_simple.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 STAT_DIR="$SCRATCH/statistics/control_subset"
 MODEL="alexnet"
 N_EPOCHS=2
-BATCH_SIZE=1024
+BATCH_SIZE=4096
 
 # deactivate grafana agents
 sudo systemctl stop pmcd
@@ -20,7 +22,7 @@ mkdir $STAT_DIR
 # --$2: path to the output file
 function spawn-dstat-process {
         echo "utils::spawn-dstat-process"
-        screen -S $1 -d -m $MODEL_DIR/dstat.py -tcdrnmg --noheaders --output $2
+        screen -S $1 -d -m $MAIN_PATH -tcdrnmg --noheaders --output $2
 }
 
 function spawn-nvidia-process {
