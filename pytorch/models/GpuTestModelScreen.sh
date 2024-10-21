@@ -1,15 +1,15 @@
 #!/bin/bash
 
 export SCRIPT_DIR="$(dirname -- "$0")"
-echo "Script found in $SCRIPT_DIR"
 SCRATCH="/home/gsd/andrelucena"
-MAIN_PATH="$SCRIPT_DIR/../python/main_simple.py"
+MAIN_PATH=$SCRIPT_DIR/../python/main_full.py
+DSTAT_PATH="$SCRATCH/DL_pytorch_models/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 STAT_DIR="$SCRATCH/statistics/control_subset"
-MODEL="alexnet"
+MODEL="resnet50"
 N_EPOCHS=2
-BATCH_SIZE=4096
+BATCH_SIZE=64
 
 # deactivate grafana agents
 sudo systemctl stop pmcd
@@ -22,7 +22,7 @@ mkdir $STAT_DIR
 # --$2: path to the output file
 function spawn-dstat-process {
         echo "utils::spawn-dstat-process"
-        screen -S $1 -d -m $MAIN_PATH -tcdrnmg --noheaders --output $2
+        screen -S $1 -d -m $DSTAT_PATH -tcdrnmg --noheaders --output $2
 }
 
 function spawn-nvidia-process {
@@ -45,7 +45,7 @@ spawn-dstat-process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE.csv
 # spawn nvidia
 spawn-nvidia-process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_gpu.csv
 
-{ time python3 $MODEL_DIR/main.py -a $MODEL --epochs $N_EPOCHS --batch-size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE.out ;
+{ time python3 $MAIN_PATH -a $MODEL --epochs $N_EPOCHS --batch-size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE.out ;
 
 # join processes
 join-process dstat
