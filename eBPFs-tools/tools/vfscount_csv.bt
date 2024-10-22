@@ -1,0 +1,20 @@
+#!/usr/bin/env bpftrace
+
+BEGIN
+{
+	printf("Function Name,Count\n")
+}
+
+kprobe:vfs_*
+{
+	@counter[func] = count();
+}
+
+END
+{
+for ($kv : @counter)
+{
+	printf("%s,%d\n", $kv.0, $kv.1);
+}
+
+}
