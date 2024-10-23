@@ -1,3 +1,3 @@
 */mercury-2.3.1/
-*/*.pt
-*/slurm-*
+*.pt
+slurm-*

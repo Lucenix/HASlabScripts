@@ -1,3 +1,0 @@
-mkdir: cannot create directory ‘/home/lucenix/statistics/control_subset’: File exists
-utils::spawn_dstat_process
-utils::spawn-nvidia_smi_process
