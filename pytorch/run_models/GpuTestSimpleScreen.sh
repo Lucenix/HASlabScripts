@@ -1,10 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
-export SCRIPT_DIR="$(dirname -- "$0")"
-SCRATCH="/home/lucenix"
-MAIN_PATH="$SCRIPT_DIR/../python/main_simple.py"
-DSTAT_PATH="$SCRIPT_DIR/../python/dstat.py"
-DATA_DIR="/projects/a97485/imagenet_subset"
+SCRATCH="/home/gsd/andrelucena"
+MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple.py"
+DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
+DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 STAT_DIR="$SCRATCH/statistics/control_subset"
 # model is defined in main
@@ -14,6 +13,8 @@ BATCH_SIZE=64
 
 # deactivate grafana agents
 sudo systemctl stop pmcd
+sudo systemctl stop pmlogger
+sudo systemctl stop pmproxy
 
 # create statistics directory
 mkdir $STAT_DIR
@@ -21,24 +22,24 @@ mkdir $STAT_DIR
 #spawn process
 # --$1: process identifier
 # --$2: path to the output file
-spawn_dstat_process() 
+spawn_dstat_process () 
 {
-        echo "utils::spawn-dstat-process"
-        screen -S $1 -d -m $DSTAT_PATH -tcdrnmg --noheaders --output $2
+        echo "utils::spawn_dstat_process"
+        $SCREEN_PATH -S $1 -d -m $DSTAT_PATH -tcdrnmg --noheaders --output $2
 }
 
-spawn_nvidia_process() 
+spawn_nvidia_process () 
 {
-        echo "utils::spawn-nvidia-smi-process"
-        screen -S $1 -d -m nvidia-smi --query-gpu=timestamp,name,pci.bus_id,temperature.gpu,utilization.gpu,utilization.memory --format=csv -f $2 -l 1
+        echo "utils::spawn-nvidia_smi_process"
+        $SCREEN_PATH -S $1 -d -m nvidia-smi --query-gpu=timestamp,temperature.gpu,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used --format=csv,nounits -f $2 -l 1
 }
 
 # Join process
 # --$1: process identifier
 join_process() 
 {
-        echo "utils::join-process"
-        screen -X -S $1 stuff "^C"
+        echo "utils::join_process"
+        $SCREEN_PATH -X -S $1 stuff "^C"
 }
 
 # activate venv

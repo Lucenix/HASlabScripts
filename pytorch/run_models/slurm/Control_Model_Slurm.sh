@@ -1,9 +1,11 @@
 #!/bin/sh
 #SBATCH --job-name=install_pytorch    # job name
-#SBATCH --ntasks-per-node=1         # number of MPI task per node
 #SBATCH --account=haslab
 #SBATCH --time=48:00:00 
 #SBATCH --partition=rtx4060
+
+# do not define the number of tasks
+#SBATCH --ntasks-per-node=1         # number of MPI task per node
 
 # deactivate grafana agents
 sudo systemctl stop pmcd
