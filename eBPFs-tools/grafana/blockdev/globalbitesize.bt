@@ -1,0 +1,25 @@
+#!/usr/bin/env bpftrace
+/*
+ * bitesize	Show disk I/O size as a histogram.
+ *		For Linux, uses bpftrace and eBPF.
+ *
+ * This is a snapshot from https://github.com/iovisor/bpftrace.
+ * Refer to that repository for updated versions.
+ *
+ * USAGE: bitesize.bt
+ *
+ * This is a bpftrace version of the bcc tool of the same name.
+ *
+ * Copyright 2018 Netflix, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License")
+ *
+ * 07-Sep-2018	Brendan Gregg	Created this.
+ * 16-Oct-2024  Carlos Machado  Changed to be more coarsed grained
+ * 				in order to be portable to grafana
+ *
+ */
+
+tracepoint:block:block_rq_issue
+{
+	@bytes = hist(args.bytes);
+}

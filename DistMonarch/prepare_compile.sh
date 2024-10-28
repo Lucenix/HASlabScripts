@@ -1,5 +1,5 @@
 #!/bin/sh
-$MONARCH_DIR=/projects/I20240002/andrelucena/DistMonarch
+MONARCH_DIR=/projects/I20240002/andrelucena/DistMonarch
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 

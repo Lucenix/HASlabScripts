@@ -1,0 +1,28 @@
+#!/usr/bin/env bpftrace
+/*
+ * biolatency-tp.bt - Block I/O latency as a histogram, using tracepoints.
+ *
+ * See BPF Performance Tools, Chapter 9, for an explanation of this tool.
+ *
+ * Copyright (c) 2019 Brendan Gregg.
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * This was originally created for the BPF Performance Tools book
+ * published by Addison Wesley. ISBN-13: 9780136554820
+ * When copying or porting, include this comment.
+ *
+ * 19-Mar-2019  Brendan Gregg   Created this.
+ * 14-Oct-2024  Carlos Machado  Ported to grafana
+ */
+
+tracepoint:block:block_bio_queue
+{
+	@start[args.sector] = nsecs;
+}
+
+tracepoint:block:block_rq_complete,
+tracepoint:block:block_bio_complete
+/@start[args.sector]/
+{
+	@usecs = hist((nsecs - @start[args.sector]) / 1000);
+	delete(@start[args.sector]);
+}
