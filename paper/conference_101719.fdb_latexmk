@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1730117268 "/home/utilizador/Documents/HasLab/PI/HASlabScripts/paper/conference_101719.tex" "conference_101719.pdf" "conference_101719" 1730117268
+["pdflatex"] 1730126479 "/home/utilizador/Documents/HasLab/PI/HASlabScripts/paper/conference_101719.tex" "conference_101719.pdf" "conference_101719" 1730126479
   "/etc/texmf/web2c/texmf.cnf" 1730051795 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/utilizador/Documents/HasLab/PI/HASlabScripts/paper/conference_101719.tex" 1730117268 1903 df0d36de93a553419beac437f5ed907e ""
+  "/home/utilizador/Documents/HasLab/PI/HASlabScripts/paper/conference_101719.tex" 1730126479 3003 4b43fb407eccf1561be72b28f4903230 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -76,8 +76,8 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1730052167 165012 f177baa1c39a3ebd62c3096a43521a0d ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1730052173 1435900 ebf27a5503ad65e22e1aeaec1c612943 ""
   "IEEEtran.cls" 1730112066 281957 5b2e4fa15b0f7eabb840ebf67df4c0f7 ""
-  "conference_101719.aux" 1730117268 745 13263b9846cc7aefa7a9625627083b9a "pdflatex"
-  "conference_101719.tex" 1730117268 1903 df0d36de93a553419beac437f5ed907e ""
+  "conference_101719.aux" 1730126479 745 13263b9846cc7aefa7a9625627083b9a "pdflatex"
+  "conference_101719.tex" 1730126479 3003 4b43fb407eccf1561be72b28f4903230 ""
   (generated)
   "conference_101719.aux"
   "conference_101719.log"

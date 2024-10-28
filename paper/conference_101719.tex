@@ -49,18 +49,45 @@ should not be used}
 \end{IEEEkeywords}
 
 \section{Introduction}
+\begin{itemize}
+    \item Machine learning has increased in popularity
+    \begin{itemize}
+        \item image classification
+    \end{itemize}
+    \item studies have tried to analyse I/O patterns in DL Workflows (source)
+    \item very few get down to kernel level
+    \item eBPF are ...
+    \item we seek to provide a tool to Characterize DL workloads using eBPF's
+\end{itemize}
 
 \section{Background}
 
 \begin{itemize}
-    \item DL
+    \item Dl involves iterating through a dataset
+    \item passing it through all the layers to calculate a loss (forward pass)
+    \item use calculated loss to update the learnable parameters of the network
+    \item once all data is read exactly once one epoch as passed (I/O intensive)
+    \item pytorch is a DL framework
+    \item Distributed DNN training (data paralellism)
+    \item checkpointing involves saving the model state
+    \item in pytorch its done with torch.save() and in offitial workloads is done in between epochs
+    \item eBPF's
 \end{itemize}
 
 \section{Related work}
 
 \section{Design}
 
+\begin{itemize}
+    \item Grafana
+\end{itemize}
+
 \section{Evaluation Methodology}
+
+\begin{itemize}
+    \item dstat, nvidia-smi to get cost of using the tool
+    \item grafana dashboard to get data 
+\end{itemize}
 
 \section{Evaluation Results}
 
