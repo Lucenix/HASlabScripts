@@ -7,7 +7,7 @@ sudo systemctl stop pmcd
 sudo systemctl stop pmlogger
 sudo systemctl stop pmproxy
 
-module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0
+module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
 # create statistics directory
 mkdir $STAT_DIR

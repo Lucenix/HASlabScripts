@@ -1,6 +1,9 @@
 #!/bin/sh
 # Join process
 # --$1: process identifier
+
+module load ncurses/6.3
+
 join_process() 
 {
         echo "utils::join_process"

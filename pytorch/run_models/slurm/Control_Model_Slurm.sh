@@ -10,6 +10,9 @@ srun setup_single_node.sh
 
 head_node_ip=$(srun --nodes=1 hostname --ip-address | uniq)
 
+module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
+source "${VENV_DIR}/bin/activate"
+
 { time srun torchrun \
 --nnodes 2 \
 --nproc_per_node 1 \

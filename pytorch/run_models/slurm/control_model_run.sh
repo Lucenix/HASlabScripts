@@ -16,6 +16,6 @@ export BATCH_SIZE=64
 
 SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Control_Model_Slurm.sh | awk '{print $4}')"
 
-sleep 5
+sleep 2
 
 tail -f slurm-$SLURM_NUMBER.out
