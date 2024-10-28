@@ -3,7 +3,7 @@
 export SAVE_EVERY=1
 export N_NODES=2
 export SCRATCH="/home/lucenix"
-export MAIN_PATH="$SCRATCH/HASlabScripts/pytorch/python/main_simple.py"
+export MAIN_PATH="$SCRATCH/HASlabScripts/pytorch/python/main_simple_dist.py"
 export DSTAT_PATH="$SCRATCH/HASlabScripts/pytorch/python/dstat.py"
 export DATA_DIR="/projects/a97485/imagenet_subset"
 export VENV_DIR="$SCRATCH/pytorch_venv"

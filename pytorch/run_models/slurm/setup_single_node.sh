@@ -1,7 +1,8 @@
 #!/bin/sh
 
-HOSTNAME=$(hostname --ip-address)
+HOSTNAME=$(hostname | cut -d '.' -f 1)
 echo "I am $HOSTNAME!"
+
 # deactivate grafana agents
 sudo systemctl stop pmcd
 sudo systemctl stop pmlogger
@@ -18,12 +19,14 @@ mkdir $STAT_DIR
 spawn_dstat_process () 
 {
         echo "utils::spawn_dstat_process"
+        echo $2
         $SCREEN_PATH -S $1 -d -m $DSTAT_PATH -tcdrnmg --noheaders --output $2
 }
 
 spawn_nvidia_process () 
 {
         echo "utils::spawn-nvidia_smi_process"
+        echo $2
         $SCREEN_PATH -S $1 -d -m nvidia-smi --query-gpu=timestamp,temperature.gpu,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used --format=csv,nounits -f $2 -l 1
 }
 
@@ -33,3 +36,20 @@ source "${VENV_DIR}/bin/activate"
 spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$HOSTNAME.csv
 # spawn nvidia
 spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$HOSTNAME\_gpu.csv
+
+{ time torchrun \
+--nnodes 2 \
+--nproc_per_node 1 \
+--rdzv_id $2 \
+--rdzv_backend c10d \
+--rdzv_endpoint $1:29500 \
+$MAIN_PATH --epochs $N_EPOCHS --save_every 1 $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$HOSTNAME.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$HOSTNAME.out ;
+
+join_process() 
+{
+        echo "utils::join_process"
+        $SCREEN_PATH -X -S $1 stuff "^C"
+}
+
+join_process dstat
+join_process nvidia
