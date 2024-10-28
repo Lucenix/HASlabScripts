@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export SAVE_EVERY=1
-export N_NODES=1
+export N_NODES=2
 export SCRATCH="/home/lucenix"
 export MAIN_PATH="$SCRATCH/HASlabScripts/pytorch/python/main_simple.py"
 export DSTAT_PATH="$SCRATCH/HASlabScripts/pytorch/python/dstat.py"
@@ -14,7 +14,7 @@ export MODEL="resnet50"
 export N_EPOCHS=2
 export BATCH_SIZE=64
 
-SLURM_NUMBER="$(sbatch -n $N_NODES Control_Model_Slurm.sh | awk '{print $4}')"
+SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Control_Model_Slurm.sh | awk '{print $4}')"
 
 sleep 5
 
