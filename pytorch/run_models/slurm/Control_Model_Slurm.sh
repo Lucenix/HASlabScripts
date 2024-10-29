@@ -10,7 +10,7 @@ module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 source "${VENV_DIR}/bin/activate"
 head_node_ip=$(srun --nodes=1 hostname --ip-address | uniq)
 
-srun setup_single_node.sh $head_node_ip $RANDOM
+srun run_single_node.sh $head_node_ip $RANDOM
 
 #srun clean_single_node.sh
 

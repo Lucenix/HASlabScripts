@@ -10,7 +10,7 @@ import torch.utils.data.distributed
 import torchvision.datasets as datasets
 import torchvision.models as models
 import torchvision.transforms as transforms
-
+import datetime
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('--epochs',  type=int, metavar='E', nargs='?', default=2)
@@ -80,12 +80,14 @@ def main():
     #     val_dataset, batch_size=args.batch_size, shuffle=False,
     #     num_workers=args.workers, pin_memory=True, sampler=val_sampler)
 
+    print(f"{datetime.datetime.now()}: Training begin")
 
     for epoch in range(0, args.epochs):
 
-        print(f"Training epoch {epoch}")
+        print(f"{datetime.datetime.now()}: Training epoch {epoch}")
         # train for one epoch
         train(train_loader, model, criterion, optimizer, epoch, device, args)
+        print(f"{datetime.datetime.now()}: Trained epoch {epoch}")
 
         # evaluate on validation set
         # acc1 = validate(val_loader, model, criterion, args)
@@ -93,8 +95,9 @@ def main():
         if epoch % args.save_every == 0:
             ckp = model.state_dict()
             PATH = "checkpoint.pt"
+            print(f"{datetime.datetime.now()}: Training checkpoint saved at {PATH}")
             torch.save(ckp, PATH)
-            print(f"Epoch {epoch} | Training checkpoint saved at {PATH}")
+            print(f"{datetime.datetime.now()}: Checkpoint saved at {PATH}")
 
         
         #scheduler.step()
@@ -109,16 +112,21 @@ def train(train_loader, model, criterion, optimizer, epoch, device, args):
     for i, (images, target) in enumerate(train_loader):
 
         # move data to the same device as model
+        print(f"    {datetime.datetime.now()}: Moving data to the same device as model")
         images = images.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
 
         # compute output
+        print(f"    {datetime.datetime.now()}: Computing output")
         output = model(images)
+        print(f"    {datetime.datetime.now()}: Computing Loss")
         loss = criterion(output, target)
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
+        print(f"    {datetime.datetime.now()}: Computing gradient")
         loss.backward()
+        print(f"    {datetime.datetime.now()}: SGD step")
         optimizer.step()
 
 
