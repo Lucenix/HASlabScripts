@@ -7,10 +7,26 @@ DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 STAT_DIR="$SCRATCH/statistics/control_subset"
 # model and save every is defined in main
-SAVE_EVERY=1
-MODEL=resnet50
-N_EPOCHS=2
-BATCH_SIZE=64
+if [ -z $1 ] ; then
+        SAVE_EVERY=1
+else
+        SAVE_EVERY=$1
+fi
+if [ -z $2 ] ; then
+        MODEL=resnet50
+else
+        MODEL=$2
+fi
+if [ -z $3 ] ; then
+        N_EPOCHS=2
+else
+        N_EPOCHS=$3
+fi
+if [ -z $4 ] ; then
+        BATCH_SIZE=64
+else
+        BATCH_SIZE=$4
+fi
 
 # deactivate grafana agents
 sudo systemctl stop pmcd
@@ -18,7 +34,7 @@ sudo systemctl stop pmlogger
 sudo systemctl stop pmproxy
 
 # create statistics directory
-mkdir $STAT_DIR
+mkdir -p $STAT_DIR
 
 #spawn process
 # --$1: process identifier
