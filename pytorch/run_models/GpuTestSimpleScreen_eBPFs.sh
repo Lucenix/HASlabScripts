@@ -8,10 +8,26 @@ VENV_DIR="$SCRATCH/pytorch_venv"
 STAT_DIR="$SCRATCH/statistics/eBPFs_subset"
 SCREEN_PATH="screen"
 # model and save every is defined in main_simple.py
-SAVE_EVERY=1
-MODEL=resnet50
-N_EPOCHS=2
-BATCH_SIZE=64
+if [ -z $1 ] ; then
+        SAVE_EVERY=1
+else
+        SAVE_EVERY=$1
+fi
+if [ -z $2 ] ; then
+        MODEL=resnet50
+else
+        MODEL=$2
+fi
+if [ -z $3 ] ; then
+        N_EPOCHS=2
+else
+        N_EPOCHS=$3
+fi
+if [ -z $4 ] ; then
+        BATCH_SIZE=64
+else
+        BATCH_SIZE=$4
+fi
 
 # create statistics directory
 mkdir -p $STAT_DIR
@@ -43,13 +59,13 @@ join_process()
 source "${VENV_DIR}/bin/activate"
 
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY.csv
+spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_gpu.csv
+spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/gpu.csv
 # spawn eBPFs
-./run-eBPF-tools.sh start $MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
+./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
 
-{ time python3 $MAIN_PATH --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY.out ;
+{ time python3 $MAIN_PATH --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ;
 
 # join processes
 join_process dstat
