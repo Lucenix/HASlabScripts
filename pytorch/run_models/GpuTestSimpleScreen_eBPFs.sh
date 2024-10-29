@@ -5,7 +5,7 @@ MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple.py"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
-STAT_DIR="/home/gsd/carlos/subset"
+STAT_DIR="$SCRATCH/statistics/eBPFs_subset"
 SCREEN_PATH="screen"
 # model and save every is defined in main_simple.py
 SAVE_EVERY=1
@@ -14,7 +14,7 @@ N_EPOCHS=2
 BATCH_SIZE=64
 
 # create statistics directory
-mkdir $STAT_DIR
+mkdir -p $STAT_DIR
 
 #spawn process
 # --$1: process identifier
@@ -47,7 +47,7 @@ spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY.
 # spawn nvidia
 spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_gpu.csv
 # spawn eBPFs
-./run-tools.sh start
+./run-eBPF-tools.sh start $MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
 
 { time python3 $MAIN_PATH --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY.out ;
 

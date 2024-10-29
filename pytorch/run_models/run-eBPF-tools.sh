@@ -9,31 +9,18 @@ for file in bpftrace-tools/*; do
 done
 
 start_tools() {
-    # check if outputs directory exists
-    if [ ! -d "outputs" ]; then
-        mkdir -p outputs
-    else
-      # ask user if they want to delete the existing outputs
-      read -p "Outputs directory already exists. Do you want to delete the existing outputs? (y/n): " delete_outputs
-      if [ "$delete_outputs" == "y" ]; then
-        rm -rf outputs
-        mkdir -p outputs
-      fi
-    fi
-
-    mkdir -p outputs
+	OUTPUT=../../../statistics/eBPFs_subset/eBPF_output_$1
+	mkdir -p "$OUTPUT"
     mkdir -p pids
-	shift 1
     for tool in "${tools[@]}"
     do
         tool_executable="tools/$tool.bt"
-        sudo bpftrace $tool_executable > outputs/$tool 2>&1 &
+        sudo bpftrace $tool_executable > "$OUTPUT/$tool" 2>&1 &
         echo $! > pids/$tool.pid
         echo "Started $tool (pid: $!)"
     done
 
 }
-
 
 stop_tools() {
   for tool in "${tools[@]}"
@@ -55,7 +42,12 @@ stop_tools() {
 }
 
 if [ "$1" == "start" ]; then
-    start_tools
+	if [ -z "$2" ]
+		then 
+			start_tools default
+		else
+			start_tools $2
+	fi
 elif [ "$1" == "stop" ]; then
     stop_tools
 else
