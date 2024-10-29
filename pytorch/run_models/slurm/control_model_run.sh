@@ -10,9 +10,9 @@ export VENV_DIR="$SCRATCH/pytorch_venv"
 export STAT_DIR="/projects/a97485/statistics/control_subset"
 export SCREEN_PATH="$SCRATCH/bin/screen"
 # model is defined in main
-export MODEL="resnet50"
-export N_EPOCHS=2
-export BATCH_SIZE=64
+export MODEL="alexnet"
+export N_EPOCHS=3
+export BATCH_SIZE=32
 
 SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Control_Model_Slurm.sh | awk '{print $4}')"
 
