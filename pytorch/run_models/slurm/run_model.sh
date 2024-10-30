@@ -35,7 +35,7 @@ else
 fi
 export MAIN_PATH="$SCRATCH/HASlabScripts/pytorch/python/main_simple_dist_$MODEL.py"
 
-SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Control_Model_Slurm.sh | awk '{print $4}')"
+SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Run_Model_Slurm.sh | awk '{print $4}')"
 
 sleep 1
 

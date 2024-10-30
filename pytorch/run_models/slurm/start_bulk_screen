@@ -1,0 +1,3 @@
+#!bin/bash
+
+screen -S bulk -d bulk_run_script.sh run_model.sh

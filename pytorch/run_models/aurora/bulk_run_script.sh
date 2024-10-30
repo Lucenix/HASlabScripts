@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z $1 ] ; then
-    echo "First argument needed: script to run for each combination"
+    echo "First argument needed: script to bulk run for each combination"
 else
 
     for model in "alexnet" "resnet50"

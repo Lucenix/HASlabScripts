@@ -1,3 +1,0 @@
-#!bin/bash
-
-screen -S bulk -d collect_bulk_traces.sh model_run.sh
