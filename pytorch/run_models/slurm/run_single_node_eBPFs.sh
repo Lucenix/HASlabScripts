@@ -37,9 +37,9 @@ source "${VENV_DIR}/bin/activate"
 # spawn dstat
 spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME\_gpu.csv
+spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/gpu.csv
 # start eBPFs
-./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
+./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME
 
 { time torchrun \
 --nnodes $N_NODES \
@@ -47,7 +47,7 @@ spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_
 --rdzv_id $2 \
 --rdzv_backend c10d \
 --rdzv_endpoint $1:29500 \
-$MAIN_PATH --epochs $N_EPOCHS --save_every 1 $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME.out ;
+$MAIN_PATH --epochs $N_EPOCHS --save_every 1 $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/out.out ;
 
 join_process() 
 {
