@@ -15,6 +15,15 @@ for file in libbpf-tools/*; do
     fi 
 done
 
+spawn_screen_tool() {
+	echo "Started $2 tool with screen"
+	sudo screen -S $2 -d -m ./$1 > "$OUTPUT/$2" 2>&1
+}
+
+join_screen_tool() {
+	echo "Stopped $1 screen tool"
+	sudo screen -X -S $1 stuff "^C"
+}
 
 start_tools() {
 	OUTPUT=$1
@@ -29,13 +38,11 @@ start_tools() {
         echo "Started $tool (pid: $!)"
     done
 
-	for tool in "${libbpf_tools[@]}"
-	do
-        tool_executable="libbpf-tools/$tool.bt"
-        sudo ./$tool_executable > "$OUTPUT/$tool" 2>&1 &
-        echo $! > pids/$tool.pid
-        echo "Started $tool (pid: $!)"
-    done
+	#for tool in "${libbpf_tools[@]}"
+	#do
+    #    tool_executable="libbpf-tools/$tool"
+	#	spawn_screen_tool $tool_executable $tool
+	#done
 }
 
 stop_tools() {
@@ -45,13 +52,6 @@ stop_tools() {
     echo "Stopping $tool (pid: $pid)"
     sudo kill -SIGTERM $pid
   done
-  
-  for tool in "${libbpf_tools[@]}"
-	do
-		pid=$(cat pids/$tool.pid)
-		echo "Stopping $tool (pid: $pid)"
-		sudo kill -SIGTERM $pid
-	done
 
   echo "Waiting for tools to stop..."
   for tool in "${tools[@]}"
@@ -60,16 +60,15 @@ stop_tools() {
     tail --pid=$pid -f /dev/null
     echo "Stopped $tool"
   done
-	
-  echo ${libbpf_tools[@]}
-  for tool in "${libbpf_tools}"
-  do
-	pid=$(cat pids/$tool.pid)
-	tail --pid=$pid -f /dev/null
-	echo "Stopped $tool (libbpf)"		
-  done
-
+  
   rm -r pids/
+
+  #echo "Stopping screen tools..."
+  #for tool in "${libbpf_tools}"
+  #do
+  #	join_screen_tool $tool 
+  #done
+
 }
 
 if [ "$1" == "start" ]; then
