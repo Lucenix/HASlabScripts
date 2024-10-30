@@ -13,6 +13,7 @@ module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 # create statistics directory
 export STAT_DIR="/projects/a97485/statistics/eBPFs_subset"
 mkdir $STAT_DIR
+mkdir $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
 
 #spawn process
 # --$1: process identifier
@@ -33,8 +34,6 @@ spawn_nvidia_process ()
 
 # activate venv
 source "${VENV_DIR}/bin/activate"
-# mkdir
-mkdir $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
 # spawn dstat
 spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME.csv
 # spawn nvidia

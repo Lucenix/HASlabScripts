@@ -17,7 +17,7 @@ done
 
 
 start_tools() {
-	OUTPUT=../../../statistics/eBPFs_subset/eBPF_output_$1
+	OUTPUT=$1
 	mkdir -p "$OUTPUT"
     mkdir -p pids
 	echo $(pwd)
@@ -32,7 +32,7 @@ start_tools() {
 	for tool in "${libbpf_tools[@]}"
 	do
         tool_executable="libbpf-tools/$tool.bt"
-        sudo $tool_executable > "$OUTPUT/$tool" 2>&1 &
+        sudo ./$tool_executable > "$OUTPUT/$tool" 2>&1 &
         echo $! > pids/$tool.pid
         echo "Started $tool (pid: $!)"
     done
@@ -45,6 +45,13 @@ stop_tools() {
     echo "Stopping $tool (pid: $pid)"
     sudo kill -SIGTERM $pid
   done
+  
+  for tool in "${libbpf_tools[@]}"
+	do
+		pid=$(cat pids/$tool.pid)
+		echo "Stopping $tool (pid: $pid)"
+		sudo kill -SIGTERM $pid
+	done
 
   echo "Waiting for tools to stop..."
   for tool in "${tools[@]}"

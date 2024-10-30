@@ -31,6 +31,7 @@ MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_$MODEL.py"
 
 # create statistics directory
 mkdir -p $STAT_DIR
+mkdir -p $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
 
 #spawn process
 # --$1: process identifier
@@ -70,6 +71,6 @@ spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVER
 # join processes
 join_process dstat
 join_process nvidia
-./run-tools.sh stop
+./run-eBPF-tools.sh stop
 
 #python3 ../../dstat.py -cdnm --output ./dstat_arm_output
