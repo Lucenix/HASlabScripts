@@ -35,7 +35,7 @@ spawn_nvidia_process ()
 # activate venv
 source "${VENV_DIR}/bin/activate"
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME.csv
+spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/dstat.csv
 # spawn nvidia
 spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME\_gpu.csv
 # start eBPFs

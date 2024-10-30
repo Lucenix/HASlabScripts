@@ -1,7 +1,7 @@
 **/mercury-2.3.1/
 *.pt
 slurm-*
-
+**/default/
 conference_101719.*
 
 !conference_101719.pdf
