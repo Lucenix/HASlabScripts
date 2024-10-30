@@ -1,0 +1,30 @@
+Attaching 3 probes...
+Counting syscalls... Hit Ctrl-C to end.
+
+Top 10 syscalls IDs:
+@syscall[202]: 6573
+@syscall[1]: 6869
+@syscall[232]: 6959
+@syscall[16]: 10460
+@syscall[257]: 14204
+@syscall[5]: 14693
+@syscall[3]: 15537
+@syscall[8]: 17016
+@syscall[0]: 63952
+@syscall[24]: 54235514
+
+Top 10 processes:
+@process[run-eBPF-tools.]: 2397
+@process[bash]: 2625
+@process[ps]: 3089
+@process[screen]: 3275
+@process[nvidia-smi]: 4938
+@process[NetworkManager]: 9262
+@process[dstat.py]: 15258
+@process[sudo]: 16390
+@process[bpftrace]: 47490
+@process[python3]: 54327929
+
+
+
+

@@ -28,13 +28,13 @@ join_screen_tool() {
 start_tools() {
 	OUTPUT=$1
 	mkdir -p "$OUTPUT"
-    mkdir -p pids
+    mkdir -p $OUTPUT/pids
 	echo $(pwd)
     for tool in "${tools[@]}"
     do
         tool_executable="bpftrace-tools/$tool.bt"
         sudo bpftrace $tool_executable > "$OUTPUT/$tool" 2>&1 &
-        echo $! > pids/$tool.pid
+        echo $! > $OUTPUT/pids/$tool.pid
         echo "Started $tool (pid: $!)"
     done
 
@@ -48,7 +48,7 @@ start_tools() {
 stop_tools() {
   for tool in "${tools[@]}"
   do
-    pid=$(cat pids/$tool.pid)
+    pid=$(cat $OUTPUT/pids/$tool.pid)
     echo "Stopping $tool (pid: $pid)"
     sudo kill -SIGTERM $pid
   done
@@ -56,12 +56,12 @@ stop_tools() {
   echo "Waiting for tools to stop..."
   for tool in "${tools[@]}"
   do
-    pid=$(cat pids/$tool.pid)
+    pid=$(cat $OUTPUT/pids/$tool.pid)
     tail --pid=$pid -f /dev/null
     echo "Stopped $tool"
   done
   
-  rm -r pids/
+  rm -r $OUTPUT/pids/
 
   #echo "Stopping screen tools..."
   #for tool in "${libbpf_tools}"
