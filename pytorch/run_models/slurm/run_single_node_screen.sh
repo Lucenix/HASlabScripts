@@ -41,7 +41,7 @@ spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_
 --rdzv_id $2 \
 --rdzv_backend c10d \
 --rdzv_endpoint $1:29500 \
-$MAIN_PATH --epochs $N_EPOCHS --save_every 1 $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME.out ;
+$MAIN_PATH --epochs $N_EPOCHS --model $MODEL --log $LOG --batch_size $BATCH_SIZE --save_every $SAVE_EVERY $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME.out ;
 
 join_process() 
 {

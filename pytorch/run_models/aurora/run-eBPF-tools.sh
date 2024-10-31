@@ -55,7 +55,8 @@ stop_tools() {
 	echo "2"
   for tool in "${libbpf_tools}"
    do
-	screen -X -S $tool stuff "^C"
+	screen -X -S $tool stuff "echo hello"
+	screen -X -S $tool stuff "^c"
 	pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
 	#pid=$(pgrep -u root $tool)
 	sudo kill -INT -$pid
