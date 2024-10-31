@@ -7,7 +7,8 @@ export VENV_DIR="$SCRATCH/pytorch_venv"
 export STAT_DIR="/projects/a97485/statistics/control_subset"
 export SCREEN_PATH="$SCRATCH/bin/screen"
 export SINGLE_NODE_SCRIPT="$SCRATCH/HaslabScripts/pytorch/run_models/slurm/run_single_node_screen_eBPFs.sh"
-# model is defined in main
+export MAIN_PATH="$SCRATCH/HASlabScripts/pytorch/python/main_simple_ult.py"
+
 if [ -z $1 ] ; then
         export MODEL="resnet50"
 else
@@ -33,7 +34,6 @@ if [ -z $5 ] ; then
 else
         export SAVE_EVERY=$5
 fi
-export MAIN_PATH="$SCRATCH/HASlabScripts/pytorch/python/main_simple_dist_$MODEL.py"
 
 SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Run_Model_Slurm.sh | awk '{print $4}')"
 

@@ -6,8 +6,8 @@ DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 STAT_DIR="$SCRATCH/statistics/eBPFs_subset"
 SCREEN_PATH="screen"
+MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
 
-# model is defined in main_simple.py
 if [ -z $1 ] ; then
         MODEL="resnet50"
 else
@@ -28,8 +28,6 @@ if [ -z $4 ] ; then
 else
         SAVE_EVERY=$4
 fi
-# there is a main file for each model
-MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_$MODEL.py"
 
 # create statistics directory
 mkdir -p $STAT_DIR
@@ -68,7 +66,7 @@ spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVER
 # spawn eBPFs
 ./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
 
-{ time python3 $MAIN_PATH --save_every $SAVE_EVERY --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ;
+{ time python3 $MAIN_PATH --model $MODEL --save_every $SAVE_EVERY --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ;
 
 # join processes
 join_process dstat
