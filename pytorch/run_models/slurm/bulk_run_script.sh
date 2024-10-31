@@ -14,7 +14,10 @@ else
                 do
                     for save_every in 0 1
                     do
-                        $1 $model $n_nodes $n_epoch $batch_size $save_every
+                        for log in "true" "false"
+                        do
+                            $1 $model $n_nodes $n_epoch $batch_size $save_every $log
+                        done
                     done
                 done
             done

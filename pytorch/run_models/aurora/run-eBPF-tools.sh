@@ -44,6 +44,7 @@ start_tools() {
 
 stop_tools() {
   OUTPUT=$1
+	echo "1"
   for tool in "${tools[@]}"
   do
     pid=$(cat $OUTPUT/pids/$tool.pid)
@@ -51,17 +52,20 @@ stop_tools() {
     screen -X -S $tool stuff "^C"
   done
   
+	echo "2"
   for tool in "${libbpf_tools}"
    do
 	screen -X -S $tool stuff "^C"
-	pid=$(pgrep -u root $tool)
-	sudo kill $pid
+	pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
+	#pid=$(pgrep -u root $tool)
+	sudo kill -INT -$pid
 done
 
   echo "Waiting for tools to stop..."
   for tool in "${tools[@]}"
   do
-    pid=$(cat $OUTPUT/pids/$tool.pid)
+   pid=$(cat $OUTPUT/pids/$tool.pid)
+	
     tail --pid=$pid -f /dev/null
     echo "Stopped $tool"
   done

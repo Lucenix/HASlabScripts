@@ -1,4 +1,4 @@
 #!bin/bash
 SCRATCH="/home/lucenix"
 SCREEN_PATH="$SCRATCH/bin/screen"
-$SCREEN_PATH -S bulk -d -m ./bulk_run_script.sh ./run_model.sh
+$SCREEN_PATH -S bulk -d -m ./bulk_run_script.sh ./sbatch_run_model.sh

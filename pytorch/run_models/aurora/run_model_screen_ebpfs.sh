@@ -31,10 +31,14 @@ if [ -z $4 ] ; then
 else
         SAVE_EVERY=$4
 fi
+if [ -z $5 ] ; then
+        LOG="false"
+else
+        LOG=$5
+fi
 
 # create statistics directory
-mkdir -p $STAT_DIR
-mkdir -p $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
+mkdir -p $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
 
 #spawn process
 # --$1: process identifier
@@ -63,13 +67,13 @@ join_process()
 source "${VENV_DIR}/bin/activate"
 
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/dstat.csv
+spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/gpu.csv
+spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/gpu.csv
 # spawn eBPFs
 ./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY ;
 
-{ time python3 $MAIN_PATH --model $MODEL --save_every $SAVE_EVERY --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ;
+{ time python3 $MAIN_PATH --model $MODEL --save_every $SAVE_EVERY --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ;
 
 # join processes
 join_process dstat ;

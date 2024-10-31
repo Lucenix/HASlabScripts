@@ -1,13 +1,13 @@
 #!/bin/sh
 
-export SCRATCH="/home/lucenix"
+export SCRATCH="/projects/a97485"
 export DSTAT_PATH="$SCRATCH/HASlabScripts/pytorch/python/dstat.py"
-export DATA_DIR="/projects/a97485/imagenet_subset"
-export VENV_DIR="$SCRATCH/pytorch_venv"
-export STAT_DIR="/projects/a97485/statistics/control_subset"
-export SCREEN_PATH="$SCRATCH/bin/screen"
-export SINGLE_NODE_SCRIPT="$SCRATCH/HaslabScripts/pytorch/run_models/slurm/run_single_node_screen_eBPFs.sh"
 export MAIN_PATH="$SCRATCH/HASlabScripts/pytorch/python/main_simple_ult.py"
+export SCREEN_PATH="$SCRATCH/bin/screen"
+export DATA_DIR="$SCRATCH/imagenet_subset"
+export VENV_DIR="$SCRATCH/pytorch_venv"
+export STAT_DIR="$SCRATCH/statistics/eBPFs_subset"
+export SINGLE_NODE_SCRIPT="$SCRATCH/HaslabScripts/pytorch/run_models/slurm/run_single_node_screen_eBPFs.sh"
 
 if [ -z $1 ] ; then
         export MODEL="resnet50"
@@ -33,6 +33,11 @@ if [ -z $5 ] ; then
         export SAVE_EVERY=1
 else
         export SAVE_EVERY=$5
+fi
+if [ -z $6 ] ; then
+        export LOG="false"
+else
+        export LOG=$6
 fi
 
 SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Run_Model_Slurm.sh | awk '{print $4}')"

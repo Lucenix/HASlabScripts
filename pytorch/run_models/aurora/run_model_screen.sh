@@ -30,6 +30,11 @@ if [ -z $4 ] ; then
 else
         BATCH_SIZE=$4
 fi
+if [ -z $5 ] ; then
+        LOG=false
+else
+        LOG=$5
+fi
 
 # deactivate grafana agents
 sudo systemctl stop pmcd
@@ -66,11 +71,11 @@ join_process()
 source "${VENV_DIR}/bin/activate"
 
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY.csv
+spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_gpu.csv
+spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG\_gpu.csv
 
-{ time python3 $MAIN_PATH --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$BATCH_SIZE.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$BATCH_SIZE.out ;
+{ time python3 $MAIN_PATH --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$LOG\_$BATCH_SIZE.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$LOG\_$BATCH_SIZE.out ;
 
 # join processes
 join_process dstat

@@ -21,36 +21,53 @@ parser.add_argument('--save_every',  type=int, metavar='c', nargs='?', default=1
 parser.add_argument("--batch_size", type=int, default=64)
 parser.add_argument("--dist", type=bool, default=False)
 parser.add_argument("--model", default="resnet50")
+parser.add_argument("--log", type=bool, default=False)
 parser.add_argument('data', metavar='DIR', nargs='?', default='imagenet',
                     help='path to dataset (default: imagenet)')
 
+log = None
+
+def log_print(string):
+    print(string)
+
+def log_no_print(string): 
+    return
 
 def main():
-
-    # global best_acc1
+    global log
 
     args = parser.parse_args()
 
-    print(f"Data path: {args.data}")
-    print(f"Number of Epochs: {args.epochs}")
-    print(f"Save Every: {args.save_every}")
+    log = log_print if args.log else log_no_print
+    # global best_acc1
+
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+
+    log("Your Computer Name is:" + hostname)
+    log("Your Computer IP Address is:" + IPAddr)
+
+
+    log(f"Data path: {args.data}")
+    log(f"Number of Epochs: {args.epochs}")
+    log(f"Save Every: {args.save_every}")
 
     train_loader, train_sampler, model, criterion, optimizer, device_id, args = load_training_objects(args)
 
-    print(f"{datetime.datetime.now()}: Training begin")
+    log(f"{datetime.datetime.now()}: Training begin")
 
     for epoch in range(1, args.epochs + 1):
 
-        print(f"{datetime.datetime.now()}: Training epoch {epoch}")
+        log(f"{datetime.datetime.now()}: Training epoch {epoch}")
 
         if train_sampler != None:
             train_sampler.set_epoch(epoch)
 
-        print(f"Training epoch {epoch}")
+        log(f"Training epoch {epoch}")
         # train for one epoch
         train(train_loader, model, criterion, optimizer, epoch, device_id, args)
 
-        print(f"{datetime.datetime.now()}: Trained epoch {epoch}")
+        log(f"{datetime.datetime.now()}: Trained epoch {epoch}")
 
         # evaluate on validation set
         # acc1 = validate(val_loader, model, criterion, args)
@@ -58,9 +75,9 @@ def main():
         if args.save_every != 0 and epoch % args.save_every == 0:
             ckp = model.state_dict()
             PATH = "checkpoint.pt"
-            print(f"{datetime.datetime.now()}: Epoch {epoch} | Saving checkpoint at {PATH}")
+            log(f"{datetime.datetime.now()}: Epoch {epoch} | Saving checkpoint at {PATH}")
             torch.save(ckp, PATH)
-            print(f"{datetime.datetime.now()}: Epoch {epoch} | Checkpoint saved at {PATH}")
+            log(f"{datetime.datetime.now()}: Epoch {epoch} | Checkpoint saved at {PATH}")
 
         
         #scheduler.step()
@@ -116,40 +133,34 @@ def load_training_objects(args):
 
 
 def train(train_loader, model, criterion, optimizer, epoch, device_id, args):
+    global log
 
     # switch to train mode
     model.train()
 
     for i, (images, target) in enumerate(train_loader):
 
-        print(f"    {datetime.datetime.now()}: Start Training Iteration {i}")
+        log(f"    {datetime.datetime.now()}: Start Training Iteration {i}")
 
         # move data to the same device as model
-        print(f"        {datetime.datetime.now()}: Moving data to the same device as model")
+        log(f"        {datetime.datetime.now()}: Moving data to the same device as model")
         images = images.cuda(device_id, non_blocking=True)
         target = target.cuda(device_id, non_blocking=True)
 
         # compute output
-        print(f"        {datetime.datetime.now()}: Computing output")
+        log(f"        {datetime.datetime.now()}: Computing output")
         output = model(images)
-        print(f"        {datetime.datetime.now()}: Computing Loss")
+        log(f"        {datetime.datetime.now()}: Computing Loss")
         loss = criterion(output, target)
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
-        print(f"        {datetime.datetime.now()}: Compute gradient")
+        log(f"        {datetime.datetime.now()}: Compute gradient")
         loss.backward()
-        print(f"        {datetime.datetime.now()}: SGD step")
+        log(f"        {datetime.datetime.now()}: SGD step")
         optimizer.step()
 
-        print(f"    {datetime.datetime.now()}: Ended Training Iteration {i}")
-
+        log(f"    {datetime.datetime.now()}: Ended Training Iteration {i}")
 
 if __name__ == '__main__':
-    hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
-
-    print("Your Computer Name is:" + hostname)
-    print("Your Computer IP Address is:" + IPAddr)
-
     main()
