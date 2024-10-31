@@ -32,8 +32,9 @@ start_tools() {
 
 	for tool in "${libbpf_tools[@]}"
 	do
+#-L -Logfile $OUTPUT/$tool 
         tool_executable="libbpf-tools/$tool"
-		screen -S $tool -d -m -L -Logfile $OUTPUT/$tool bash -c "sudo $tool_executable"
+		screen -S $tool -d -m bash -c "sudo $tool_executable"
 		pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
         echo $pid > $OUTPUT/pids/$tool.pid
         echo "Started $tool (pid: $pid)"
@@ -54,7 +55,7 @@ stop_tools() {
    do
 	screen -X -S $tool stuff "^C"
 	pid=$(pgrep -u root $tool)
-	sudo kill -SIGTERM $pid
+	sudo kill $pid
 done
 
   echo "Waiting for tools to stop..."

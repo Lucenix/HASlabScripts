@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# drop cache
+echo 1 > /proc/sys/vm/drop_caches
+
 HOSTNAME=$(hostname | cut -d '.' -f 1)
 echo "I am $HOSTNAME!"
 
