@@ -1,13 +1,14 @@
 #!/bin/sh
 
 export SCRATCH="/projects/a97485"
-export DSTAT_PATH="$SCRATCH/HASlabScripts/pytorch/python/dstat.py"
-export MAIN_PATH="$SCRATCH/HASlabScripts/pytorch/python/main_simple_ult.py"
+export SCRIPT_DIR="$SCRATCH/HASLabScripts"
+export DSTAT_PATH="$SCRIPT_DIR/pytorch/python/dstat.py"
+export MAIN_PATH="$SCRIPT_DIR/pytorch/python/main_simple_ult.py"
 export SCREEN_PATH="$SCRATCH/bin/screen"
 export DATA_DIR="$SCRATCH/imagenet_subset"
 export VENV_DIR="$SCRATCH/pytorch_venv"
 export STAT_DIR="$SCRATCH/statistics/eBPFs_subset"
-export SINGLE_NODE_SCRIPT="$SCRATCH/HaslabScripts/pytorch/run_models/slurm/run_single_node_screen_eBPFs.sh"
+export SINGLE_NODE_SCRIPT="$SCRIPT_DIR/pytorch/run_models/slurm/run_single_node_screen_eBPFs.sh"
 
 if [ -z $1 ] ; then
         export MODEL="resnet50"
