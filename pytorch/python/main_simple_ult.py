@@ -142,6 +142,8 @@ def train(train_loader, model, criterion, optimizer, epoch, device_id, args):
         print(f"        {datetime.datetime.now()}: SGD step")
         optimizer.step()
 
+        print(f"    {datetime.datetime.now()}: Ended Training Iteration {i}")
+
 
 if __name__ == '__main__':
     hostname = socket.gethostname()

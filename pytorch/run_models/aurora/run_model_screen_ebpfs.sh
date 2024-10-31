@@ -64,13 +64,13 @@ spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/
 # spawn nvidia
 spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/gpu.csv
 # spawn eBPFs
-./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
+./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY ;
 
 { time python3 $MAIN_PATH --model $MODEL --save_every $SAVE_EVERY --epochs $N_EPOCHS --batch_size $BATCH_SIZE $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/out.out ;
 
 # join processes
-join_process dstat
-join_process nvidia
-./run-eBPF-tools.sh stop
+join_process dstat ;
+join_process nvidia ;
+./run-eBPF-tools.sh stop $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY ;
 
 #python3 ../../dstat.py -cdnm --output ./dstat_arm_output

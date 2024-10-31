@@ -37,6 +37,6 @@ fi
 
 SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Run_Model_Slurm.sh | awk '{print $4}')"
 
-sleep 1
+#sleep 1
 
-tail -f slurm-$SLURM_NUMBER.out
+#tail -f slurm-$SLURM_NUMBER.out
