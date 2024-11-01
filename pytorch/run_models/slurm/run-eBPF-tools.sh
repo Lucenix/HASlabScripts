@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 tools=()
 libbpf_tools=()
@@ -16,9 +16,7 @@ for file in libbpf-tools/*; do
 done
 
 start_tools() {
-    rm -rf $1
 	OUTPUT=$1
-	mkdir -p "$OUTPUT"
     mkdir -p $OUTPUT/pids
 	echo $(pwd)
     for tool in "${tools[@]}"
@@ -32,8 +30,9 @@ start_tools() {
 
 	for tool in "${libbpf_tools[@]}"
 	do
+#-L -Logfile $OUTPUT/$tool 
         tool_executable="libbpf-tools/$tool"
-		screen -S $tool -d -m -L -Logfile $OUTPUT/$tool bash -c "sudo $tool_executable"
+		screen -S $tool -d -m bash -c "sudo $tool_executable"
 		pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
         echo $pid > $OUTPUT/pids/$tool.pid
         echo "Started $tool (pid: $pid)"
@@ -43,6 +42,7 @@ start_tools() {
 
 stop_tools() {
   OUTPUT=$1
+  
   for tool in "${tools[@]}"
   do
     pid=$(cat $OUTPUT/pids/$tool.pid)
@@ -50,17 +50,28 @@ stop_tools() {
     screen -X -S $tool stuff "^C"
   done
   
-  for tool in "${libbpf_tools}"
+  for tool in "${libbpf_tools[@]}"
    do
-	screen -X -S $tool stuff "^C"
 	pid=$(pgrep -u root $tool)
-	sudo kill $pid
-done
+    echo "Stopping $tool (pid: $pid)"
+    screen -X -S $tool stuff '^C'
+	#pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
+	#sudo kill -INT -$pid
+   done
 
   echo "Waiting for tools to stop..."
   for tool in "${tools[@]}"
   do
-    pid=$(cat $OUTPUT/pids/$tool.pid)
+   pid=$(cat $OUTPUT/pids/$tool.pid)
+	
+    tail --pid=$pid -f /dev/null
+    echo "Stopped $tool"
+  done
+
+  for tool in "${libbpf_tools[@]}"
+  do
+   pid=$(cat $OUTPUT/pids/$tool.pid)
+	
     tail --pid=$pid -f /dev/null
     echo "Stopped $tool"
   done

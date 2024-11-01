@@ -53,4 +53,4 @@ join_process()
 
 join_process dstat
 join_process nvidia
-./run-tools.sh stop
+./run-tools.sh stop $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME
