@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --job-name=install_pytorch    # job name
+#SBATCH --job-name=run_model    # job name
 #SBATCH --account=haslab
 #SBATCH --time=48:00:00 
 #SBATCH --partition=rtx4060

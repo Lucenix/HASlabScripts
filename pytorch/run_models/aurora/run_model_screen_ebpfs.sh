@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# drop cache
-echo 1 > /proc/sys/vm/drop_caches
+sudo echo 1 > /proc/sys/vm/drop_caches
 
 SCRATCH="/home/gsd/andrelucena"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
