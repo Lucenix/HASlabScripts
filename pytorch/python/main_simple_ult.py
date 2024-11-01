@@ -14,43 +14,70 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 import datetime
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('--epochs',  type=int, metavar='E', nargs='?', default=2)
 parser.add_argument('--save_every',  type=int, metavar='c', nargs='?', default=1)
 parser.add_argument("--batch_size", type=int, default=64)
-parser.add_argument("--dist", type=bool, default=False)
+parser.add_argument("--dist", type=str2bool, default=False)
 parser.add_argument("--model", default="resnet50")
+parser.add_argument("--enable_log", type=str2bool, default=False)
 parser.add_argument('data', metavar='DIR', nargs='?', default='imagenet',
                     help='path to dataset (default: imagenet)')
 
+def my_log_print(string):
+    print(string)
+
+def my_log_no_print(string): 
+    return
+
+my_log = my_log_no_print
 
 def main():
-
-    # global best_acc1
+    global my_log
 
     args = parser.parse_args()
 
-    print(f"Data path: {args.data}")
-    print(f"Number of Epochs: {args.epochs}")
-    print(f"Save Every: {args.save_every}")
+    print(args.enable_log)
+    my_log = my_log_print if args.enable_log else my_log_no_print
+    # global best_acc1
+
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+
+    my_log("Your Computer Name is:" + hostname)
+    my_log("Your Computer IP Address is:" + IPAddr)
+
+
+    my_log(f"Data path: {args.data}")
+    my_log(f"Number of Epochs: {args.epochs}")
+    my_log(f"Save Every: {args.save_every}")
 
     train_loader, train_sampler, model, criterion, optimizer, device_id, args = load_training_objects(args)
 
-    print(f"{datetime.datetime.now()}: Training begin")
+    my_log(f"{datetime.datetime.now()}: Training begin")
 
     for epoch in range(1, args.epochs + 1):
 
-        print(f"{datetime.datetime.now()}: Training epoch {epoch}")
+        my_log(f"{datetime.datetime.now()}: Training epoch {epoch}")
 
         if train_sampler != None:
             train_sampler.set_epoch(epoch)
 
-        print(f"Training epoch {epoch}")
+        my_log(f"Training epoch {epoch}")
         # train for one epoch
         train(train_loader, model, criterion, optimizer, epoch, device_id, args)
 
-        print(f"{datetime.datetime.now()}: Trained epoch {epoch}")
+        my_log(f"{datetime.datetime.now()}: Trained epoch {epoch}")
 
         # evaluate on validation set
         # acc1 = validate(val_loader, model, criterion, args)
@@ -58,9 +85,9 @@ def main():
         if args.save_every != 0 and epoch % args.save_every == 0:
             ckp = model.state_dict()
             PATH = "checkpoint.pt"
-            print(f"{datetime.datetime.now()}: Epoch {epoch} | Saving checkpoint at {PATH}")
+            my_log(f"{datetime.datetime.now()}: Epoch {epoch} | Saving checkpoint at {PATH}")
             torch.save(ckp, PATH)
-            print(f"{datetime.datetime.now()}: Epoch {epoch} | Checkpoint saved at {PATH}")
+            my_log(f"{datetime.datetime.now()}: Epoch {epoch} | Checkpoint saved at {PATH}")
 
         
         #scheduler.step()
@@ -116,38 +143,34 @@ def load_training_objects(args):
 
 
 def train(train_loader, model, criterion, optimizer, epoch, device_id, args):
+    global my_log
 
     # switch to train mode
     model.train()
 
     for i, (images, target) in enumerate(train_loader):
 
-        print(f"    {datetime.datetime.now()}: Start Training Iteration {i}")
+        my_log(f"    {datetime.datetime.now()}: Start Training Iteration {i}")
 
         # move data to the same device as model
-        print(f"        {datetime.datetime.now()}: Moving data to the same device as model")
+        my_log(f"        {datetime.datetime.now()}: Moving data to the same device as model")
         images = images.cuda(device_id, non_blocking=True)
         target = target.cuda(device_id, non_blocking=True)
 
         # compute output
-        print(f"        {datetime.datetime.now()}: Computing output")
+        my_log(f"        {datetime.datetime.now()}: Computing output")
         output = model(images)
-        print(f"        {datetime.datetime.now()}: Computing Loss")
+        my_log(f"        {datetime.datetime.now()}: Computing Loss")
         loss = criterion(output, target)
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
-        print(f"        {datetime.datetime.now()}: Compute gradient")
+        my_log(f"        {datetime.datetime.now()}: Compute gradient")
         loss.backward()
-        print(f"        {datetime.datetime.now()}: SGD step")
+        my_log(f"        {datetime.datetime.now()}: SGD step")
         optimizer.step()
 
+        my_log(f"    {datetime.datetime.now()}: Ended Training Iteration {i}")
 
 if __name__ == '__main__':
-    hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
-
-    print("Your Computer Name is:" + hostname)
-    print("Your Computer IP Address is:" + IPAddr)
-
     main()

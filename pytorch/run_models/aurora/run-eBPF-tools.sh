@@ -15,71 +15,85 @@ for file in libbpf-tools/*; do
     fi 
 done
 
-spawn_screen_tool() {
-	echo "Started $2 tool with screen"
-	sudo screen -S $2 -d -m ./$1 > "$OUTPUT/$2" 2>&1
-}
-
-join_screen_tool() {
-	echo "Stopped $1 screen tool"
-	sudo screen -X -S $1 stuff "^C"
-}
-
 start_tools() {
 	OUTPUT=$1
-	mkdir -p "$OUTPUT"
     mkdir -p $OUTPUT/pids
 	echo $(pwd)
     for tool in "${tools[@]}"
     do
         tool_executable="bpftrace-tools/$tool.bt"
-        sudo bpftrace $tool_executable > "$OUTPUT/$tool" 2>&1 &
-        echo $! > $OUTPUT/pids/$tool.pid
-        echo "Started $tool (pid: $!)"
+        screen -S $tool -d -m bash -c "sudo bpftrace $tool_executable > $OUTPUT/$tool 2>&1"
+        pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
+        echo $pid > $OUTPUT/pids/$tool.pid
+        echo "Started $tool (pid: $pid)"
     done
 
-	#for tool in "${libbpf_tools[@]}"
-	#do
-    #    tool_executable="libbpf-tools/$tool"
-	#	spawn_screen_tool $tool_executable $tool
-	#done
+	for tool in "${libbpf_tools[@]}"
+	do
+#-L -Logfile $OUTPUT/$tool 
+        tool_executable="libbpf-tools/$tool"
+		screen -S $tool -d -m bash -c "sudo $tool_executable"
+		pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
+        echo $pid > $OUTPUT/pids/$tool.pid
+        echo "Started $tool (pid: $pid)"
+
+	done
 }
 
 stop_tools() {
+  OUTPUT=$1
+  
   for tool in "${tools[@]}"
   do
     pid=$(cat $OUTPUT/pids/$tool.pid)
     echo "Stopping $tool (pid: $pid)"
-    sudo kill -SIGTERM $pid
+    screen -X -S $tool stuff "^C"
   done
+  
+  for tool in "${libbpf_tools[@]}"
+   do
+	pid=$(pgrep -u root $tool)
+    echo "Stopping $tool (pid: $pid)"
+    screen -X -S $tool stuff '^C'
+	#pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
+	#sudo kill -INT -$pid
+   done
 
   echo "Waiting for tools to stop..."
   for tool in "${tools[@]}"
   do
-    pid=$(cat $OUTPUT/pids/$tool.pid)
+   pid=$(cat $OUTPUT/pids/$tool.pid)
+	
     tail --pid=$pid -f /dev/null
     echo "Stopped $tool"
   done
-  
-  rm -r $OUTPUT/pids/
 
-  #echo "Stopping screen tools..."
-  #for tool in "${libbpf_tools}"
-  #do
-  #	join_screen_tool $tool 
-  #done
+  for tool in "${libbpf_tools[@]}"
+  do
+   pid=$(cat $OUTPUT/pids/$tool.pid)
+	
+    tail --pid=$pid -f /dev/null
+    echo "Stopped $tool"
+  done
+   
+  rm -r $OUTPUT/pids/
 
 }
 
 if [ "$1" == "start" ]; then
 	if [ -z "$2" ]
 		then 
-			start_tools default
+			start_tools ./default
 		else
 			start_tools $2
 	fi
 elif [ "$1" == "stop" ]; then
-    stop_tools
+    if [ -z "$2" ]
+        then
+            stop_tools ./default
+        else
+            stop_tools $2
+    fi
 else
     echo "Usage: $0 start|stop"
 fi

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# drop cache
+echo 1 > /proc/sys/vm/drop_caches
+
 HOSTNAME=$(hostname | cut -d '.' -f 1)
 echo "I am $HOSTNAME!"
 
@@ -8,9 +11,7 @@ sudo echo 1 > /proc/sys/vm/drop_caches
 module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
 # create statistics directory
-export STAT_DIR="/projects/a97485/statistics/eBPFs_subset"
-mkdir $STAT_DIR
-mkdir $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY
+mkdir -p $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
 
 #spawn process
 # --$1: process identifier
@@ -32,11 +33,11 @@ spawn_nvidia_process ()
 # activate venv
 source "${VENV_DIR}/bin/activate"
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/dstat.csv
+spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/gpu.csv
+spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/gpu.csv
 # start eBPFs
-./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME
+$SCRIPT_DIR/pytorch/run_models/slurm/run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME
 
 { time torchrun \
 --nnodes $N_NODES \
@@ -44,7 +45,7 @@ spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_
 --rdzv_id $2 \
 --rdzv_backend c10d \
 --rdzv_endpoint $1:29500 \
-$MAIN_PATH --epochs $N_EPOCHS --save_every 1 $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY/$HOSTNAME/out.out ;
+$MAIN_PATH --dist true --model $MODEL --epochs $N_EPOCHS --save_every $SAVE_EVERY --batch_size $BATCH_SIZE --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/out.out ;
 
 join_process() 
 {
@@ -54,4 +55,4 @@ join_process()
 
 join_process dstat
 join_process nvidia
-./run-tools.sh stop
+$SCRIPT_DIR/pytorch/run_models/slurm/run-eBPF-tools.sh stop $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME
