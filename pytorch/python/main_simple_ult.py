@@ -75,9 +75,10 @@ def main():
 
         my_log(f"Training epoch {epoch}")
         # train for one epoch
-        train(train_loader, model, criterion, optimizer, epoch, device_id, args)
+        acc1, acc5 = train(train_loader, model, criterion, optimizer, epoch, device_id, args)
 
         my_log(f"{datetime.datetime.now()}: Trained epoch {epoch}")
+        my_log(f"{datetime.datetime.now()}: Accuracy top1: {acc1}; Accuracy top5: {acc5}")
 
         # evaluate on validation set
         # acc1 = validate(val_loader, model, criterion, args)
@@ -145,6 +146,11 @@ def load_training_objects(args):
 def train(train_loader, model, criterion, optimizer, epoch, device_id, args):
     global my_log
 
+    acc1_val = 0.0
+    acc5_val = 0.0
+
+    acc_count = 0
+
     # switch to train mode
     model.train()
 
@@ -163,6 +169,13 @@ def train(train_loader, model, criterion, optimizer, epoch, device_id, args):
         my_log(f"        {datetime.datetime.now()}: Computing Loss")
         loss = criterion(output, target)
 
+        acc1, acc5 = accuracy(output, target, (1,5))
+
+        acc1_val += acc1
+        acc5_val += acc5
+
+        acc_count += 1
+
         # compute gradient and do SGD step
         optimizer.zero_grad()
         my_log(f"        {datetime.datetime.now()}: Compute gradient")
@@ -171,6 +184,26 @@ def train(train_loader, model, criterion, optimizer, epoch, device_id, args):
         optimizer.step()
 
         my_log(f"    {datetime.datetime.now()}: Ended Training Iteration {i}")
+
+    return acc1_val/acc_count, acc5_val/acc_count
+
+
+def accuracy(output, target, topk=(1,)):
+    """Computes the accuracy over the k top predictions for the specified values of k"""
+    with torch.no_grad():
+        maxk = max(topk)
+        batch_size = target.size(0)
+
+        _, pred = output.topk(maxk, 1, True, True)
+        pred = pred.t()
+        correct = pred.eq(target.view(1, -1).expand_as(pred))
+
+        res = []
+        for k in topk:
+            correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
+            res.append(correct_k.mul_(100.0 / batch_size))
+        return res
+
 
 if __name__ == '__main__':
     main()
