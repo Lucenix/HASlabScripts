@@ -21,7 +21,7 @@ parser.add_argument('--save_every',  type=int, metavar='c', nargs='?', default=1
 parser.add_argument("--batch_size", type=int, default=64)
 parser.add_argument("--dist", type=bool, default=False)
 parser.add_argument("--model", default="resnet50")
-parser.add_argument("--log", type=bool, default=False)
+parser.add_argument("--enable_log", type=bool, default=False)
 parser.add_argument('data', metavar='DIR', nargs='?', default='imagenet',
                     help='path to dataset (default: imagenet)')
 
@@ -38,7 +38,7 @@ def main():
 
     args = parser.parse_args()
 
-    log = log_print if args.log else log_no_print
+    log = log_print if args.enable_log else log_no_print
     # global best_acc1
 
     hostname = socket.gethostname()

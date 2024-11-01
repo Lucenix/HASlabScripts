@@ -1,4 +1,5 @@
-#!bin/bash
-SCRATCH="/home/lucenix"
-SCREEN_PATH="$SCRATCH/bin/screen"
+#!/bin/bash
+SCRATCH="/projects/a97485"
+export SCREEN_PATH="$SCRATCH/bin/screen"
+module load ncurses
 $SCREEN_PATH -S bulk -d -m ./bulk_run_script.sh ./sbatch_run_model.sh
