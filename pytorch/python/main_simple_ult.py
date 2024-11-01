@@ -25,13 +25,13 @@ parser.add_argument("--enable_log", type=bool, default=False)
 parser.add_argument('data', metavar='DIR', nargs='?', default='imagenet',
                     help='path to dataset (default: imagenet)')
 
-log = None
-
 def log_print(string):
     print(string)
 
 def log_no_print(string): 
     return
+
+log = log_no_print
 
 def main():
     global log

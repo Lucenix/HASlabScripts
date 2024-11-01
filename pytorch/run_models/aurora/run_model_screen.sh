@@ -70,7 +70,7 @@ spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\
 # spawn nvidia
 spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG\_gpu.csv
 
-{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$LOG\_$BATCH_SIZE.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$LOG\_$BATCH_SIZE.out ;
+{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$LOG\_$BATCH_SIZE.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$LOG\_$BATCH_SIZE.out ;
 
 # join processes
 join_process dstat
