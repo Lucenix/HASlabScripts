@@ -1,4 +1,4 @@
-#!/usr/local/bin/bpftrace
+#!/usr/bin/env bpftrace
 /*
  * fsrwstat - Show VFS reads/writes by file system type.
  *

@@ -1,4 +1,4 @@
-#!/usr/local/bin/bpftrace
+#!/usr/bin/env bpftrace
 /*
  * bufgrow - Buffer cache growth by process and bytes.
  *

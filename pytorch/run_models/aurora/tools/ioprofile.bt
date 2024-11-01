@@ -1,4 +1,4 @@
-#!/usr/bin/bpftrace
+#!/usr/bin/env bpftrace
 /*
  * ioprofile - Count stacks on I/O.
  *
