@@ -1,4 +1,4 @@
-#!/usr/local/bin/bpftrace
+#!/usr/bin/env bpftrace
 /*
  * socksize - Show socket I/O sizes as per-process histograms.
  *
