@@ -3,11 +3,12 @@
 sudo echo 1 > /proc/sys/vm/drop_caches
 
 SCRATCH="/home/gsd/andrelucena"
-MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple.py"
+MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 STAT_DIR="$SCRATCH/statistics/control_subset"
+SCREEN_PATH="screen"
 # model and save every is defined in main
 if [ -z $1 ] ; then
         SAVE_EVERY=1
@@ -69,7 +70,7 @@ spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\
 # spawn nvidia
 spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG\_gpu.csv
 
-{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$LOG\_$BATCH_SIZE.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$SAVE_EVERY\_$LOG\_$BATCH_SIZE.out ;
+{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.out ;
 
 # join processes
 join_process dstat

@@ -47,7 +47,6 @@ def main():
 
     args = parser.parse_args()
 
-    print(args.enable_log)
     my_log = my_log_print if args.enable_log else my_log_no_print
     # global best_acc1
 
