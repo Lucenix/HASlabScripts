@@ -52,8 +52,9 @@ should not be used}
     \item Machine learning has increased in popularity
     \begin{itemize}
         \item image classification
-        \item natrual language proccessing
+        \item natural language proccessing
     \end{itemize}
+    \item I/O Characterization has produced diverse assumptions about DL I/O behaviour, like high overhead for random reads, which are commonly used to justify various types of optimization explorations (\cite{10.1145/3331526}, \cite{8891023}, \cite{10.1145/3337821.3337902}). Quality and specific storage characterization are required to find unique and worthwhile solutions for newer performance problems. 
     \item studies have tried to analyse I/O patterns in DL Workflows (source)
     \item very few get down to kernel level
     \item eBPF are ...
@@ -64,13 +65,15 @@ should not be used}
 
 \begin{itemize}
     \item DL involves iterating multiple times (epochs) through a dataset
-    \item all data is read exactly once one epoch as passed (I/O intensive)
     \item Dl is a subset of machine learning algorithms based on neural networks
+    \item for accuracy, all data is read exactly once per one epoch and is done in random reads(I/O intensive)
     \item passing it through all the layers to calculate a loss (forward pass)
     \item use calculated loss to update the learnable parameters of the network (backpropagation)
-    \item SGD is an optimizer for loss function minimization widely used for its lower computation  
+    \item SGD is an optimizer for loss function minimization widely used for its lower computation compared to working through the whole dataset
+    \item increasing batch-size in the last years, from the usual range of 32-256 \cite{8891023}
     \item DL is usually I/O-bound [need source], due to the use of accelerators (GPU), size of the data and random reads
-    \item pytorch is a DL framework
+    \item pytorch is a DL framework with some particularities (Dataloader, ...)
+    \item Tensorflow is also a DL framework, with other particularities...
     \item Imagenet
     \item Distributed DNN training (data paralellism)
     \item checkpointing involves saving the model state
@@ -81,17 +84,25 @@ should not be used}
 \section{Related work}
 
 \begin{itemize}
-    \item papers que usam darshan/tf-darshan para caracterizar padrões
+    \item papers que usam darshan/tf-darshan para caracterizar padrões \cite{9229605} \cite{8752753} 
     \item MLPerf Storage/tese de um aluno da Oana
     \item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD PRELOAD, captura de de I/O request por intrumentação do código fonte.
-    \item Caracterizar Tensorflow I/O workloads através da sua definição teórica \cite{8638422}
-    \item 
+    \item Descrever o I/O pipeline do Tensorflow workloads através da sua definição teórica para benchmark \cite{8638422}
+    \item Caracterizar LMDB, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{10.1145/3331526}
+    \item dUtilizar NVMe over Fabrics para OS-bypass 
+    \item Que métricas analisam principalmente?
+    \begin{itemize}
+        \item I/O skew por processo;
+        \item tempo de leitura por processo;
+        \item bandwidth do read por cada I/O block size;
+        \item número de context switches;
+    \end{itemize} 
     \item O que falta fazer?
     \begin{itemize}
         \item Análise empírica dos padrões como parte do processo de treino 
         \item Análise da cache como interveniente no processo de I/O
         \item Testes de Rede (para modelos distribuídos)
-        \item Analisar PyTorch
+        \item Analisar PyTorch com o nível de detalhe que analisaram outras
     \end{itemize}
 \end{itemize}
 

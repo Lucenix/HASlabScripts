@@ -62,3 +62,20 @@ keywords = {parallel I/O, Scalable deep learning, LMDBIO, LMDB, I/O in deep lear
   pages={102-111},
   keywords={Tools;Servers;Bandwidth;Meteorology;Monitoring;Metadata;Instruments;Darshan;Lustre Monitoring Tools;Slurm;IO Analysis;IO Trace},
   doi={10.1109/CCGRID.2019.00021}}
+
+@inproceedings{10.1145/3337821.3337902,
+author = {Chowdhury, Fahim and Zhu, Yue and Heer, Todd and Paredes, Saul and Moody, Adam and Goldstone, Robin and Mohror, Kathryn and Yu, Weikuan},
+title = {I/O Characterization and Performance Evaluation of BeeGFS for Deep Learning},
+year = {2019},
+isbn = {9781450362955},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3337821.3337902},
+doi = {10.1145/3337821.3337902},
+abstract = {Parallel File Systems (PFSs) are frequently deployed on leadership High Performance Computing (HPC) systems to ensure efficient I/O, persistent storage and scalable performance. Emerging Deep Learning (DL) applications incur new I/O and storage requirements to HPC systems with batched input of small random files. This mandates PFSs to have commensurate features that can meet the needs of DL applications. BeeGFS is a recently emerging PFS that has grabbed the attention of the research and industry world because of its performance, scalability and ease of use. While emphasizing a systematic performance analysis of BeeGFS, in this paper, we present the architectural and system features of BeeGFS, and perform an experimental evaluation using cutting-edge I/O, Metadata and DL application benchmarks. Particularly, we have utilized AlexNet and ResNet-50 models for the classification of ImageNet dataset using the Livermore Big Artificial Neural Network Toolkit (LBANN), and ImageNet data reader pipeline atop TensorFlow and Horovod. Through extensive performance characterization of BeeGFS, our study provides a useful documentation on how to leverage BeeGFS for the emerging DL applications.},
+booktitle = {Proceedings of the 48th International Conference on Parallel Processing},
+articleno = {80},
+numpages = {10},
+location = {Kyoto, Japan},
+series = {ICPP '19}
+}
