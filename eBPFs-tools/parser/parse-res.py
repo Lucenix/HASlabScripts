@@ -68,7 +68,9 @@ tool_map = {
     "netsize"    : [(parse_multiple_histogram, pr.parse_netsize_output, [], "Size (bytes)")],
     "funccount"  : [(parse_histogram, pr.parse_funccount_output_functions, [], "Function")],
     "xfsdist"    : [(parse_multiple_histogram, pr.parse_xfsdist_output, [], "Time interval (usecs)")],
-    "pidpersec"  : [(parse_time_series, pr.parse_pidpersec_output, [[]], "Time")]
+    "pidpersec"  : [(parse_time_series, pr.parse_pidpersec_output, [[]], "Time")],
+    "ffaults"    : [(parse_histogram, pr.parse_ffaults_output, [0], "Filename")],
+    "hfaults"    : [(parse_histogram, pr.parse_hfaults_output, [0], "Process")]
 }
 
 def main():
