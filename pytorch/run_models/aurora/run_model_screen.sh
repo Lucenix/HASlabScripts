@@ -16,7 +16,7 @@ else
         SAVE_EVERY=$1
 fi
 if [ -z $2 ] ; then
-        MODEL=resnet50
+        MODEL=alexnet
 else
         MODEL=$2
 fi

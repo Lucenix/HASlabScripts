@@ -8,7 +8,7 @@ else
     do
         for n_nodes in 4
         do
-            for n_epoch in 2 3 4
+            for n_epoch in 2 3
             do
                 for batch_size in 32 64
                 do
