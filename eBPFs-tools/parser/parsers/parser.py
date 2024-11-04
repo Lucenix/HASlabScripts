@@ -165,6 +165,28 @@ def parse_runqlat_output(file):
 
     return data
 
+
+"""
+"""
+def parse_runqlen_output(file):
+    data = {}
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith('['):
+                    pattern_text = r'(?P<length>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    if match:
+                        length = match.group('length')
+                        count = match.group('count')
+                        data[length] = int(count)
+    except FileNotFoundError:
+        return {}
+
+    return data
+
 """
     Parse signals output file and return a DataFrame with the data
     @param file: the file to parse
@@ -446,25 +468,25 @@ def parse_pidpersec_output(file, filter_labels=[]):
                 if re.match(r'\d\d:\d\d:\d\d', line):
                     current_time = re.search(r'\d\d:\d\d:\d\d', line).group(0)
                     all_data["time"].append(current_time)
-                elif line.startswith("@["):
-                    pattern_text = r'@$$(?P<label>[^$$]+)\]:\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        label = match.group('label')
-                        count = int(match.group('count'))
 
-                        if filter_labels and label not in filter_labels:
-                            continue
+                pattern_text = r'@\[(?P<label>[^]]+)\]:\s+(?P<count>\d+)'
+                pattern = re.compile(pattern_text)
+                match = pattern.search(line)
+                if match:
+                    label = match.group('label')
+                    count = int(match.group('count'))
 
-                        if label not in all_data:
-                            all_data[label] = []
+                    if filter_labels and label not in filter_labels:
+                        continue
 
-                        time_index = all_data["time"].index(current_time)
-                        while len(all_data[label]) <= time_index:
-                            all_data[label].append(0)
+                    if label not in all_data:
+                        all_data[label] = []
 
-                        all_data[label][time_index] += count
+                    time_index = all_data["time"].index(current_time)
+                    while len(all_data[label]) <= time_index:
+                        all_data[label].append(0)
+
+                    all_data[label][time_index] += count
 
         size = len(all_data["time"])
         for label in all_data.keys():
