@@ -14,8 +14,8 @@ start_tools() {
     for tool in "${tools[@]}"
     do
         tool_executable="tools/$tool"
-        screen -S $tool -d -m -L -Logfile $OUTPUT/$tool bash -c "sudo $tool_executable"
-        pid=$(screen -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
+        $SCREEN_PATH -S $tool -d -m -L -Logfile $OUTPUT/$tool bash -c "sudo $tool_executable"
+        pid=$($SCREEN_PATH -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
         echo $pid > $OUTPUT/pids/$tool.pid
         echo "Started $tool (pid: $pid)"
     done
@@ -28,7 +28,7 @@ stop_tools() {
   do
     pid=$(cat $OUTPUT/pids/$tool.pid)
     echo "Stopping $tool (pid: $pid)"
-    screen -X -S $tool stuff "^C"
+    $SCREEN_PATH -X -S $tool stuff "^C"
   done
 
   echo "Waiting for tools to stop..."
