@@ -7,8 +7,8 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\bibliographystyle{IEEEtran}
+
 \begin{document}
 
 \title{Conference Paper Title*\\
@@ -52,6 +52,7 @@ should not be used}
     \item Machine learning has increased in popularity
     \begin{itemize}
         \item image classification
+        \item natrual language proccessing
     \end{itemize}
     \item studies have tried to analyse I/O patterns in DL Workflows (source)
     \item very few get down to kernel level
@@ -62,14 +63,16 @@ should not be used}
 \section{Background}
 
 \begin{itemize}
-    \item Dl involves iterating through a dataset
+    \item DL involves iterating multiple times (epochs) through a dataset
+    \item all data is read exactly once one epoch as passed (I/O intensive)
     \item passing it through all the layers to calculate a loss (forward pass)
-    \item use calculated loss to update the learnable parameters of the network
-    \item once all data is read exactly once one epoch as passed (I/O intensive)
+    \item use calculated loss to update the learnable parameters of the network (backpropagation)
+    \item SGD is an optimizer for loss function minimization widely used for its lower computation  
+    \item DL is usually I/O-bound [need source], due to the use of accelerators (GPU), size of the data and random reads
     \item pytorch is a DL framework
     \item Distributed DNN training (data paralellism)
     \item checkpointing involves saving the model state
-    \item in pytorch its done with torch.save() and in offitial workloads is done in between epochs
+    \item in pytorch its done explicity with torch.save() and in official workloads is done in-between epochs
     \item eBPF's
 \end{itemize}
 
@@ -78,8 +81,15 @@ should not be used}
 \begin{itemize}
     \item papers que usam darshan/tf-darshan para caracterizar padrões
     \item MLPerf Storage/tese de um aluno da Oana
-    \item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD PRELOAD, captura de de I/O request por intrumentação do código fonte..
-    \item 
+    \item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD PRELOAD, captura de de I/O request por intrumentação do código fonte.
+    \item Caracterizar Tensorflow I/O workloads através da sua definição teórica \cite{8638422}
+    \item O que falta fazer?
+    \begin{itemize}
+        \item Análise empírica dos padrões como parte do processo de treino 
+        \item Análise da cache como interveniente no processo de I/O
+        \item Testes de Rede (para modelos distribuídos)
+        \item Analisar PyTorch
+    \end{itemize}
 \end{itemize}
 
 \section{Design}
@@ -100,5 +110,6 @@ should not be used}
 
 \section{Conclusion}
 
+\bibliography{IEEEabrv, refs}
 
 \end{document}
