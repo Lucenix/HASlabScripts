@@ -403,3 +403,77 @@ def parse_funccount_output_processes(file):
         return {}
 
     return data
+
+"""
+"""
+def parse_xfsdist_output(file):
+    datas = {}
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith('@'):
+                    data = {}
+                    pattern_text = r'\[(?P<function>[^]]*)\]'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    datas[match.group('function')] = data                                                                                                                                                                                                                                                                                   
+                elif line.startswith('['):
+                    pattern_text = r'(?P<usecs>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    if match:
+                        usecs = match.group('usecs')
+                        count = match.group('count')
+                        data[usecs] = int(count)
+    except FileNotFoundError:
+        return {}
+    
+    return datas
+
+"""
+"""
+def parse_pidpersec_output(file, filter_labels=[]):
+    all_data = {}
+    all_data["time"] = []
+    
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            current_time = ""
+
+            for line in lines:
+                if re.match(r'\d\d:\d\d:\d\d', line):
+                    current_time = re.search(r'\d\d:\d\d:\d\d', line).group(0)
+                    all_data["time"].append(current_time)
+                elif line.startswith("@["):
+                    pattern_text = r'@$$(?P<label>[^$$]+)\]:\s+(?P<count>\d+)'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    if match:
+                        label = match.group('label')
+                        count = int(match.group('count'))
+
+                        if filter_labels and label not in filter_labels:
+                            continue
+
+                        if label not in all_data:
+                            all_data[label] = []
+
+                        time_index = all_data["time"].index(current_time)
+                        while len(all_data[label]) <= time_index:
+                            all_data[label].append(0)
+
+                        all_data[label][time_index] += count
+
+        size = len(all_data["time"])
+        for label in all_data.keys():
+            if label != "time":
+                while len(all_data[label]) < size:
+                    all_data[label].append(0)
+
+    except FileNotFoundError:
+        return {}
+
+    df = pd.DataFrame(all_data).set_index('time')
+    return df

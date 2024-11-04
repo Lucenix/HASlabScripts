@@ -23,7 +23,7 @@ BEGIN
 
 tracepoint:sched:sched_process_fork
 {
-	@ = count();
+	@[args.parent_comm] = count();
 }
 
 interval:s:1

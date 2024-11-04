@@ -65,11 +65,13 @@ should not be used}
 \begin{itemize}
     \item DL involves iterating multiple times (epochs) through a dataset
     \item all data is read exactly once one epoch as passed (I/O intensive)
+    \item Dl is a subset of machine learning algorithms based on neural networks
     \item passing it through all the layers to calculate a loss (forward pass)
     \item use calculated loss to update the learnable parameters of the network (backpropagation)
     \item SGD is an optimizer for loss function minimization widely used for its lower computation  
     \item DL is usually I/O-bound [need source], due to the use of accelerators (GPU), size of the data and random reads
     \item pytorch is a DL framework
+    \item Imagenet
     \item Distributed DNN training (data paralellism)
     \item checkpointing involves saving the model state
     \item in pytorch its done explicity with torch.save() and in official workloads is done in-between epochs
