@@ -57,7 +57,7 @@ tool_map = {
     "biolatency" : [(parse_histogram, pr.parse_biolatency_output, [], "Time interval (usecs)")],
     "syscount"   : [(parse_histogram, pr.parse_syscount_output_syscalls, [0], "Syscall"),
                     (parse_histogram, pr.parse_syscount_output_processes, [0], "Process")],
-    "fsrwstat"   : [(parse_time_series, pr.parse_fsrwstat_output, [[], False], "Time")],
+    "fsrwstat"   : [(parse_time_series, pr.parse_fsrwstat_output, [[]], "Time")],
     "runqlat"    : [(parse_histogram, pr.parse_runqlat_output, [], "Time interval (usecs)")],
     "signals"    : [(clustered_stacked_bar, pr.parse_signals_output, [], "Command")],
     "vfscount"   : [(parse_histogram, pr.parse_vfscount_output, [], "vfs function")],
@@ -66,6 +66,8 @@ tool_map = {
     "bitesize"   : [(parse_multiple_histogram, pr.parse_bitesize_output, [], "Size (bytes)")],
     "netsize"    : [(parse_multiple_histogram, pr.parse_netsize_output, [], "Size (bytes)")],
     "funccount"  : [(parse_histogram, pr.parse_funccount_output_functions, [], "Function")],
+    "xfsdist"    : [(parse_multiple_histogram, pr.parse_xfsdist_output, [], "Time interval (usecs)")],
+    "pidpersec"  : [(parse_time_series, pr.parse_pidpersec_output, [[]], "Time")]
 }
 
 def main():
@@ -84,7 +86,7 @@ def main():
 
     setup = args.setup
 
-    tool_name_list = [target for target in os.listdir(args.path) if os.path.isfile(os.path.join(args.path, target))]
+    tool_name_list = [target.removesuffix(".bt") for target in os.listdir(args.path) if os.path.isfile(os.path.join(args.path, target))]
 
     for tool_name in tool_name_list:
         if tool_name in tool_map:
