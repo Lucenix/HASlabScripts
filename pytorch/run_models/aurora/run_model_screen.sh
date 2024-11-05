@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sudo echo 1 > /proc/sys/vm/drop_caches
+sudo echo 3 > sudo /proc/sys/vm/drop_caches
 
 SCRATCH="/home/gsd/andrelucena"
 MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"

@@ -1,13 +1,13 @@
 #!/bin/sh
 
-sudo echo 1 > /proc/sys/vm/drop_caches
+sudo echo 3 > sudo /proc/sys/vm/drop_caches
 
 SCRATCH="/home/gsd/andrelucena"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 STAT_DIR="$SCRATCH/statistics/eBPFs_subset"
-SCREEN_PATH="screen"
+export SCREEN_PATH="screen"
 MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
 
 if [ -z $1 ] ; then
