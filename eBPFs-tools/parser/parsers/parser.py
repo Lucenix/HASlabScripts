@@ -188,6 +188,27 @@ def parse_runqlen_output(file):
     return data
 
 """
+"""
+def parse_cpuwalk_output(file):
+    data = {}
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith('['):
+                    pattern_text = r'(?P<cpu>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    if match:
+                        cpu = match.group('cpu')
+                        count = match.group('count')
+                        data[cpu] = int(count)
+    except FileNotFoundError:
+        return {}
+
+    return data
+
+"""
     Parse signals output file and return a DataFrame with the data
     @param file: the file to parse
     @param mode: the mode of the data (secure or unsecure)
@@ -551,3 +572,30 @@ def parse_hfaults_output(file, top=0):
         data = dict(itertools.islice(data.items(), top))
 
     return data
+
+"""
+"""
+def parse_netsize_output(file):
+    datas = {}
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith('@'):
+                    data = {}
+                    pattern_text = r'\[(?P<>[^]]*)\]'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    datas[match.group('process_name')] = data
+                elif line.startswith('['):
+                    pattern_text = r'(?P<size>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    if match:
+                        size = match.group('size')
+                        count = match.group('count')
+                        data[size] = int(count)
+    except FileNotFoundError:
+        return {}
+    
+    return datas

@@ -60,6 +60,7 @@ tool_map = {
     "fsrwstat"   : [(parse_time_series, pr.parse_fsrwstat_output, [[]], "Time")],
     "runqlat"    : [(parse_histogram, pr.parse_runqlat_output, [], "Time interval (usecs)")],
     "runqlen"    : [(parse_histogram, pr.parse_runqlen_output, [], "Run queue length")],
+    "cpuwalk"    : [(parse_histogram, pr.parse_cpuwalk_output, [], "(C)PUs")],
     "signals"    : [(clustered_stacked_bar, pr.parse_signals_output, [], "Command")],
     "vfscount"   : [(parse_histogram, pr.parse_vfscount_output, [], "vfs function")],
     "vfssize"    : [(parse_multiple_histogram, pr.parse_vfssize_output, [], "Size (bytes)")],
