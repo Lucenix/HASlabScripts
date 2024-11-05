@@ -1,5 +1,12 @@
 #!/bin/bash
 SCRATCH="/projects/a97485"
 export SCREEN_PATH="$SCRATCH/bin/screen"
-module load ncurses
-$SCREEN_PATH -S bulk -d -m ./bulk_run_script.sh ./sbatch_run_model.sh
+
+if [ -z $1 ]
+then
+    echo "Usage: $0 <output folder name for tests>"
+else
+    export STAT_DIR="$SCRATCH/statistics/$1"
+    module load ncurses
+    $SCREEN_PATH -S bulk -d -m ./bulk_run_script.sh ./sbatch_run_model.sh
+fi

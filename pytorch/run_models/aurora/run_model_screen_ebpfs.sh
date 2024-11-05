@@ -6,7 +6,6 @@ SCRATCH="/home/gsd/andrelucena"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
-STAT_DIR="$SCRATCH/statistics/eBPFs_subset"
 export SCREEN_PATH="screen"
 MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
 
