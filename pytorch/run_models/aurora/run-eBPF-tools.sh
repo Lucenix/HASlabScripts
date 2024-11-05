@@ -13,8 +13,14 @@ start_tools() {
 	echo $(pwd)
     for tool in "${tools[@]}"
     do
-        tool_executable="tools/$tool"
-        $SCREEN_PATH -S $tool -d -m -L -Logfile $OUTPUT/$tool bash -c "sudo $tool_executable"
+
+        if [ "$tool" == "cachestat" ]; then
+            tool_executable="tools/$tool -T"
+        else
+            tool_executable="tools/$tool"
+        fi
+
+		$SCREEN_PATH -S $tool -d -m -L -Logfile $OUTPUT/$tool bash -c "sudo $tool_executable"
         pid=$($SCREEN_PATH -ls | awk "/\.$tool\t/ {print strtonum(\$1)}")
         echo $pid > $OUTPUT/pids/$tool.pid
         echo "Started $tool (pid: $pid)"
