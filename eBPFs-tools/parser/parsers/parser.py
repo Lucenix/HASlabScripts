@@ -583,10 +583,58 @@ def parse_netsize_output(file):
             for line in lines:
                 if line.startswith('@'):
                     data = {}
-                    pattern_text = r'\[(?P<>[^]]*)\]'
+                    pattern_text = r'(?P<operation>[^]]*)'
                     pattern = re.compile(pattern_text)
                     match = pattern.search(line)
-                    datas[match.group('process_name')] = data
+                    datas[match.group('operation')] = data
+                elif line.startswith('['):
+                    pattern_text = r'(?P<size>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    if match:
+                        size = match.group('size')
+                        count = match.group('count')
+                        data[size] = int(count)
+    except FileNotFoundError:
+        return {}
+    
+    return datas
+
+"""
+"""
+def parse_nettxlat_output(file):
+    data = {}
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith('['):
+                    pattern_text = r'(?P<usecs>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    if match:
+                        usecs = match.group('usecs')
+                        count = match.group('count')
+                        data[usecs] = int(count)
+    except FileNotFoundError:
+        return {}
+
+    return data
+
+"""
+"""
+def parse_socksize_output(file):
+    datas = {}
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith('@'):
+                    data = {}
+                    pattern_text = r'@(?P<operation>[^:]*)'
+                    pattern = re.compile(pattern_text)
+                    match = pattern.search(line)
+                    datas[match.group('operation')] = data
                 elif line.startswith('['):
                     pattern_text = r'(?P<size>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
                     pattern = re.compile(pattern_text)
