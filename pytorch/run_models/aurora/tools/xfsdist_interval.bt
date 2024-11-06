@@ -51,6 +51,7 @@ interval:s:60
 
 END
 {
+    time(); print(@us); clear(@us);
 	clear(@start);
 	clear(@name);
 }

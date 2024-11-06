@@ -54,5 +54,6 @@ interval:s:60
 
 END
 {
+    time(); print(@usecs); clear(@usecs)
 	clear(@qtime);
 }

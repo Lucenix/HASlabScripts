@@ -48,5 +48,6 @@ interval:s:60
 
 END
 {
+    time(); print(@); clear(@);
 	clear(@file);
 }
