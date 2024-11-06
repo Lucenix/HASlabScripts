@@ -152,7 +152,7 @@ def gen_heatmap(setup, test, data, xlabel="Time", ylabel="Interval", show=False)
     plot_title=setup + " " + test
 
     plt.figure(figsize=(12, 8))
-    sb.heatmap(data, cmap="YlGnBu", annot=True, fmt="g")
+    sb.heatmap(data, cmap="YlGnBu", annot=False, fmt="g")
     plt.title(plot_title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)

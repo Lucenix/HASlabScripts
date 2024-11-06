@@ -80,7 +80,7 @@ def parse_heatmap(tool_name, xlabel, parser_function, *args):
     else:
         df = pd.DataFrame(parsed_output).fillna(0)
 
-    pl.gen_heatmap(setup, tool_name, df, xlabel=xlabel)
+    pl.gen_heatmap(setup, tool_name, df, ylabel=xlabel)
 
 ### MAIN ###
 
