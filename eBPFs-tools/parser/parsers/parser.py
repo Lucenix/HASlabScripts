@@ -7,11 +7,10 @@ from datetime import datetime
 """
     Parse simple histogram bpftrace output file, with or without time
 """
-def parse_histogram_output(file, pattern_text, key_group, count_group):
+def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[", reverse=False, map_key=[]):
     data = {}
     current_time = None
     pattern = re.compile(pattern_text)
-
     try:
         with open(file, 'r') as f:
             lines = f.readlines()
@@ -22,10 +21,12 @@ def parse_histogram_output(file, pattern_text, key_group, count_group):
                     data[current_time] = {}
                     continue
 
-                if line.startswith('['):
+                if line.startswith(mark):
                     match = pattern.search(line)
                     if match:
                         key = match.group(key_group)
+                        if(len(map_key)!=0):
+                            key = map_key[int(key)]
                         count = int(match.group(count_group))
 
                         if current_time:
@@ -36,61 +37,9 @@ def parse_histogram_output(file, pattern_text, key_group, count_group):
                             data[None][key] = count
     except FileNotFoundError:
         return data
-
-    return data
-
-"""
-    Parse syscount output file (syscalls)
-    @param file: the file to parse
-    @param top: the number of top syscalls to return
-    @return: a dictionary with the data
-"""
-def parse_syscount_output_syscalls(file, top=0):
-    data={}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("@syscall"):
-                    pattern_text = r'@syscall\[tracepoint:syscalls:sys_enter_(?P<syscall>.*)\]:\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        syscall = match.group('syscall')
-                        count = match.group('count')
-                        data[syscall] = int(count)
-        data = dict(reversed(data.items()))
-    except FileNotFoundError:
-        return {}
-
-    if top > 0:
-        data = dict(itertools.islice(data.items(), top))
-
-    return data
-
-"""
-    Parse syscount output file (processes)
-    @param file: the file to parse
-    @param top: the number of top processes to return
-    @return: a dictionary with the data
-"""
-def parse_syscount_output_processes(file):
-    data={}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("@process"):
-                    pattern_text = r'@process\[(?P<process>.*)\]:\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        process = match.group('process')
-                        count = match.group('count')
-                        data[process] = int(count)
-        data = dict(reversed(data.items()))
-    except FileNotFoundError:
-        return {}
+    
+    if reverse:
+        data = dict(reversed(data[None].items()))
 
     return data
 
