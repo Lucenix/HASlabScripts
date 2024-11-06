@@ -2,7 +2,7 @@
 import itertools
 import re
 import pandas as pd
-import datetime
+from datetime import datetime
 
 """
     Parse simple histogram bpftrace output file, with or without time
@@ -18,7 +18,7 @@ def parse_histogram_output(file, pattern_text, key_group, count_group):
             for line in lines:
                 time_match = re.match(r'(\d{2}:\d{2}:\d{2})', line)
                 if time_match:
-                    current_time = datetime.strptime(time_match.group(1), "%H:%M:%S")
+                    current_time = datetime.strptime(time_match.group(1), "%H:%M:%S").time()
                     data[current_time] = {}
                     continue
 
@@ -34,33 +34,6 @@ def parse_histogram_output(file, pattern_text, key_group, count_group):
                             if None not in data:
                                 data[None] = {}
                             data[None][key] = count
-    except FileNotFoundError:
-        return data
-
-    if len(data.keys())==1 and None in data:
-        data = data[None]
-
-    return data
-
-"""
-    Parse biolatency output file
-    @param file: the file to parse
-    @return: a dictionary with the data
-"""
-def parse_biolatency_output(file):
-    data={}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith('['):
-                    pattern_text = r'(?P<usecs>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        usecs = match.group('usecs')
-                        count = match.group('count')
-                        data[usecs] = int(count)
     except FileNotFoundError:
         return data
 
@@ -179,73 +152,6 @@ def parse_fsrwstat_output(file, filter_fs=[]):
 
     df = pd.DataFrame(all_data).set_index('time')
     return df
-
-"""
-    Parse runqlat output file
-    @param file: the file to parse
-    @return: a dictionary with the data
-"""
-def parse_runqlat_output(file):
-    data = {}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith('['):
-                    pattern_text = r'(?P<usecs>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        usecs = match.group('usecs')
-                        count = match.group('count')
-                        data[usecs] = int(count)
-    except FileNotFoundError:
-        return {}
-
-    return data
-
-
-"""
-"""
-def parse_runqlen_output(file):
-    data = {}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith('['):
-                    pattern_text = r'(?P<length>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        length = match.group('length')
-                        count = match.group('count')
-                        data[length] = int(count)
-    except FileNotFoundError:
-        return {}
-
-    return data
-
-"""
-"""
-def parse_cpuwalk_output(file):
-    data = {}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith('['):
-                    pattern_text = r'(?P<cpu>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        cpu = match.group('cpu')
-                        count = match.group('count')
-                        data[cpu] = int(count)
-    except FileNotFoundError:
-        return {}
-
-    return data
 
 """
     Parse signals output file and return a DataFrame with the data
@@ -639,26 +545,6 @@ def parse_netsize_output(file):
     
     return datas
 
-"""
-"""
-def parse_nettxlat_output(file):
-    data = {}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith('['):
-                    pattern_text = r'(?P<usecs>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        usecs = match.group('usecs')
-                        count = match.group('count')
-                        data[usecs] = int(count)
-    except FileNotFoundError:
-        return {}
-
-    return data
 
 """
 """

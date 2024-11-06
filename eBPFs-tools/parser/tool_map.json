@@ -2,8 +2,24 @@
     "biolatency": [
         {
             "parse_plotter": "parse_histogram",
-            "parse_function": "parse_biolatency_output",
-            "parse_function_args": [],
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "biolatency_interval": [
+        {
+            "parse_plotter": "parse_heatmap",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "usecs",
+                "count"
+            ],
             "xlabel": "Time interval (usecs)"
         }
     ],
@@ -32,24 +48,36 @@
     "runqlat": [
         {
             "parse_plotter": "parse_histogram",
-            "parse_function": "parse_runqlat_output",
-            "parse_function_args": [],
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "usecs",
+                "count"
+            ],
             "xlabel": "Time interval (usecs)"
         }
     ],
     "runqlen": [
         {
             "parse_plotter": "parse_histogram",
-            "parse_function": "parse_runqlen_output",
-            "parse_function_args": [],
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<length>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "length",
+                "count"
+            ],
             "xlabel": "Run queue length"
         }
     ],
     "cpuwalk": [
         {
             "parse_plotter": "parse_histogram",
-            "parse_function": "parse_cpuwalk_output",
-            "parse_function_args": [],
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<cpu>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "cpu",
+                "count"
+            ],
             "xlabel": "(C)PUs"
         }
     ],

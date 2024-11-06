@@ -2,6 +2,8 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.validators.scatter.marker import SymbolValidator
 import parsers.utils as utils
+import matplotlib.pyplot as plt
+import seaborn as sb
 
 """
     Generate a histogram
@@ -142,3 +144,22 @@ def gen_clustered_stacked_bar(data, setup, test, xlabel="", ylabel="Count", show
     print("  -- Saved to %s" % output_file)
     if show:
         fig.show()
+
+def gen_heatmap(setup, test, data, xlabel="Time", ylabel="Interval", show=False):
+
+    print("  -- Generating Heatmap...")
+
+    plot_title=setup + " " + test
+
+    plt.figure(figsize=(12, 8))
+    sb.heatmap(data, cmap="YlGnBu", annot=True, fmt="g")
+    plt.title(plot_title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    # Save the plot
+    output_file = utils.gen_output_file_name(setup, test)
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    print(f"  -- Saved to %s" % output_file)
+    if show:
+        plt.show()

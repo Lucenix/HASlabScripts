@@ -1,6 +1,4 @@
-from heapq import merge
 import sys
-from typing import final
 import pandas as pd
 
 import parsers.plots as pl
@@ -9,8 +7,8 @@ import os
 import os.path
 import argparse
 
-from dataclasses import dataclass, field
-from typing import Callable, List, Dict
+from dataclasses import dataclass
+from typing import Callable, List
 import json
 
 @dataclass
@@ -23,6 +21,9 @@ class ToolConfig:
 def parse_histogram(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a histogram")
     parsed_output = parser_function(*args)
+
+    if len(parsed_output.keys())==1 and None in parsed_output:
+        parsed_output = parsed_output[None]
 
     df = pd.Series(parsed_output).to_frame()
 
@@ -63,6 +64,25 @@ def parse_clustered_stacked_bar(tool_name, xlabel, parser_function, *args):
         return
     
     pl.gen_clustered_stacked_bar(all, setup, tool_name, xlabel=xlabel)
+
+
+def parse_heatmap(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results into a heatmap")
+    parsed_output = parser_function(*args)
+
+    if len(parsed_output) == 0:
+        print("No data to plot")
+        return
+    
+    if len(parsed_output.keys())==1 and None in parsed_output:
+        df = pd.DataFrame.from_dict(parsed_output[None], orient='index', columns=['Count'])
+        df = df.transpose()
+    else:
+        df = pd.DataFrame(parsed_output).fillna(0)
+
+    pl.gen_heatmap(setup, tool_name, df, xlabel=xlabel)
+
+### MAIN ###
 
 def load_tool_map(file_path="tool_map.json"):
     with open(file_path, "r") as f:
