@@ -1,0 +1,164 @@
+{
+    "biolatency": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_biolatency_output",
+            "parse_function_args": [],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "syscount": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_syscount_output_syscalls",
+            "parse_function_args": [0],
+            "xlabel": "Syscall"
+        },
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_syscount_output_processes",
+            "parse_function_args": [0],
+            "xlabel": "Process"
+        }
+    ],
+    "fsrwstat": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_fsrwstat_output",
+            "parse_function_args": [[]],
+            "xlabel": "Time"
+        }
+    ],
+    "runqlat": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_runqlat_output",
+            "parse_function_args": [],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "runqlen": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_runqlen_output",
+            "parse_function_args": [],
+            "xlabel": "Run queue length"
+        }
+    ],
+    "cpuwalk": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_cpuwalk_output",
+            "parse_function_args": [],
+            "xlabel": "(C)PUs"
+        }
+    ],
+    "signals": [
+        {
+            "parse_plotter": "parse_clustered_stacked_bar",
+            "parse_function": "parse_signals_output",
+            "parse_function_args": [],
+            "xlabel": "Command"
+        }
+    ],
+    "vfscount": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_vfscount_output",
+            "parse_function_args": [],
+            "xlabel": "vfs function"
+        }
+    ],
+    "vfssize": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_vfssize_output",
+            "parse_function_args": [],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "ext4dist": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_ext4dist_output",
+            "parse_function_args": [],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "bitesize": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_bitesize_output",
+            "parse_function_args": [],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "netsize": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_netsize_output",
+            "parse_function_args": [],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "funccount": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_funccount_output_functions",
+            "parse_function_args": [],
+            "xlabel": "Function"
+        }
+    ],
+    "xfsdist": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_xfsdist_output",
+            "parse_function_args": [],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "pidpersec": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_pidpersec_output",
+            "parse_function_args": [[]],
+            "xlabel": "Time"
+        }
+    ],
+    "ffaults": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_ffaults_output",
+            "parse_function_args": [0],
+            "xlabel": "Filename"
+        }
+    ],
+    "hfaults": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_hfaults_output",
+            "parse_function_args": [0],
+            "xlabel": "Process"
+        }
+    ],
+    "nettxlat": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "socksize": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_socksize_output",
+            "parse_function_args": [],
+            "xlabel": "Size (bytes)"
+        }
+    ]
+}

@@ -9,6 +9,17 @@ import os
 import os.path
 import argparse
 
+from dataclasses import dataclass, field
+from typing import Callable, List, Dict
+import json
+
+@dataclass
+class ToolConfig:
+    parse_plotter: Callable
+    parse_function: Callable
+    parse_function_args: List
+    xlabel: str
+
 def parse_histogram(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a histogram")
     parsed_output = parser_function(*args)
@@ -43,7 +54,7 @@ def parse_time_series(tool_name, xlabel, parser_function, *args):
     if len(df) > 0:
         pl.gen_time_series(df, setup, tool_name, "", xlabel=xlabel)
 
-def clustered_stacked_bar(tool_name, xlabel, parser_function, *args):
+def parse_clustered_stacked_bar(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a stacked bar")
     parsed_output = parser_function(*args)
 
@@ -53,29 +64,42 @@ def clustered_stacked_bar(tool_name, xlabel, parser_function, *args):
     
     pl.gen_clustered_stacked_bar(all, setup, tool_name, xlabel=xlabel)
 
-tool_map = {
-    "biolatency" : [(parse_histogram, pr.parse_biolatency_output, [], "Time interval (usecs)")],
-    "syscount"   : [(parse_histogram, pr.parse_syscount_output_syscalls, [0], "Syscall"),
-                    (parse_histogram, pr.parse_syscount_output_processes, [0], "Process")],
-    "fsrwstat"   : [(parse_time_series, pr.parse_fsrwstat_output, [[]], "Time")],
-    "runqlat"    : [(parse_histogram, pr.parse_runqlat_output, [], "Time interval (usecs)")],
-    "runqlen"    : [(parse_histogram, pr.parse_runqlen_output, [], "Run queue length")],
-    "cpuwalk"    : [(parse_histogram, pr.parse_cpuwalk_output, [], "(C)PUs")],
-    "signals"    : [(clustered_stacked_bar, pr.parse_signals_output, [], "Command")],
-    "vfscount"   : [(parse_histogram, pr.parse_vfscount_output, [], "vfs function")],
-    "vfssize"    : [(parse_multiple_histogram, pr.parse_vfssize_output, [], "Size (bytes)")],
-    "ext4dist"   : [(parse_multiple_histogram, pr.parse_ext4dist_output, [], "Time interval (usecs)")],
-    "bitesize"   : [(parse_multiple_histogram, pr.parse_bitesize_output, [], "Size (bytes)")],
-    "netsize"    : [(parse_multiple_histogram, pr.parse_netsize_output, [], "Size (bytes)")],
-    "funccount"  : [(parse_histogram, pr.parse_funccount_output_functions, [], "Function")],
-    "xfsdist"    : [(parse_multiple_histogram, pr.parse_xfsdist_output, [], "Time interval (usecs)")],
-    "pidpersec"  : [(parse_time_series, pr.parse_pidpersec_output, [[]], "Time")],
-    "ffaults"    : [(parse_histogram, pr.parse_ffaults_output, [0], "Filename")],
-    "hfaults"    : [(parse_histogram, pr.parse_hfaults_output, [0], "Process")],
-    "netsize"    : [(parse_multiple_histogram, pr.parse_netsize_output, [], "Size (bytes)")],
-    "nettxlat"   : [(parse_histogram, pr.parse_nettxlat_output, [], "Time interval (usecs)")],
-    "socksize" : [(parse_multiple_histogram, pr.parse_socksize_output, [], "Size (bytes)")]
-}
+def load_tool_map(file_path="tool_map.json"):
+    with open(file_path, "r") as f:
+        config_data = json.load(f)
+    
+    tool_map = {}
+    for tool_name, configs in config_data.items():
+        tool_map[tool_name] = []
+        for config in configs:
+            parse_plotter = getattr(sys.modules[__name__], config["parse_plotter"])
+            parse_function = getattr(pr, config["parse_function"])
+            tool_map[tool_name].append(
+                ToolConfig(
+                    parse_plotter=parse_plotter,
+                    parse_function=parse_function,
+                    parse_function_args=config["parse_function_args"],
+                    xlabel=config["xlabel"]
+                )
+            )
+    return tool_map
+
+def process_tool_output(args, tool_map):
+    tool_name_list = [target.removesuffix(".bt") for target in os.listdir(args.path) if os.path.isfile(os.path.join(args.path, target))]
+
+    for tool_name in tool_name_list:
+        if tool_name in tool_map:
+            for tool_config in tool_map[tool_name]:
+                parse_plotter = tool_config.parse_plotter
+                parse_function = tool_config.parse_function
+                parse_function_args = tool_config.parse_function_args
+                xlabel = tool_config.xlabel
+
+                parse_function_args.insert(0, os.path.join(args.path, tool_name))
+                parse_plotter(tool_name, xlabel, parse_function, *parse_function_args)
+        else:
+            print(f"No available parser for tool: {tool_name}")
+
 
 def main():
     global setup
@@ -90,19 +114,11 @@ def main():
     parser.add_argument('setup', default="Model")
 
     args = parser.parse_args()
-
     setup = args.setup
 
-    tool_name_list = [target.removesuffix(".bt") for target in os.listdir(args.path) if os.path.isfile(os.path.join(args.path, target))]
-
-    for tool_name in tool_name_list:
-        if tool_name in tool_map:
-            for (parse_plotter, parse_function, parse_function_args, xlabel) in tool_map[tool_name]:
-                parse_function_args.insert(0, os.path.join(args.path, tool_name))
-                parse_plotter(tool_name, xlabel, parse_function, *parse_function_args)
-        else:
-            print(f"No available parser for tool: {tool_name}")
-
+    tool_map = load_tool_map()
+    process_tool_output(args, tool_map)
+    
 
 if __name__ == "__main__":
     main()

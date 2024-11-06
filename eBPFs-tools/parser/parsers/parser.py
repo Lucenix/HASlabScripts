@@ -2,6 +2,45 @@
 import itertools
 import re
 import pandas as pd
+import datetime
+
+"""
+    Parse simple histogram bpftrace output file, with or without time
+"""
+def parse_histogram_output(file, pattern_text, key_group, count_group):
+    data = {}
+    current_time = None
+    pattern = re.compile(pattern_text)
+
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                time_match = re.match(r'(\d{2}:\d{2}:\d{2})', line)
+                if time_match:
+                    current_time = datetime.strptime(time_match.group(1), "%H:%M:%S")
+                    data[current_time] = {}
+                    continue
+
+                if line.startswith('['):
+                    match = pattern.search(line)
+                    if match:
+                        key = match.group(key_group)
+                        count = int(match.group(count_group))
+
+                        if current_time:
+                            data[current_time][key] = count
+                        else:
+                            if None not in data:
+                                data[None] = {}
+                            data[None][key] = count
+    except FileNotFoundError:
+        return data
+
+    if len(data.keys())==1 and None in data:
+        data = data[None]
+
+    return data
 
 """
     Parse biolatency output file
