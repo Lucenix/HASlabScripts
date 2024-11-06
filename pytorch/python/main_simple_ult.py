@@ -61,7 +61,7 @@ def main():
     my_log(f"Number of Epochs: {args.epochs}")
     my_log(f"Save Every: {args.save_every}")
 
-    train_loader, train_sampler, model, criterion, optimizer, device_id, args = load_training_objects(args)
+    global_rank, train_loader, train_sampler, model, criterion, optimizer, device_id, args = load_training_objects(args)
 
     my_log(f"{datetime.datetime.now()}: Training begin")
 
@@ -82,9 +82,9 @@ def main():
         # evaluate on validation set
         # acc1 = validate(val_loader, model, criterion, args)
 
-        if args.save_every != 0 and epoch % args.save_every == 0:
+        if global_rank == 0 and (args.save_every != 0 and epoch % args.save_every == 0):
             ckp = model.state_dict()
-            PATH = "checkpoint.pt"
+            PATH = f"checkpoint_rank_{global_rank}.pt"
             my_log(f"{datetime.datetime.now()}: Epoch {epoch} | Saving checkpoint at {PATH}")
             torch.save(ckp, PATH)
             my_log(f"{datetime.datetime.now()}: Epoch {epoch} | Checkpoint saved at {PATH}")
@@ -122,11 +122,15 @@ def load_training_objects(args):
         model = model.cuda(device_id)
         model = torch.nn.parallel.DistributedDataParallel(model,device_ids=[device_id])
 
+        global_rank = int(os.environ["RANK"])
+
     else:
 
         device_id = torch.device("cuda")
         train_sampler = None
         model = model.cuda(device_id)
+
+        global_rank = 0
 
     # define loss function (criterion), optimizer, and learning rate scheduler
     criterion = nn.CrossEntropyLoss().cuda(device_id)
@@ -139,7 +143,7 @@ def load_training_objects(args):
         train_dataset, batch_size=args.batch_size, shuffle=(train_sampler is None),
         num_workers=4, pin_memory=True, sampler=train_sampler)
 
-    return train_loader, train_sampler, model, criterion, optimizer, device_id, args
+    return global_rank, train_loader, train_sampler, model, criterion, optimizer, device_id, args
 
 
 def train(train_loader, model, criterion, optimizer, epoch, device_id, args):
@@ -206,3 +210,4 @@ def accuracy(output, target, topk=(1,)):
 
 if __name__ == '__main__':
     main()
+
