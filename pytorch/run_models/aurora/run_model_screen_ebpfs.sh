@@ -1,7 +1,9 @@
 #!/bin/sh
 
 sudo su
+
 echo 3 > /proc/sys/vm/drop_caches
+
 exit
 
 SCRATCH="/home/gsd/andrelucena"

@@ -4,7 +4,7 @@ if [ -z $1 ] ; then
     echo "First argument needed: script to bulk run for each combination"
 else
 
-    for model in "resnet50"
+    for model in "alexnet"
     do
         for n_epoch in 2 3
         do
