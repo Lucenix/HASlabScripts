@@ -82,6 +82,52 @@ def parse_multiple_histogram_output(file, histogram_pattern_text, pattern_text, 
     
     return data
 
+
+def parse_time_series_output(file, filter_labels, pattern_text, key_group, count_group):
+    all_data = {}
+    all_data["time"] = []
+    pattern = re.compile(pattern_text)
+    
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            current_time = ""
+
+            for line in lines:
+                if re.match(r'\d\d:\d\d:\d\d', line):
+                    current_time = re.search(r'\d\d:\d\d:\d\d', line).group(0)
+                    all_data["time"].append(current_time)
+
+                
+                match = pattern.search(line)
+                if match:
+                    label = match.group(key_group)
+                    count = int(match.group(count_group))
+
+                    if filter_labels and label not in filter_labels:
+                        continue
+
+                    if label not in all_data:
+                        all_data[label] = []
+
+                    time_index = all_data["time"].index(current_time)
+                    while len(all_data[label]) <= time_index:
+                        all_data[label].append(0)
+
+                    all_data[label][time_index] += count
+
+        size = len(all_data["time"])
+        for label in all_data.keys():
+            if label != "time":
+                while len(all_data[label]) < size:
+                    all_data[label].append(0)
+
+    except FileNotFoundError:
+        return {}
+
+    df = pd.DataFrame(all_data).set_index('time')
+    return df
+
 """
     Parse fsrwstat output file
     @param file: the file to parse
