@@ -37,7 +37,7 @@ def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[",
         return data
     
     if reverse:
-        data = dict(reversed(data[None].items()))
+        data = dict(reversed(data[None].items())) if None in data else {}
 
     return data
 
@@ -278,55 +278,3 @@ def parse_pidpersec_output(file, filter_labels=[]):
 
     df = pd.DataFrame(all_data).set_index('time')
     return df
-
-"""
-"""
-def parse_ffaults_output(file, top=0):
-    data={}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("@"):
-                    pattern_text = r'@\[(?P<filename>.*)\]:\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        filename = match.group('filename')
-                        if filename == "":
-                            filename = "$anonymous mappings$"
-                        count = match.group('count')
-                        data[filename] = int(count)
-        data = dict(reversed(data.items()))
-    except FileNotFoundError:
-        return {}
-
-    if top > 0:
-        data = dict(itertools.islice(data.items(), top))
-
-    return data
-
-"""
-"""
-def parse_hfaults_output(file, top=0):
-    data={}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("@"):
-                    pattern_text = r'@\[[^,], (?P<process>.*)\]:\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        process = match.group('process')
-                        count = match.group('count')
-                        data[process] = int(count)
-        data = dict(reversed(data.items()))
-    except FileNotFoundError:
-        return {}
-
-    if top > 0:
-        data = dict(itertools.islice(data.items(), top))
-
-    return data

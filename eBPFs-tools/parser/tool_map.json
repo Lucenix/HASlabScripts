@@ -339,16 +339,41 @@
     "ffaults": [
         {
             "parse_plotter": "parse_histogram",
-            "parse_function": "parse_ffaults_output",
-            "parse_function_args": [0],
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@\\[(?P<filename>.*)\\]:\\s+(?P<count>\\d+)",
+                "filename",
+                "count",
+                "@",
+                true
+            ],
+            "xlabel": "Filename"
+        }
+    ],
+    "ffaults_interval": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "@\\[(?P<filename>.*)\\]:\\s+(?P<count>\\d+)",
+                "@",
+                "filename",
+                "count"
+            ],
             "xlabel": "Filename"
         }
     ],
     "hfaults": [
         {
             "parse_plotter": "parse_histogram",
-            "parse_function": "parse_hfaults_output",
-            "parse_function_args": [0],
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@\\[[^,], (?P<process>.*)\\]:\\s+(?P<count>\\d+)",
+                "process",
+                "count",
+                "@",
+                true
+            ],
             "xlabel": "Process"
         }
     ],
