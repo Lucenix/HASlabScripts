@@ -141,8 +141,14 @@
     "vfscount": [
         {
             "parse_plotter": "parse_histogram",
-            "parse_function": "parse_vfscount_output",
-            "parse_function_args": [],
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@\\[vfs_(?P<vfs>.*)\\]:\\s+(?P<count>\\d+)",
+                "vfs",
+                "count",
+                "@",
+                true
+            ],
             "xlabel": "vfs function"
         }
     ],
@@ -181,8 +187,14 @@
     "funccount": [
         {
             "parse_plotter": "parse_histogram",
-            "parse_function": "parse_funccount_output_functions",
-            "parse_function_args": [],
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@functions\\[kprobe:(?P<function>.*)\\]:\\s+(?P<count>\\d+)",
+                "function",
+                "count",
+                "@functions",
+                true
+            ],
             "xlabel": "Function"
         }
     ],

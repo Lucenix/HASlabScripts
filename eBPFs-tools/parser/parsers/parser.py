@@ -43,6 +43,40 @@ def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[",
 
     return data
 
+
+def parse_multiple_histogram_output(file, histogram_pattern_text, pattern_text, key_group, count_group):
+    datas = {}
+    histogram_pattern = re.compile(histogram_pattern_text)
+    pattern = re.compile(pattern_text)
+    #histogram_pattern_text = r'\[(?P<name>[^,]*), (?P<type>[^]]*)\]'
+    #pattern_text = r'(?P<size>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
+
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                time_match = re.match(r'(\d{2}:\d{2}:\d{2})', line)
+                if time_match:
+                    current_time = datetime.strptime(time_match.group(1), "%H:%M:%S").time()
+                    data[current_time] = {}
+                    continue
+
+
+                if line.startswith('@'):
+                    data = {}
+                    match = histogram_pattern.search(line)
+                    datas[match.group('name') + ' ' + match.group('type')] = data
+                elif line.startswith('['):
+                    match = pattern.search(line)
+                    if match:
+                        key = match.group(key_group)
+                        count = int(match.group(count_group))
+                        data[key] = count
+    except FileNotFoundError:
+        return {}
+    
+    return datas
+
 """
     Parse fsrwstat output file
     @param file: the file to parse
@@ -140,31 +174,6 @@ def parse_signals_output(file, mode):
     df = df.sort_index()
 
     return df
-
-"""
-    Parse vfscount output file
-    @param file: the file to parse
-    @return: a dictionary with the data
-"""
-def parse_vfscount_output(file):
-    data = {}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("@"):
-                    pattern_text = r'@\[vfs_(?P<vfs>.*)\]:\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        vfs_function = match.group('vfs')
-                        count = match.group('count')
-                        data[vfs_function] = int(count)
-        data = dict(reversed(data.items()))
-    except FileNotFoundError:
-        return {}
-    
-    return data
 
 """
     Parse vfssize output file
@@ -286,60 +295,6 @@ def parse_netsize_output(file):
         return {}
     
     return datas
-
-"""
-    Parse funccount (functions) output file
-    @param file: the file to parse
-    @return: a dictionary with the data
-"""
-def parse_funccount_output_functions(file, top=0):
-    data={}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("@functions"):
-                    pattern_text = r'@functions\[kprobe:(?P<function>.*)\]:\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        function = match.group('function')
-                        count = match.group('count')
-                        data[function] = int(count)
-        data = dict(reversed(data.items()))
-    except FileNotFoundError:
-        return {}
-
-    if top > 0:
-        data = dict(itertools.islice(data.items(), top))
-
-    return data
-
-"""
-    Parse funccount (processes) output file
-    @param file: the file to parse
-    @return: a dictionary with the data
-"""
-def parse_funccount_output_processes(file):
-    data={}
-    try:
-        with open(file, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("@["):
-                    pattern_text = r'@\[(?P<process>.*), (?P<pid>.*)\]:\s+(?P<count>\d+)'
-                    pattern = re.compile(pattern_text)
-                    match = pattern.search(line)
-                    if match:
-                        process = match.group('process')
-                        pid = match.group('pid')
-                        count = match.group('count')
-                        data[process] = int(count)
-        data = dict(reversed(data.items()))
-    except FileNotFoundError:
-        return {}
-
-    return data
 
 """
 """

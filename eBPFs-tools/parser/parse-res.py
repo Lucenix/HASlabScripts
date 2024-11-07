@@ -37,6 +37,8 @@ def parse_multiple_histogram(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into multiple histograms")
     parsed_output = parser_function(*args)
 
+    os.mkdir(f"plots/{setup}/{tool_name}")
+
     for title in set(parsed_output.keys()):
         df_series = pd.Series(parsed_output[title]).to_frame()
 
@@ -47,7 +49,7 @@ def parse_multiple_histogram(tool_name, xlabel, parser_function, *args):
         df = pd.DataFrame(df_series)
         title = title.replace("/", "_").replace(":", "_")
 
-        pl.gen_histogram(setup, tool_name + title, df, xlabel=xlabel)
+        pl.gen_histogram(setup, tool_name + "/" + title, df, xlabel=xlabel)
 
 def parse_time_series(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a time series")
