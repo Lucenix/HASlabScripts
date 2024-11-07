@@ -7,7 +7,7 @@ from datetime import datetime
 """
     Parse simple histogram bpftrace output file, with or without time
 """
-def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[", reverse=False, map_key=[]):
+def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[", reverse=False):
     data = {}
     current_time = None
     pattern = re.compile(pattern_text)
@@ -25,8 +25,6 @@ def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[",
                     match = pattern.search(line)
                     if match:
                         key = match.group(key_group)
-                        if(len(map_key)!=0):
-                            key = map_key[int(key)]
                         count = int(match.group(count_group))
 
                         if current_time:
@@ -83,50 +81,58 @@ def parse_multiple_histogram_output(file, histogram_pattern_text, pattern_text, 
     return data
 
 
-def parse_time_series_output(file, filter_labels, pattern_text, key_group, count_group):
+import re
+import pandas as pd
+
+def parse_time_series_output(file, pattern_text, start, key_group, count_group, filter_labels=[]):
     all_data = {}
     all_data["time"] = []
-    pattern = re.compile(pattern_text)
+    if len(filter_labels) > 0:
+        print(f"--- Filter for syscalls: {filter_labels}")
+    current_time = ""
     
     try:
         with open(file, 'r') as f:
             lines = f.readlines()
-            current_time = ""
-
             for line in lines:
-                if re.match(r'\d\d:\d\d:\d\d', line):
-                    current_time = re.search(r'\d\d:\d\d:\d\d', line).group(0)
-                    all_data["time"].append(current_time)
-
+                if re.search(r'\d\d:\d\d:\d\d', line):
+                    time_match = re.search(r'\d\d:\d\d:\d\d', line)
+                    if time_match:
+                        current_time = time_match.group(0)
+                        all_data["time"].append(current_time)
                 
-                match = pattern.search(line)
-                if match:
-                    label = match.group(key_group)
-                    count = int(match.group(count_group))
+                elif line.startswith(start):
+                    syscall_match = re.search(pattern_text, line)
+                    if syscall_match:
+                        label = syscall_match.group(key_group)
+                        count = int(syscall_match.group(count_group))
+                        
+                        if filter_labels and label not in filter_labels:
+                            continue
 
-                    if filter_labels and label not in filter_labels:
-                        continue
-
-                    if label not in all_data:
-                        all_data[label] = []
-
-                    time_index = all_data["time"].index(current_time)
-                    while len(all_data[label]) <= time_index:
-                        all_data[label].append(0)
-
-                    all_data[label][time_index] += count
-
+                        time_index = all_data["time"].index(current_time)
+                        
+                        if label not in all_data:
+                            all_data[label] = []
+                        
+                        while len(all_data[label]) <= time_index:
+                            all_data[label].append(0)
+                        
+                        all_data[label][time_index] += count
+                        
         size = len(all_data["time"])
         for label in all_data.keys():
             if label != "time":
                 while len(all_data[label]) < size:
                     all_data[label].append(0)
-
+    
     except FileNotFoundError:
+        print("File not found.")
         return {}
-
+    
     df = pd.DataFrame(all_data).set_index('time')
     return df
+
 
 """
     Parse fsrwstat output file

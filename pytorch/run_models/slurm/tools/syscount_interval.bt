@@ -26,13 +26,20 @@ tracepoint:syscalls:sys_enter_*
 	@process[comm] = count();
 }
 
+interval:s:60
+{
+    time();
+    print(@syscall);
+    clear(@syscall);
+    print(@process);
+    clear(@process);
+}
+
 END
 {
-    printf("\nTop 50 syscalls IDs:\n");
+    time();
 	print(@syscall, 50);
 	clear(@syscall);
-
-	printf("\nTop 50 processes:\n");
 	print(@process, 50);
 	clear(@process);
 }
