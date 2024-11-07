@@ -37,9 +37,12 @@ def parse_multiple_histogram(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into multiple histograms")
     parsed_output = parser_function(*args)
 
-    os.mkdir(f"plots/{setup}/{tool_name}")
+    os.makedirs(f"plots/{setup}/{tool_name}", exist_ok=True)
 
     for title in set(parsed_output.keys()):
+        if len(parsed_output[title].keys())==1 and None in parsed_output[title]:
+            parsed_output[title] = parsed_output[title][None]
+
         df_series = pd.Series(parsed_output[title]).to_frame()
 
         if (len(df_series) == 0):
@@ -83,6 +86,26 @@ def parse_heatmap(tool_name, xlabel, parser_function, *args):
         df = pd.DataFrame(parsed_output).fillna(0)
 
     pl.gen_heatmap(setup, tool_name, df, ylabel=xlabel)
+
+def parse_multiple_heatmap(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results into multiple heatmaps")
+    parsed_output = parser_function(*args)
+
+    if len(parsed_output) == 0:
+        print("No data to plot")
+        return
+
+    os.makedirs(f"plots/{setup}/{tool_name}", exist_ok=True)
+
+    for title in parsed_output:
+        title_output = parsed_output[title]
+        if len(title_output.keys())==1 and None in title_output:
+            df = pd.DataFrame.from_dict(title_output[None], orient='index', columns=['Count'])
+            df = df.transpose()
+        else:
+            df = pd.DataFrame(title_output).fillna(0)
+
+        pl.gen_heatmap(setup, tool_name+"/"+title, df, ylabel=xlabel)
 
 ### MAIN ###
 

@@ -44,12 +44,11 @@ def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[",
     return data
 
 
-def parse_multiple_histogram_output(file, histogram_pattern_text, pattern_text, key_group, count_group):
-    datas = {}
+def parse_multiple_histogram_output(file, histogram_pattern_text, pattern_text, title_group_list, key_group, count_group):
+    data = {}
     histogram_pattern = re.compile(histogram_pattern_text)
     pattern = re.compile(pattern_text)
-    #histogram_pattern_text = r'\[(?P<name>[^,]*), (?P<type>[^]]*)\]'
-    #pattern_text = r'(?P<size>\[\d+[A-Za-z]?(\]|\,\s\d+[A-Za-z]?\)))\s+(?P<count>\d+)'
+    current_time = None
 
     try:
         with open(file, 'r') as f:
@@ -58,24 +57,30 @@ def parse_multiple_histogram_output(file, histogram_pattern_text, pattern_text, 
                 time_match = re.match(r'(\d{2}:\d{2}:\d{2})', line)
                 if time_match:
                     current_time = datetime.strptime(time_match.group(1), "%H:%M:%S").time()
-                    data[current_time] = {}
                     continue
 
-
                 if line.startswith('@'):
-                    data = {}
                     match = histogram_pattern.search(line)
-                    datas[match.group('name') + ' ' + match.group('type')] = data
+
+                    title = match.group(title_group_list[0])
+                    for title_group in title_group_list[1:]:
+                        title += ' ' + match.group(title_group)
+
+                    if title not in data:
+                        data[title] = {}
+                    histogram_data = {}
+                    data[title][current_time] = histogram_data
                 elif line.startswith('['):
                     match = pattern.search(line)
                     if match:
                         key = match.group(key_group)
                         count = int(match.group(count_group))
-                        data[key] = count
+                        histogram_data[key] = count
+
     except FileNotFoundError:
         return {}
     
-    return datas
+    return data
 
 """
     Parse fsrwstat output file

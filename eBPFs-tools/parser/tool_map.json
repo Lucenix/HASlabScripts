@@ -155,8 +155,28 @@
     "vfssize": [
         {
             "parse_plotter": "parse_multiple_histogram",
-            "parse_function": "parse_vfssize_output",
-            "parse_function_args": [],
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<name>[^,]*), (?P<type>[^]]*)\\]",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name", "type"],
+                "vfs",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "vfssize_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<name>[^,]*), (?P<type>[^]]*)\\]",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name", "type"],
+                "vfs",
+                "count"
+            ],
             "xlabel": "Size (bytes)"
         }
     ],
@@ -203,6 +223,20 @@
             "parse_plotter": "parse_multiple_histogram",
             "parse_function": "parse_xfsdist_output",
             "parse_function_args": [],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "xfsdist_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<function>[^]]*)\\]",
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["function"],
+                "usecs",
+                "count"
+            ],
             "xlabel": "Time interval (usecs)"
         }
     ],
