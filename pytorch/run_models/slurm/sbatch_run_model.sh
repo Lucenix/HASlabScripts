@@ -15,7 +15,7 @@ else
         export MODEL=$1
 fi
 if [ -z $2 ] ; then
-        export N_NODES=4
+        export N_NODES=2
 else
         export N_NODES=$2
 fi

@@ -3,13 +3,10 @@
 HOSTNAME=$(hostname | cut -d '.' -f 1)
 echo "I am $HOSTNAME!"
 
-# drop cache
-sudo echo 3 > /proc/sys/vm/drop_caches
-
 module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
 # create statistics directory
-mkdir -p $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
+mkdir -p $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME
 
 #spawn process
 # --$1: process identifier
