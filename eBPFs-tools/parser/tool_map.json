@@ -160,7 +160,7 @@
                 "\\[(?P<name>[^,]*), (?P<type>[^]]*)\\]",
                 "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
                 ["name", "type"],
-                "vfs",
+                "size",
                 "count"
             ],
             "xlabel": "Size (bytes)"
@@ -174,7 +174,7 @@
                 "\\[(?P<name>[^,]*), (?P<type>[^]]*)\\]",
                 "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
                 ["name", "type"],
-                "vfs",
+                "size",
                 "count"
             ],
             "xlabel": "Size (bytes)"
@@ -183,24 +183,70 @@
     "ext4dist": [
         {
             "parse_plotter": "parse_multiple_histogram",
-            "parse_function": "parse_ext4dist_output",
-            "parse_function_args": [],
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[ext4\\_(?P<operation>[^]]*)\\]",
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "usecs",
+                "count"
+            ],
             "xlabel": "Time interval (usecs)"
         }
     ],
     "bitesize": [
         {
             "parse_plotter": "parse_multiple_histogram",
-            "parse_function": "parse_bitesize_output",
-            "parse_function_args": [],
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<process_name>[^]]*)\\]",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["process_name"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "bitesize_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<process_name>[^]]*)\\]",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["process_name"],
+                "size",
+                "count"
+            ],
             "xlabel": "Size (bytes)"
         }
     ],
     "netsize": [
         {
             "parse_plotter": "parse_multiple_histogram",
-            "parse_function": "parse_netsize_output",
-            "parse_function_args": [],
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "(?P<operation>[^]]*)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "netsize_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "(?P<operation>[^]]*)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "size",
+                "count"
+            ],
             "xlabel": "Size (bytes)"
         }
     ],
@@ -221,8 +267,14 @@
     "xfsdist": [
         {
             "parse_plotter": "parse_multiple_histogram",
-            "parse_function": "parse_xfsdist_output",
-            "parse_function_args": [],
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<function>[^]]*)\\]",
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["function"],
+                "usecs",
+                "count"
+            ],
             "xlabel": "Time interval (usecs)"
         }
     ],
@@ -279,8 +331,28 @@
     "socksize": [
         {
             "parse_plotter": "parse_multiple_histogram",
-            "parse_function": "parse_socksize_output",
-            "parse_function_args": [],
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "@(?P<operation>[^:]*)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "socksize_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "@(?P<operation>[^:]*)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "size",
+                "count"
+            ],
             "xlabel": "Size (bytes)"
         }
     ]
