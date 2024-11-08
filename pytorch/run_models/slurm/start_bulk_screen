@@ -4,7 +4,7 @@ export SCREEN_PATH="$SCRATCH/bin/screen"
 
 if [ -z $1 ]
 then
-    echo "Usage: $0 <output folder name for tests>"
+    echo "Usage: $0 <relative output folder name for tests>"
 else
     export STAT_DIR="$SCRATCH/statistics/$1"
     module load ncurses

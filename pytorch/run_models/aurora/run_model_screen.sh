@@ -67,11 +67,11 @@ join_process()
 source "${VENV_DIR}/bin/activate"
 
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.csv
+spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG\_gpu.csv
+spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/gpu.csv
 
-{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.out ;
+{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ;
 
 # join processes
 join_process dstat

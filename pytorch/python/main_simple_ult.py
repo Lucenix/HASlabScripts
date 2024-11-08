@@ -98,6 +98,8 @@ def load_training_objects(args):
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 
+    # transformations to apply to all images
+
     train_dataset = datasets.ImageFolder(
         traindir,
         transforms.Compose([

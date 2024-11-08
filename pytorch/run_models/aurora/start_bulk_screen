@@ -3,8 +3,8 @@
 SCRATCH="/home/gsd/andrelucena"
 if [ -z $1 ]
 then
-    echo "Usage: $0 <output folder name for tests>"
+    echo "Usage: $0 <relative output folder name for tests>"
 else
     export STAT_DIR="$SCRATCH/statistics/$1"
-    screen -S bulk -d -m ./bulk_run_script.sh ./run_model_screen_ebpfs.sh
+    screen -S bulk -d -m ./bulk_run_script.sh ./run_model_screen.sh
 fi

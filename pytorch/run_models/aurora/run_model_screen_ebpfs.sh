@@ -1,10 +1,6 @@
 #!/bin/sh
 
-sudo su
-
-echo 3 > /proc/sys/vm/drop_caches
-
-exit
+sudo bash -c "echo 3 > /proc/sys/vm/drop_caches"
 
 SCRATCH="/home/gsd/andrelucena"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
