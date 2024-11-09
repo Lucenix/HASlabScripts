@@ -301,7 +301,7 @@ def parse_flamegraph_output(file, pattern_text, key_group, count_group, reverse=
     except FileNotFoundError:
         print("File not found.")
         return {}
-    
+
     return "\n".join(data)
 
 def parse_flamegraph_collapse_output(file):
@@ -334,4 +334,4 @@ def parse_flamegraph_collapse_output(file):
         print("File not found")
         return {}
 
-    return data
+    return "\n".join(data)

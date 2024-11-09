@@ -368,6 +368,14 @@
             "xlabel": "Time"
         }
     ],
+    "faults": [
+        {
+            "parse_plotter": "parse_flamegraph",
+            "parse_function": "parse_flamegraph_collapse_output",
+            "parse_function_args": [],
+            "xlabel": ""
+        }
+    ],
     "ffaults": [
         {
             "parse_plotter": "parse_histogram",
@@ -450,6 +458,19 @@
         }
     ],
     "ioprofile": [
+        {
+            "parse_plotter": "parse_flamegraph",
+            "parse_function": "parse_flamegraph_output",
+            "parse_function_args": [
+                "@io\\[(?P<stack>.+?)\\]: (?P<count>\\d+)",
+                "stack",
+                "count",
+                true
+            ],
+            "xlabel": ""
+        }
+    ],
+    "socketio": [
         {
             "parse_plotter": "parse_flamegraph",
             "parse_function": "parse_flamegraph_output",
