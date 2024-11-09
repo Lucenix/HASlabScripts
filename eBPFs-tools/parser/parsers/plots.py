@@ -1,3 +1,4 @@
+import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.validators.scatter.marker import SymbolValidator
@@ -189,4 +190,16 @@ def gen_flamegraph(setup, test, data, xlabel=""):
 
     os.remove(temp_file_path)
 
-    
+def gen_plot(setup, test, df, x, Y, xlabel, ylabel, show=False):
+
+    plot_title = setup + " " + test
+    # plots action with time
+    plt.figure()
+    for y in Y:
+        plt.plot(df[x], df[y], label=Y[y], marker = "+")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(plot_title)
+    plt.legend()
+    if show:
+        plt.show()

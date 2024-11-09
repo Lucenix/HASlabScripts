@@ -5,6 +5,11 @@ import pandas as pd
 from datetime import datetime
 
 """
+"""
+def parse_csv_output(file, skip_rows=0, names=[], delimiter=','):
+    return pd.read_csv(file, skiprows=range(0,skip_rows), names=names, index_col=False, delimiter=delimiter)
+
+"""
     Parse simple histogram bpftrace output file, with or without time
 """
 def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[", reverse=False):
@@ -133,30 +138,6 @@ def parse_time_series_output(file, pattern_text, start, key_group, count_group, 
     df = pd.DataFrame(all_data).set_index('time')
     return df
 
-"""
-"""
-def parse_flamegraph_output(file, pattern_text, key_group, count_group, reverse=False):
-    data = []
-    try:
-        with open(file, 'r') as f:
-            for line in f:
-                match = re.search(pattern_text, line.strip())
-                if match:
-                    components = match.group(key_group).split(", ")
-
-                    if reverse:
-                        components = components[::-1]
-
-                    stack_trace = ";".join(components)
-            
-                    count = match.group(count_group)
-                    data.append(f"{stack_trace} {count}")
-
-    except FileNotFoundError:
-        print("File not found.")
-        return {}
-
-    return "\n".join(data)
 
 """
     Parse fsrwstat output file

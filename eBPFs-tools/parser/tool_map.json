@@ -1,4 +1,36 @@
 {
+    "gpu.csv": [
+        {
+            "parse_plotter": "parse_gpu_plots",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                0
+            ],
+            "xlabel": ""
+        }
+    ],
+    "dstat.csv": [
+        {
+            "parse_plotter": "parse_dstat_plots",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                5
+            ],
+            "xlabel": ""
+        }
+    ],
+    "out.out": [
+        {
+            "parse_plotter": "parse_out_plots",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                5,
+                ["system_time"],
+                "/"
+            ],
+            "xlabel": ""
+        }
+    ],
     "biolatency": [
         {
             "parse_plotter": "parse_histogram",

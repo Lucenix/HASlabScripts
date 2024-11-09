@@ -18,6 +18,126 @@ class ToolConfig:
     parse_function_args: List
     xlabel: str
 
+
+def parse_dstat_plots(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results")
+    df = parser_function(*args)
+
+    if (len(df) == 0):
+        print("No data to plot")
+        return
+    
+    # data treatment
+    df.rename(columns={
+    'read':'read_io_total_nops',
+    'writ':'write_io_total_nops',
+    'time':'system_time',
+    'usr':'usr_cpu_usage',
+    'sys':'sys_cpu_usage',
+    'idl':'idl_cpu_usage',
+    'wai':'wai_cpu_usage',
+    'stl':'stl_cpu_usage',
+    'read.1':'read_dsk_total_bytes',
+    'writ.1':'writ_dsk_total_bytes',
+    'used':'used_memory',
+    'free':'free_memory',
+    'buff':'buff_memory',
+    'cach':'cach_memory',
+    'recv':'recv_net_total',
+    'send':'send_net_total',
+    'in':'in_paging',
+    'out':'out_paging'}, inplace=True)
+    df['system_time'] = pd.to_datetime(df['system_time'], format='%d-%m %H:%M:%S')
+
+    # generate read/write ops timeline
+    pl.gen_plot(setup, tool_name, df, 'system_time', {'read_io_total_nops': 'Reads', 'write_io_total_nops' : 'Writes'}, 
+                'System Time', 'Number of Operations')
+    
+    # generate read/write disk bytes timeline
+    pl.gen_plot(setup, tool_name, df, 'system_time', {'read_dsk_total_bytes': 'Reads', 'writ_dsk_total_bytes' : 'Writes'}, 
+                'System Time', 'Disk Operations (Bytes)')
+    
+    # generate memory usage timeline
+    pl.gen_plot(setup, tool_name, df, 'system_time', 
+                {'used_memory': 'Used Memory', 'free_memory' : 'Free Memory', 'buff_memory': 'Buffer Memory', 'cach_memory': 'Cache Memory'}, 
+                'System Time', 'Memory (Bytes)')
+    
+    # generate network usage timeline
+    pl.gen_plot(setup, tool_name, df, 'system_time', 
+                {'recv_net_total': 'Received Net', 'send_net_total' : 'Send Net'}, 
+                'System Time', 'Network (Bytes)')
+    
+    # generate cpu usage timeline
+    pl.gen_plot(setup, tool_name, df, 'system_time', 
+                {'usr_cpu_usage': 'usr CPU usage', 'sys_cpu_usage' : 'sys CPU usage', 'idl_cpu_usage': 'idl CPU usage', 'wai_cpu_usage': 'wai CPU usage'}, 
+                'System Time', 'CPU (%)')
+
+
+def parse_gpu_plots(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results")
+    df = parser_function(*args)
+
+    if (len(df) == 0):
+        print("No data to plot")
+        return
+    
+    # data treatment
+    df.rename(columns={
+        ' temperature.gpu':'temperature_gpu',
+        ' utilization.gpu [%]':'utilization_gpu',
+        ' utilization.memory [%]':'utilization_memory',
+        ' memory.total [MiB]':'memory_total',
+        ' memory.free [MiB]':'memory_free',
+        ' memory.used [MiB]':'memory_used'}, inplace=True)
+    df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601')
+    df['utilization_gpu'] = df['utilization_gpu'].astype(float)
+
+    # generate gpu temperature timeline
+    pl.gen_plot(setup, tool_name, df, 'timestamp',
+                {'temperature_gpu': 'Temperature'},
+                'System Time', 'Temperature (ºC)')
+    
+    # generate gpu utilization timeline
+    pl.gen_plot(setup, tool_name, df, 'timestamp',
+                {'utilization_gpu': 'Utilization'},
+                'System Time', 'Utilization (%)')
+    
+    # generate gpu memory utilization timeline
+    pl.gen_plot(setup, tool_name, df, 'timestamp',
+                {'memory_total': 'Total Memory', 'memory_free': 'Free Memory', 'memory_used': 'Used Memory'},
+                'System Time', 'Memory (MiB)')
+    
+    
+def parse_out_plots(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results")
+    df = parser_function(*args)
+
+    if (len(df) == 0):
+        print("No data to plot")
+        return
+    
+    # data treatment
+    df = df['system_time'].str.extract(r'[\t\s]*(?P<system_time>[^\t:]*:[^:]*:[^:]*):(?P<action>.*)')
+    df = df.dropna()
+    df['system_time'] = pd.to_datetime(df['system_time'], format='ISO8601')
+    df['duration'] = df['system_time'].shift(-1) - df['system_time']
+    df['action'] = df['action'].replace([r'Training epoch.*', r'Trained epoch.*', r'Epoch \d \| Saving.*', r'Epoch \d \| Checkpoint.*', r'Ended.*', r'Start.*'], 
+                                    ['Training Epoch', 'Trained Epoch', 'Saving Checkpoint', 'Saved Checkpoint', 'Ended Training Iteration', 'Start Training Iteration'], 
+                                    regex=True)
+    df = df[~df['action'].str.contains('Accuracy')]
+    df['action'] = df['action'].astype(str)
+
+    # generate action timeline
+    pl.gen_plot(setup, tool_name, df, 'system_time',
+                {'action': ''},
+                'System Time', 'Action')
+
+    # generate average time per action histogram
+    average_time = df.groupby('action', as_index=False).agg({'duration':'mean'}).sort_values('duration', ascending=False)
+    average_time['duration'] = pd.to_datetime(average_time['duration'], unit='ns')
+    pl.gen_histogram(setup, tool_name, average_time, xlabel='Action')
+
+
 def parse_histogram(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a histogram")
     parsed_output = parser_function(*args)
