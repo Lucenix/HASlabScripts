@@ -4,6 +4,7 @@ from plotly.validators.scatter.marker import SymbolValidator
 import parsers.utils as utils
 import matplotlib.pyplot as plt
 import seaborn as sb
+import subprocess
 
 """
     Generate a histogram
@@ -163,3 +164,21 @@ def gen_heatmap(setup, test, data, xlabel="Time", ylabel="Interval", show=False)
     print(f"  -- Saved to %s" % output_file)
     if show:
         plt.show()
+
+def gen_flamegraph(setup, test, data, xlabel=""):
+    print("  -- Generating Flamegraph...")
+
+    plot_title = setup + " " + test
+
+    program = ["./FlameGraph/flamegraph.pl", data, "--tile", plot_title, "--subtitle", xlabel]
+
+    # Save the plot
+    output_file = utils.gen_output_file_name(setup, test, format=".svg")
+    with open(output_file, "w") as out_file:
+        try:
+            subprocess.run(program, stdout=out_file, check=True)
+            print(f"  -- Saved to %s" % output_file)
+        except subprocess.CalledProcessError as e:
+            print(f"  -- Failed to save to %s : %s" % (output_file,e))
+
+    

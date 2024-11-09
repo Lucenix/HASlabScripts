@@ -416,5 +416,18 @@
             ],
             "xlabel": "Size (bytes)"
         }
+    ],
+    "ioprofile": [
+        {
+            "parse_plotter": "parse_flamegraph",
+            "parse_function": "parse_flamegraph_output",
+            "parse_function_args": [
+                "@io\\[(?P<stack>.+?)\\]: (?P<count>\\d+)",
+                "stack",
+                "count",
+                true
+            ],
+            "xlabel": ""
+        }
     ]
 }

@@ -107,6 +107,16 @@ def parse_multiple_heatmap(tool_name, xlabel, parser_function, *args):
 
         pl.gen_heatmap(setup, tool_name+"/"+title, df, ylabel=xlabel)
 
+def parse_flamegraph(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results into a flamegraph")
+    parsed_output = parser_function(*args)
+
+    if len(parsed_output) == 0:
+        print("No data to plot")
+        return
+    
+    pl.gen_flamegraph(setup, tool_name, parsed_output, xlabel)
+
 ### MAIN ###
 
 def load_tool_map(file_path="tool_map.json"):

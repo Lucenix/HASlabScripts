@@ -133,6 +133,30 @@ def parse_time_series_output(file, pattern_text, start, key_group, count_group, 
     df = pd.DataFrame(all_data).set_index('time')
     return df
 
+"""
+"""
+def parse_flamegraph_output(file, pattern_text, key_group, count_group, reverse=False):
+    data = []
+    try:
+        with open(file, 'r') as f:
+            for line in f:
+                match = re.search(pattern_text, line.strip())
+                if match:
+                    components = match.group(key_group).split(", ")
+
+                    if reverse:
+                        components = components[::-1]
+
+                    stack_trace = ";".join(components)
+            
+                    count = match.group(count_group)
+                    data.append(f"{stack_trace} {count}")
+
+    except FileNotFoundError:
+        print("File not found.")
+        return {}
+
+    return "\n".join(data)
 
 """
     Parse fsrwstat output file
