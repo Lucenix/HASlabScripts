@@ -283,3 +283,55 @@ def parse_pidpersec_output(file, filter_labels=[]):
 
     df = pd.DataFrame(all_data).set_index('time')
     return df
+
+def parse_flamegraph_output(file, pattern_text, key_group, count_group, reverse=False):
+    data = []
+    try:
+        with open(file, 'r') as f:
+            for line in f:
+                match = re.search(pattern_text, line.strip())
+                if match:
+                    components = match.group(key_group).split(", ")
+                    if reverse:
+                        components = components[::-1]
+                    stack_trace = ";".join(components)
+            
+                    count = match.group(count_group)
+                    data.append(f"{stack_trace} {count}")
+    except FileNotFoundError:
+        print("File not found.")
+        return {}
+    
+    return "\n".join(data)
+
+def parse_flamegraph_collapse_output(file):
+
+    stack = []
+    in_stack = False
+    data = []
+
+    try:
+        with open(file) as f:
+            lines = f.readlines()
+            for line in lines:
+                line = line.strip()
+                if not in_stack:
+                    if re.match(r"^@\[$", line):
+                        in_stack = True
+                    elif match := re.match(r"^@\[,\s(.*)\]: (\d+)", line):
+                        data.append(f"{match.group(1)} {match.group(2)}")
+                else:
+                    if match := re.match(r",?\s?(.*)\]: (\d+)", line):
+                        if match.group(1):
+                            stack.append(match.group(1))
+                        data.append(f"{';'.join(reversed(stack))} {match.group(2)}")
+                        in_stack = False
+                        stack.clear()
+                    else:
+                        stack.append(line.lstrip())
+                        
+    except FileNotFoundError:
+        print("File not found")
+        return {}
+
+    return data
