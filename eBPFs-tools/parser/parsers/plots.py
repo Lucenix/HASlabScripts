@@ -5,6 +5,7 @@ import parsers.utils as utils
 import matplotlib.pyplot as plt
 import seaborn as sb
 import subprocess
+import os
 
 """
     Generate a histogram
@@ -170,7 +171,12 @@ def gen_flamegraph(setup, test, data, xlabel=""):
 
     plot_title = setup + " " + test
 
-    program = ["./FlameGraph/flamegraph.pl", data, "--tile", plot_title, "--subtitle", xlabel]
+    temp_file_path = "FlameGraph/flamegraph.temp"
+
+    with open(temp_file_path, "w") as temp_file:
+        temp_file.write(data)
+
+    program = ["./FlameGraph/flamegraph.pl", temp_file_path, "--title", plot_title, "--subtitle", xlabel]
 
     # Save the plot
     output_file = utils.gen_output_file_name(setup, test, format=".svg")
@@ -180,5 +186,7 @@ def gen_flamegraph(setup, test, data, xlabel=""):
             print(f"  -- Saved to %s" % output_file)
         except subprocess.CalledProcessError as e:
             print(f"  -- Failed to save to %s : %s" % (output_file,e))
+
+    os.remove(temp_file_path)
 
     
