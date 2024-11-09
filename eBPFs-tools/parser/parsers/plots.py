@@ -203,3 +203,24 @@ def gen_plot(setup, test, df, x, Y, xlabel, ylabel, show=False):
     plt.legend()
     if show:
         plt.show()
+
+def gen_complete_bar(setup, test, x, y, xlabel, ylabel, show=False):
+    plot_title = setup + " " + test
+    plt.figure()
+    fig = px.bar(x=x, y=y)
+
+    # update layout
+    plot_title = setup + " " + test
+    fig.update_layout(title=plot_title,
+                      title_x=0.5,
+                      xaxis_title=xlabel,
+                      yaxis_title=ylabel,
+                      legend_title_text='Legend')
+
+    # Save the plot
+    output_file = utils.gen_output_file_name(setup, test)
+    fig.write_image(output_file, width=1080, height=720)
+    print("  -- Saved to %s" % output_file)
+
+    if show:
+        plt.show()

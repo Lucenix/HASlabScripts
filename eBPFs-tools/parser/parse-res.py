@@ -128,14 +128,15 @@ def parse_out_plots(tool_name, xlabel, parser_function, *args):
     df['action'] = df['action'].astype(str)
 
     # generate action timeline
-    pl.gen_plot(setup, tool_name, df, 'system_time',
-                {'action': ''},
-                'System Time', 'Action')
+    actions = df.drop(['duration'], axis=1)
+    actions = actions.set_index('action')
+    pl.gen_time_series(actions, setup, tool_name, ylabel='System Time')
+    #pl.gen_plot(setup, tool_name, df, 'system_time',{'action': ''},'System Time', 'Action')
 
     # generate average time per action histogram
     average_time = df.groupby('action', as_index=False).agg({'duration':'mean'}).sort_values('duration', ascending=False)
     average_time['duration'] = pd.to_datetime(average_time['duration'], unit='ns')
-    pl.gen_histogram(setup, tool_name, average_time, xlabel='Action')
+    pl.gen_complete_bar(setup, tool_name, average_time['action'], average_time['duration'], xlabel='Action', ylabel='Total Time Spent')
 
 
 def parse_histogram(tool_name, xlabel, parser_function, *args):
