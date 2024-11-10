@@ -201,6 +201,10 @@ def gen_plot(setup, test, df, x, Y, xlabel, ylabel, show=False):
     plt.ylabel(ylabel)
     plt.title(plot_title)
     plt.legend()
+    
+    output_file = utils.gen_output_file_name(setup, test)
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    print(f"  -- Saved to %s" % output_file)
     if show:
         plt.show()
 

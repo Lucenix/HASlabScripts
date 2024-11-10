@@ -50,25 +50,25 @@ def parse_dstat_plots(tool_name, xlabel, parser_function, *args):
     df['system_time'] = pd.to_datetime(df['system_time'], format='%d-%m %H:%M:%S')
 
     # generate read/write ops timeline
-    pl.gen_plot(setup, tool_name, df, 'system_time', {'read_io_total_nops': 'Reads', 'write_io_total_nops' : 'Writes'}, 
+    pl.gen_plot(setup, 'IO Ops Timeline', df, 'system_time', {'read_io_total_nops': 'Reads', 'write_io_total_nops' : 'Writes'}, 
                 'System Time', 'Number of Operations')
     
     # generate read/write disk bytes timeline
-    pl.gen_plot(setup, tool_name, df, 'system_time', {'read_dsk_total_bytes': 'Reads', 'writ_dsk_total_bytes' : 'Writes'}, 
+    pl.gen_plot(setup, 'IO Disk Timeline', df, 'system_time', {'read_dsk_total_bytes': 'Reads', 'writ_dsk_total_bytes' : 'Writes'}, 
                 'System Time', 'Disk Operations (Bytes)')
     
     # generate memory usage timeline
-    pl.gen_plot(setup, tool_name, df, 'system_time', 
+    pl.gen_plot(setup, 'Memory Usage Timeline', df, 'system_time', 
                 {'used_memory': 'Used Memory', 'free_memory' : 'Free Memory', 'buff_memory': 'Buffer Memory', 'cach_memory': 'Cache Memory'}, 
                 'System Time', 'Memory (Bytes)')
     
     # generate network usage timeline
-    pl.gen_plot(setup, tool_name, df, 'system_time', 
+    pl.gen_plot(setup, 'Network Usage Timeline', df, 'system_time', 
                 {'recv_net_total': 'Received Net', 'send_net_total' : 'Send Net'}, 
                 'System Time', 'Network (Bytes)')
     
     # generate cpu usage timeline
-    pl.gen_plot(setup, tool_name, df, 'system_time', 
+    pl.gen_plot(setup, 'CPU Usage Timeline', df, 'system_time', 
                 {'usr_cpu_usage': 'usr CPU usage', 'sys_cpu_usage' : 'sys CPU usage', 'idl_cpu_usage': 'idl CPU usage', 'wai_cpu_usage': 'wai CPU usage'}, 
                 'System Time', 'CPU (%)')
 
@@ -93,17 +93,17 @@ def parse_gpu_plots(tool_name, xlabel, parser_function, *args):
     df['utilization_gpu'] = df['utilization_gpu'].astype(float)
 
     # generate gpu temperature timeline
-    pl.gen_plot(setup, tool_name, df, 'timestamp',
+    pl.gen_plot(setup, 'GPU Temperature Timeline', df, 'timestamp',
                 {'temperature_gpu': 'Temperature'},
                 'System Time', 'Temperature (ºC)')
     
     # generate gpu utilization timeline
-    pl.gen_plot(setup, tool_name, df, 'timestamp',
+    pl.gen_plot(setup, 'GPU Utilization Timeline', df, 'timestamp',
                 {'utilization_gpu': 'Utilization'},
                 'System Time', 'Utilization (%)')
     
     # generate gpu memory utilization timeline
-    pl.gen_plot(setup, tool_name, df, 'timestamp',
+    pl.gen_plot(setup, 'GPU Memory Utilization Timeline', df, 'timestamp',
                 {'memory_total': 'Total Memory', 'memory_free': 'Free Memory', 'memory_used': 'Used Memory'},
                 'System Time', 'Memory (MiB)')
     
@@ -130,13 +130,20 @@ def parse_out_plots(tool_name, xlabel, parser_function, *args):
     # generate action timeline
     actions = df.drop(['duration'], axis=1)
     actions = actions.set_index('action')
-    pl.gen_time_series(actions, setup, tool_name, ylabel='System Time')
-    #pl.gen_plot(setup, tool_name, df, 'system_time',{'action': ''},'System Time', 'Action')
+    #pl.gen_time_series(actions, setup, tool_name, xlabel='Action', ylabel='System Time')
+    pl.gen_plot(setup, 'Action Timeline', df, 'system_time',{'action': ''},'System Time', 'Action')
 
     # generate average time per action histogram
     average_time = df.groupby('action', as_index=False).agg({'duration':'mean'}).sort_values('duration', ascending=False)
     average_time['duration'] = pd.to_datetime(average_time['duration'], unit='ns')
-    pl.gen_complete_bar(setup, tool_name, average_time['action'], average_time['duration'], xlabel='Action', ylabel='Total Time Spent')
+    #pl.gen_clustered_stacked_bar(average_time, setup, tool_name, xlabel='ACtion', ylabel='Average Time Spent', show=True)
+    pl.gen_complete_bar(setup, 'Average Time per Action', average_time['action'], average_time['duration'], xlabel='Action', ylabel='Average Time Spent')
+
+    # generate average time per action histogram
+    average_time = df.groupby('action', as_index=False).agg({'duration':'sum'}).sort_values('duration', ascending=False)
+    average_time['duration'] = pd.to_datetime(average_time['duration'], unit='ns')
+    #pl.gen_clustered_stacked_bar(average_time, setup, tool_name, xlabel='ACtion', ylabel='Average Time Spent', show=True)
+    pl.gen_complete_bar(setup, 'Total Time per Action', average_time['action'], average_time['duration'], xlabel='Action', ylabel='Total Time Spent')
 
 
 def parse_histogram(tool_name, xlabel, parser_function, *args):

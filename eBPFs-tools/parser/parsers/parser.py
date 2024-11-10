@@ -6,7 +6,7 @@ from datetime import datetime
 
 """
 """
-def parse_csv_output(file, skip_rows=0, names=[], delimiter=','):
+def parse_csv_output(file, skip_rows=0, names=None, delimiter=','):
     return pd.read_csv(file, skiprows=range(0,skip_rows), names=names, index_col=False, delimiter=delimiter)
 
 """
