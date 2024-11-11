@@ -212,7 +212,7 @@ def parse_heatmap(tool_name, xlabel, parser_function, *args):
         df = df.transpose()
     else:
         df = pd.DataFrame(parsed_output).fillna(0)
-
+    
     pl.gen_heatmap(setup, tool_name, df, ylabel=xlabel)
 
 def parse_multiple_heatmap(tool_name, xlabel, parser_function, *args):
@@ -233,6 +233,7 @@ def parse_multiple_heatmap(tool_name, xlabel, parser_function, *args):
         else:
             df = pd.DataFrame(title_output).fillna(0)
 
+        title = title.replace("/", "_").replace(":", "_")
         pl.gen_heatmap(setup, tool_name+"/"+title, df, ylabel=xlabel)
 
 def parse_flamegraph(tool_name, xlabel, parser_function, *args):
@@ -268,7 +269,17 @@ def load_tool_map(file_path="tool_map.json"):
     return tool_map
 
 def process_tool_output(args, tool_map):
-    tool_name_list = [target.removesuffix(".bt") for target in os.listdir(args.path) if os.path.isfile(os.path.join(args.path, target))]
+    tool_name_list = []
+
+    for target in os.listdir(args.path):
+        if os.path.isfile(os.path.join(args.path, target)):
+            if target.endswith(".bt"):
+                target_path = os.path.join(args.path, target)
+                renamed_target_path = os.path.join(args.path, target.removesuffix(".bt"))
+                os.rename(target_path, renamed_target_path)
+                target = target.removesuffix(".bt")
+            
+            tool_name_list.append(target)
 
     for tool_name in tool_name_list:
         if tool_name in tool_map:

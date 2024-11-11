@@ -7,7 +7,10 @@ from datetime import datetime
 """
 """
 def parse_csv_output(file, skip_rows=0, names=None, delimiter=','):
-    return pd.read_csv(file, skiprows=range(0,skip_rows), names=names, index_col=False, delimiter=delimiter)
+    df = pd.read_csv(file, skiprows=range(0,skip_rows), names=names, index_col=False, delimiter=delimiter)
+    if len(df) <= 1:
+        return pd.DataFrame()
+    return df
 
 """
     Parse simple histogram bpftrace output file, with or without time

@@ -162,6 +162,7 @@ def gen_heatmap(setup, test, data, xlabel="Time", ylabel="Interval", show=False)
 
     # Save the plot
     output_file = utils.gen_output_file_name(setup, test)
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"  -- Saved to %s" % output_file)
     if show:
@@ -207,6 +208,7 @@ def gen_plot(setup, test, df, x, Y, xlabel, ylabel, show=False):
     print(f"  -- Saved to %s" % output_file)
     if show:
         plt.show()
+    plt.close()
 
 def gen_complete_bar(setup, test, x, y, xlabel, ylabel, show=False):
     plot_title = setup + " " + test
@@ -228,3 +230,5 @@ def gen_complete_bar(setup, test, x, y, xlabel, ylabel, show=False):
 
     if show:
         plt.show()
+
+    plt.close()
