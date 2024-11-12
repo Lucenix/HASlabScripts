@@ -1,8 +1,6 @@
 #!/bin/sh
 
-sudo su
-echo 3 > /proc/sys/vm/drop_caches
-exit
+sudo bash -c "echo 3 > /proc/sys/vm/drop_caches"
 
 SCRATCH="/home/gsd/andrelucena"
 MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
@@ -12,24 +10,25 @@ VENV_DIR="$SCRATCH/pytorch_venv"
 SCREEN_PATH="screen"
 # model and save every is defined in main
 if [ -z $1 ] ; then
-        SAVE_EVERY=1
-else
-        SAVE_EVERY=$1
-fi
-if [ -z $2 ] ; then
         MODEL=alexnet
 else
-        MODEL=$2
+        MODEL=$1
 fi
-if [ -z $3 ] ; then
+if [ -z $2 ] ; then
+
         N_EPOCHS=2
 else
-        N_EPOCHS=$3
+        N_EPOCHS=$2
 fi
-if [ -z $4 ] ; then
+if [ -z $3 ] ; then
         BATCH_SIZE=64
 else
-        BATCH_SIZE=$4
+        BATCH_SIZE=$3
+fi
+if [ -z $4 ] ; then
+        SAVE_EVERY=1
+else
+        SAVE_EVERY=$4
 fi
 if [ -z $5 ] ; then
         LOG=false
@@ -38,7 +37,7 @@ else
 fi
 
 # create statistics directory
-mkdir -p $STAT_DIR
+mkdir -p $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
 
 #spawn process
 # --$1: process identifier
