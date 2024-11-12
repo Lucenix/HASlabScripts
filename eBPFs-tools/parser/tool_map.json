@@ -27,7 +27,7 @@
                 {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
                 ["KBYTES", "COUNT"]
             ],
-            "xlabel": "System Time Percentages"
+            "xlabel": "Percentages"
         },
         {
             "parse_plotter": "parse_time_series",
@@ -41,7 +41,7 @@
                 {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
                 ["%RND", "%SEQ", "COUNT"]
             ],
-            "xlabel": "System Time KBytes"
+            "xlabel": "KBytes"
         },
         {
             "parse_plotter": "parse_time_series",
@@ -55,7 +55,7 @@
                 {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
                 ["%RND", "%SEQ", "KBYTES"]
             ],
-            "xlabel": "System Time Count"
+            "xlabel": "Count"
         }
     ],
     "cachestat": [
@@ -71,7 +71,7 @@
                 {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
                 ["HITS", "CACHED_MB"]
             ],
-            "xlabel": "System Time Percentages"
+            "xlabel": "Percentages"
         },
         {
             "parse_plotter": "parse_time_series",
@@ -83,9 +83,23 @@
                 ["^C", "%"],
                 "TIME",
                 {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
-                ["MISSES", "DIRTIES", "HITRATIO"]
+                ["HITS", "MISSES", "DIRTIES", "HITRATIO", "BUFFERS_MB"]
             ],
-            "xlabel": "System Time Hits and Buffered"
+            "xlabel": "Cached"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                0,
+                " +",
+                0,
+                ["^C", "%"],
+                "TIME",
+                {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
+                ["MISSES", "DIRTIES", "HITRATIO", "BUFFERS_MB", "CACHED_MB"]
+            ],
+            "xlabel": "Hits"
         }
     ],
     "gpu.csv": [

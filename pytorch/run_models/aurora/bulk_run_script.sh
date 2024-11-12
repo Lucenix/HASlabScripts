@@ -12,7 +12,7 @@ else
             do
                 for save_every in 0 1
                 do
-                    for log in true
+                    for log in false
                     do
                         $1 $model $n_epoch $batch_size $save_every $log
                     done
