@@ -73,6 +73,9 @@ spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVER
 
 { time python3 $MAIN_PATH --model $MODEL --save_every $SAVE_EVERY --epochs $N_EPOCHS --batch_size $BATCH_SIZE --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ;
 
+
+du -sh checkpoint* >> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.check
+
 # join processes
 join_process dstat ;
 join_process nvidia ;
