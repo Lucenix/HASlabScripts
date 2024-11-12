@@ -84,7 +84,7 @@ def main():
 
         if global_rank == 0 and (args.save_every != 0 and epoch % args.save_every == 0):
             ckp = model.state_dict()
-            PATH = f"checkpoint_rank_{global_rank}.pt"
+            PATH = f"checkpoint_rank_{epoch}.pt"
             my_log(f"{datetime.datetime.now()}: Epoch {epoch} | Saving checkpoint at {PATH}")
             torch.save(ckp, PATH)
             my_log(f"{datetime.datetime.now()}: Epoch {epoch} | Checkpoint saved at {PATH}")
