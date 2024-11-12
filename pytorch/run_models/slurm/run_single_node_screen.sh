@@ -4,8 +4,6 @@
 HOSTNAME=$(hostname | cut -d '.' -f 1)
 echo "I am $HOSTNAME!"
 
-sudo echo 3 > sudo /proc/sys/vm/drop_caches
-
 module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
 # create statistics directory
