@@ -1,6 +1,8 @@
 import sys
 import pandas as pd
 
+import pickle as pkl
+
 import parsers.plots as pl
 import parsers.parser as pr
 import os
@@ -181,6 +183,30 @@ def parse_multiple_histogram(tool_name, xlabel, parser_function, *args):
 
         pl.gen_histogram(setup, tool_name + "/" + title, df, xlabel=xlabel)
 
+def parse_pickle(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results into pickle")
+    parsed_output = parser_function(*args)
+
+    os.makedirs(f"plots/{setup}/{tool_name}", exist_ok=True)
+
+    for title in set(parsed_output.keys()):
+        if len(parsed_output[title].keys())==1 and None in parsed_output[title]:
+            parsed_output[title] = parsed_output[title][None]
+
+        df_series = pd.Series(parsed_output[title]).to_frame()
+
+        if (len(df_series) == 0):
+            print("No data to plot")
+            return
+
+        df = pd.DataFrame(df_series)
+        title = title.replace("/", "_").replace(":", "_").replace(" ", "_")
+
+        with open(f'plots/{setup}/{tool_name}/{title}.pkl', "w+b") as fd:
+            fd.write(pkl.dumps(df))
+
+        # pl.gen_histogram(setup, tool_name + "/" + title, df, xlabel=xlabel)
+
 def parse_time_series(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a time series")
     df = parser_function(*args)
@@ -293,6 +319,7 @@ def process_tool_output(args, tool_map):
                 parse_plotter(tool_name+("_" + xlabel if mode else ""), xlabel, parse_function, *parse_function_args)
         else:
             print(f"No available parser for tool: {tool_name}")
+
 
 
 def main():
