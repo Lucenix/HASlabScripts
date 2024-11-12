@@ -8,7 +8,8 @@
                 ",",
                 2,
                 ["^C", "%"],
-                "Timestamp"
+                "Timestamp",
+                {"REFS": "float", "MISSES": "float", "HIT%": "float"}
             ],
             "xlabel": "System Time"
         }
@@ -22,9 +23,39 @@
                 " +",
                 0,
                 ["^C", "%"],
-                "TIME"
+                "TIME",
+                {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
+                ["KBYTES", "COUNT"]
             ],
-            "xlabel": "System Time"
+            "xlabel": "System Time Percentages"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                7,
+                " +",
+                0,
+                ["^C", "%"],
+                "TIME",
+                {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
+                ["%RND", "%SEQ", "COUNT"]
+            ],
+            "xlabel": "System Time KBytes"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                7,
+                " +",
+                0,
+                ["^C", "%"],
+                "TIME",
+                {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
+                ["%RND", "%SEQ", "KBYTES"]
+            ],
+            "xlabel": "System Time Count"
         }
     ],
     "cachestat": [
@@ -36,9 +67,25 @@
                 " +",
                 0,
                 ["^C", "%"],
-                "TIME"
+                "TIME",
+                {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
+                ["HITS", "CACHED_MB"]
             ],
-            "xlabel": "System Time"
+            "xlabel": "System Time Percentages"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                0,
+                " +",
+                0,
+                ["^C", "%"],
+                "TIME",
+                {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
+                ["MISSES", "DIRTIES", "HITRATIO"]
+            ],
+            "xlabel": "System Time Hits and Buffered"
         }
     ],
     "gpu.csv": [
@@ -71,6 +118,8 @@
                 0,
                 [],
                 "",
+                {},
+                [],
                 ["system_time"]
             ],
             "xlabel": ""
