@@ -6,10 +6,18 @@ from datetime import datetime
 
 """
 """
-def parse_csv_output(file, skip_rows=0, names=None, delimiter=','):
-    df = pd.read_csv(file, skiprows=range(0,skip_rows), names=names, index_col=False, delimiter=delimiter)
+def parse_csv_output(file, skiprows=0, delimiter=',', skipfooter=0, ignore_string=[], index=None, names=None):
+    df = pd.read_csv(file, skiprows=skiprows, skipfooter=skipfooter, names=names, delimiter=delimiter, index_col=False, engine="python")
     if len(df) <= 1:
         return pd.DataFrame()
+    
+    for string in ignore_string:
+        for entry in df:
+            df[entry] = df[entry].astype(str).str.replace(string, "")
+
+    if index and index != "":
+        df = df.set_index(index)
+
     return df
 
 """

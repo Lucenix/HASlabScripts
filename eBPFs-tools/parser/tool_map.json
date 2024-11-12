@@ -1,4 +1,46 @@
 {
+    "icstat": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                4,
+                ",",
+                2,
+                ["^C", "%"],
+                "Timestamp"
+            ],
+            "xlabel": "System Time"
+        }
+    ],
+    "biopattern": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                7,
+                " +",
+                0,
+                ["^C", "%"],
+                "TIME"
+            ],
+            "xlabel": "System Time"
+        }
+    ],
+    "cachestat": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                0,
+                " +",
+                0,
+                ["^C", "%"],
+                "TIME"
+            ],
+            "xlabel": "System Time"
+        }
+    ],
     "gpu.csv": [
         {
             "parse_plotter": "parse_gpu_plots",
@@ -25,8 +67,11 @@
             "parse_function": "parse_csv_output",
             "parse_function_args": [
                 5,
-                ["system_time"],
-                "/"
+                "/",
+                0,
+                [],
+                "",
+                ["system_time"]
             ],
             "xlabel": ""
         }

@@ -18,7 +18,6 @@ class ToolConfig:
     parse_function_args: List
     xlabel: str
 
-
 def parse_dstat_plots(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results")
     df = parser_function(*args)
