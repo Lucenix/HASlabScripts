@@ -116,12 +116,6 @@ def parse_out_plots(tool_name, xlabel, parser_function, *args):
     if (len(df) == 0):
         print("No data to plot")
         return
-    
-    print(f"> Parsing {tool_name} results into pickle")
-    os.makedirs(f"plots/{setup}", exist_ok=True)
-
-    with open(f'plots/{setup}/{tool_name}.pkl', "w+b") as fd:
-        fd.write(pkl.dumps(df))
 
     # data treatment
     df = df['system_time'].str.extract(r'[\t\s]*(?P<system_time>[^\t:]*:[^:]*:[^:]*):(?P<action>.*)')
@@ -134,11 +128,17 @@ def parse_out_plots(tool_name, xlabel, parser_function, *args):
     df = df[~df['action'].str.contains('Accuracy')]
     df['action'] = df['action'].astype(str)
 
+    print(f"> Parsing {tool_name} results into pickle")
+    os.makedirs(f"plots/{setup}", exist_ok=True)
+
+    with open(f'plots/{setup}/{tool_name}.pkl', "w+b") as fd:
+        fd.write(pkl.dumps(df))
+
     # generate action timeline
-    actions = df.drop(['duration'], axis=1)
-    actions = actions.set_index('action')
+    #actions = df.drop(['duration'], axis=1)
+    #actions = actions.set_index('action')
     #pl.gen_time_series(actions, setup, tool_name, xlabel='Action', ylabel='System Time')
-    pl.gen_plot(setup, 'Action Timeline', df, 'system_time',{'action': ''},'System Time', 'Action')
+    #pl.gen_plot(setup, 'Action Timeline', df, 'system_time',{'action': ''},'System Time', 'Action')
 
     # generate average time per action histogram
     average_time = df.groupby('action', as_index=False).agg({'duration':'mean'}).sort_values('duration', ascending=False)
