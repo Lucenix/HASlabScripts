@@ -230,7 +230,7 @@ def parse_pickle_multiple_heatmap(tool_name, xlabel, parser_function, *args):
         else:
             df = pd.DataFrame(title_output).fillna(0)
 
-        title = title.replace("/", "_").replace(":", "_")
+        title = title.replace("/", "_").replace(":", "_").replace(" ", "_")
         with open(f'plots/{setup}/{tool_name}/{title}.pkl', "w+b") as fd:
             fd.write(pkl.dumps(df))
 
