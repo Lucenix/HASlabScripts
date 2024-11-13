@@ -241,6 +241,12 @@ def parse_time_series(tool_name, xlabel, parser_function, *args):
     if len(df) > 0:
         pl.gen_time_series(df, setup, tool_name, "", xlabel=xlabel)
 
+def parse_time_series_pickle(tool_name, xlabel, parser_function, *args):
+    df = parser_function(*args)
+    os.makedirs(f"plots/{setup}", exist_ok=True)
+    with open(f'plots/{setup}/{tool_name}.pkl', "w+b") as fd:
+            fd.write(pkl.dumps(df))
+
 def parse_clustered_stacked_bar(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a stacked bar")
     parsed_output = parser_function(*args)

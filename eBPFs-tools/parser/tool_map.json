@@ -500,7 +500,7 @@
     ],
     "ffaults_interval": [
         {
-            "parse_plotter": "parse_time_series",
+            "parse_plotter": "parse_time_series_pickle",
             "parse_function": "parse_time_series_output",
             "parse_function_args": [
                 "@\\[(?P<filename>.*)\\]:\\s+(?P<count>\\d+)",
