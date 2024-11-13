@@ -8,7 +8,7 @@ DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 SCREEN_PATH="screen"
-PLOT_PATH="$SCRATCH/scripts/eBPFs-tools/parser/parse-res.py"
+PLOT_DIR="$SCRATCH/scripts/eBPFs-tools/parser"
 # model and save every is defined in main
 
 if [ -z $1 ] ; then
@@ -83,4 +83,6 @@ join_process nvidia
 
 #python3 ../../dstat.py -cdnm --output ./dstat_arm_output
 
-python $PLOT_PATH $RESULT_DIR $TEST_TITLE
+cd $PLOT_DIR
+
+python $PLOT_DIR/parse-res.py $RESULT_DIR $TEST_TITLE
