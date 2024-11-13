@@ -28,7 +28,7 @@ should not be used}
         Braga, Portugal \\
         pg52675@uminho.pt}
     \and
-    \IEEEauthorblockN{1\textsuperscript{st} Goncalo Manuel Maia de Sousa}
+    \IEEEauthorblockN{1\textsuperscript{st} Gonçalo Manuel Maia de Sousa}
     \IEEEauthorblockA{
         \textit{University of Minho}\\
         Braga, Portugal \\
@@ -52,10 +52,10 @@ should not be used}
     \item Machine learning has increased in popularity
     \begin{itemize}
         \item image classification
-        \item natural language proccessing
+        \item natural language processing
     \end{itemize}
-    \item studies have tried to analyse I/O patterns in DL Workflows (source)
-    \item I/O Characterization has served to produce diverse assumptions about DL I/O behaviour, like high overhead for random reads, which are commonly used to justify various types of optimization explorations (\cite{10.1145/3331526}, \cite{8891023}, \cite{10.1145/3337821.3337902}). Application-specific storage characterization is required to find unique and worthwhile solutions for newer performance problems.
+    \item studies have tried to analyze I/O patterns in DL Workflows (source)
+    \item I/O Characterization has served to produce diverse assumptions about DL I/O behavior, like high overhead for random reads, which are commonly used to justify various types of optimization explorations (\cite{LMDB}, \cite{nvme}, \cite{10.1145/3337821.3337902}). Application-specific storage characterization is required to find unique and worthwhile solutions for newer performance problems.
     \item very few get down to kernel level
     \item eBPF are ...
     \item we seek to provide a tool to Characterize DL workloads using eBPF's
@@ -69,27 +69,27 @@ should not be used}
     \item for accuracy, all data is read exactly once per one epoch and is done in random reads(I/O intensive)
     \item passing it through all the layers to calculate a loss (forward pass)
     \item use calculated loss to update the learnable parameters of the network (backpropagation)
-    \item SGD is an optimizer for loss function minimization widely used for its lower computation compared to working through the whole dataset
-    \item increasing batch-size in the last years, from the usual range of 32-256 \cite{8891023}
+    \item SGD is an optimizer for loss function minimization widely used for its lower computation compared to working through the whole dataset 
+    \item increasing batch-size in the last years, from the usual range of 32-256 \cite{nvme}
     \item DL is usually I/O-bound [need source], due to the use of accelerators (GPU), size of the data and random reads
     \item pytorch is a DL framework with some particularities (Dataloader, ...)
     \item Tensorflow is also a DL framework, with other particularities...
     \item Imagenet
-    \item Distributed DNN training (data paralellism)
+    \item Distributed DNN training (data parallelism)
     \item checkpointing involves saving the model state
-    \item in pytorch its done explicity with torch.save() and in official workloads is done in-between epochs
+    \item in pytorch its done explicitly with torch.save() and in official workloads is done in-between epochs
     \item eBPF's
 \end{itemize}
 
 \section{Related work}
 
 \begin{itemize}
-    \item papers que usam darshan/tf-darshan para caracterizar padrões \cite{9229605} \cite{8752753} 
+    \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{9229605} \cite{zoomin} 
     \item MLPerf Storage/tese de um aluno da Oana
     \item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD PRELOAD, captura de de I/O request por intrumentação do código fonte.
     \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{8638422}
-    \item Caracterizar o I/O de LMDB, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{10.1145/3331526}
-    \item Comparar o overhead das leituras no treino inteiro com e sem shuffling. \cite{chowdhury2018initial}
+    \item Caracterizar o I/O de LMDB, que é análoga à do PyTorch e do Tensorflow, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{LMDB}
+    \item Comparar o overhead das leituras no treino inteiro com e sem shuffling. \cite{initial}
     \item Que métricas analisam principalmente?
     \begin{itemize}
         \item I/O skew por processo;

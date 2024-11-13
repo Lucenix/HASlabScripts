@@ -168,6 +168,8 @@ def gen_heatmap(setup, test, data, xlabel="Time", ylabel="Interval", show=False)
     if show:
         plt.show()
 
+    plt.close()
+
 def gen_flamegraph(setup, test, data, xlabel=""):
     print("  -- Generating Flamegraph...")
 
