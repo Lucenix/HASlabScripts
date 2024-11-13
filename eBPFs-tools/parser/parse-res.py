@@ -117,6 +117,12 @@ def parse_out_plots(tool_name, xlabel, parser_function, *args):
         print("No data to plot")
         return
     
+    print(f"> Parsing {tool_name} results into pickle")
+    os.makedirs(f"plots/{setup}", exist_ok=True)
+
+    with open(f'plots/{setup}/{tool_name}.pkl', "w+b") as fd:
+        fd.write(pkl.dumps(df))
+
     # data treatment
     df = df['system_time'].str.extract(r'[\t\s]*(?P<system_time>[^\t:]*:[^:]*:[^:]*):(?P<action>.*)')
     df = df.dropna()
@@ -204,7 +210,6 @@ def parse_pickle(tool_name, xlabel, parser_function, *args):
 
         with open(f'plots/{setup}/{tool_name}/{title}.pkl', "w+b") as fd:
             fd.write(pkl.dumps(df))
-
         # pl.gen_histogram(setup, tool_name + "/" + title, df, xlabel=xlabel)
 
 def parse_time_series(tool_name, xlabel, parser_function, *args):
