@@ -53,4 +53,6 @@ join_process()
 join_process dstat
 join_process nvidia
 
-python $PLOT_PATH $RESULT_DIR $TEST_TITLE
+cd $PLOT_DIR
+
+python $PLOT_DIR/parse-res.py $RESULT_DIR $TEST_TITLE

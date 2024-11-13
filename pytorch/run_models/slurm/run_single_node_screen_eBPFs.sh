@@ -55,4 +55,6 @@ join_process dstat
 join_process nvidia
 $SCRIPT_DIR/pytorch/run_models/slurm/run-eBPF-tools.sh stop $RESULT_DIR
 
-python $PLOT_PATH $RESULT_DIR $TEST_TITLE
+cd $PLOT_DIR
+
+python $PLOT_DIR/parse-res.py $RESULT_DIR $TEST_TITLE

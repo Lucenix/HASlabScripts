@@ -7,7 +7,8 @@ export MAIN_PATH="$SCRIPT_DIR/pytorch/python/main_simple_ult.py"
 export SCREEN_PATH="$SCRATCH/bin/screen"
 export DATA_DIR="$SCRATCH/imagenet_subset"
 export VENV_DIR="$SCRATCH/pytorch_venv"
-export PLOT_PATH="$SCRATCH/HASLabScripts/eBPFs-tools/parser/parse-res.py"
+export PLOT_DIR="$SCRATCH/HASLabScripts/eBPFs-tools/parser"
+export STAT_DIR="/projects/a97485/statistics/test/resnet50_2_2_64_1_false/aurora04%"
 
 if [ -z $1 ] ; then
         export MODEL="resnet50"
