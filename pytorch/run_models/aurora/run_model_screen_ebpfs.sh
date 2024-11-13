@@ -3,11 +3,12 @@
 sudo bash -c "echo 3 > /proc/sys/vm/drop_caches"
 
 SCRATCH="/home/gsd/andrelucena"
+MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 export SCREEN_PATH="screen"
-MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
+PLOT_PATH="$SCRATCH/scripts/eBPFs-tools/parser/parse-res.py"
 
 if [ -z $1 ] ; then
         MODEL="resnet50"
@@ -35,8 +36,11 @@ else
         LOG=$5
 fi
 
+TEST_TITLE=$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
+RESULT_DIR=$STAT_DIR/$TEST_TITLE
+
 # create statistics directory
-mkdir -p $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
+mkdir -p $RESULT_DIR
 
 #spawn process
 # --$1: process identifier
@@ -65,20 +69,22 @@ join_process()
 source "${VENV_DIR}/bin/activate"
 
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/dstat.csv
+spawn_dstat_process dstat $RESULT_DIR/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/gpu.csv
+spawn_nvidia_process nvidia $RESULT_DIR/gpu.csv
 # spawn eBPFs
-./run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG ;
+./run-eBPF-tools.sh start $RESULT_DIR ;
 
-{ time python3 $MAIN_PATH --model $MODEL --save_every $SAVE_EVERY --epochs $N_EPOCHS --batch_size $BATCH_SIZE --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ;
+{ time python3 $MAIN_PATH --model $MODEL --save_every $SAVE_EVERY --epochs $N_EPOCHS --batch_size $BATCH_SIZE --enable_log $LOG $DATA_DIR > $RESULT_DIR/out.out ; } 2>> $RESULT_DIR/out.out ;
 
 
-du -sh checkpoint* > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.check
+du -sh checkpoint* > $RESULT_DIR/out.check
 
 # join processes
 join_process dstat ;
 join_process nvidia ;
-./run-eBPF-tools.sh stop $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG ;
+./run-eBPF-tools.sh stop $RESULT_DIR ;
 
 #python3 ../../dstat.py -cdnm --output ./dstat_arm_output
+
+python $PLOT_PATH $RESULT_DIR $TEST_TITLE

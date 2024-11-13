@@ -8,7 +8,9 @@ DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 SCREEN_PATH="screen"
+PLOT_PATH="$SCRATCH/scripts/eBPFs-tools/parser/parse-res.py"
 # model and save every is defined in main
+
 if [ -z $1 ] ; then
         MODEL=alexnet
 else
@@ -36,8 +38,11 @@ else
         LOG=$5
 fi
 
+TEST_TITLE=$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
+RESULT_DIR=$STAT_DIR/$TEST_TITLE
+
 # create statistics directory
-mkdir -p $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
+mkdir -p $RESULT_DIR
 
 #spawn process
 # --$1: process identifier
@@ -66,14 +71,16 @@ join_process()
 source "${VENV_DIR}/bin/activate"
 
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/dstat.csv
+spawn_dstat_process dstat $RESULT_DIR/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/gpu.csv
+spawn_nvidia_process nvidia $RESULT_DIR/gpu.csv
 
-{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/out.out ;
+{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $RESULT_DIR/out.out ; } 2>> $RESULT_DIR/out.out ;
 
 # join processes
 join_process dstat
 join_process nvidia
 
 #python3 ../../dstat.py -cdnm --output ./dstat_arm_output
+
+python $PLOT_PATH $RESULT_DIR $TEST_TITLE
