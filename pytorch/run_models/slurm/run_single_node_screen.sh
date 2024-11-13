@@ -6,8 +6,11 @@ echo "I am $HOSTNAME!"
 
 module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
+TEST_TITLE=$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
+RESULT_DIR=$STAT_DIR/$TEST_TITLE
+
 # create statistics directory
-mkdir -p $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
+mkdir -p $RESULT_DIR
 
 #spawn process
 # --$1: process identifier
@@ -29,9 +32,9 @@ spawn_nvidia_process ()
 # activate venv
 source "${VENV_DIR}/bin/activate"
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/dstat.csv
+spawn_dstat_process dstat $RESULT_DIR/$HOSTNAME/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/gpu.csv
+spawn_nvidia_process nvidia $RESULT_DIR/$HOSTNAME/gpu.csv
 
 { time torchrun \
 --nnodes $N_NODES \
@@ -39,7 +42,7 @@ spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_
 --rdzv_id $2 \
 --rdzv_backend c10d \
 --rdzv_endpoint $1:29500 \
-$MAIN_PATH --epochs $N_EPOCHS --model $MODEL --log $LOG --batch_size $BATCH_SIZE --save_every $SAVE_EVERY $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME.out ;
+$MAIN_PATH --epochs $N_EPOCHS --model $MODEL --log $LOG --batch_size $BATCH_SIZE --save_every $SAVE_EVERY $DATA_DIR > $RESULT_DIR/$HOSTNAME.out ; } 2>> $RESULT_DIR/$HOSTNAME.out ;
 
 join_process() 
 {
@@ -49,3 +52,5 @@ join_process()
 
 join_process dstat
 join_process nvidia
+
+python $PLOT_PATH $RESULT_DIR $TEST_TITLE
