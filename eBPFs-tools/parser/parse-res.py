@@ -212,11 +212,40 @@ def parse_pickle(tool_name, xlabel, parser_function, *args):
             fd.write(pkl.dumps(df))
         # pl.gen_histogram(setup, tool_name + "/" + title, df, xlabel=xlabel)
 
+def parse_pickle_multiple_heatmap(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results into multiple heatmaps")
+    parsed_output = parser_function(*args)
+
+    if len(parsed_output) == 0:
+        print("No data to plot")
+        return
+
+    os.makedirs(f"plots/{setup}/{tool_name}", exist_ok=True)
+
+    for title in parsed_output:
+        title_output = parsed_output[title]
+        if len(title_output.keys())==1 and None in title_output:
+            df = pd.DataFrame.from_dict(title_output[None], orient='index', columns=['Count'])
+            df = df.transpose()
+        else:
+            df = pd.DataFrame(title_output).fillna(0)
+
+        title = title.replace("/", "_").replace(":", "_").replace(" ", "_")
+        with open(f'plots/{setup}/{tool_name}/{title}.pkl', "w+b") as fd:
+            fd.write(pkl.dumps(df))
+
+
 def parse_time_series(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a time series")
     df = parser_function(*args)
     if len(df) > 0:
         pl.gen_time_series(df, setup, tool_name, "", xlabel=xlabel)
+
+def parse_time_series_pickle(tool_name, xlabel, parser_function, *args):
+    df = parser_function(*args)
+    os.makedirs(f"plots/{setup}", exist_ok=True)
+    with open(f'plots/{setup}/{tool_name}.pkl', "w+b") as fd:
+            fd.write(pkl.dumps(df))
 
 def parse_clustered_stacked_bar(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a stacked bar")

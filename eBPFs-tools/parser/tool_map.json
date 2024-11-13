@@ -342,6 +342,20 @@
             "xlabel": "Size (bytes)"
         }
     ],
+    "vfssize_interval": [
+        {
+            "parse_plotter": "parse_pickle_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<name>[^,]*), (?P<type>[^]]*)\\]",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name", "type"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
     "ext4dist": [
         {
             "parse_plotter": "parse_multiple_histogram",
@@ -486,7 +500,7 @@
     ],
     "ffaults_interval": [
         {
-            "parse_plotter": "parse_time_series",
+            "parse_plotter": "parse_time_series_pickle",
             "parse_function": "parse_time_series_output",
             "parse_function_args": [
                 "@\\[(?P<filename>.*)\\]:\\s+(?P<count>\\d+)",
