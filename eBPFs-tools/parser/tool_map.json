@@ -330,7 +330,7 @@
     ],
     "vfssize": [
         {
-            "parse_plotter": "parse_multiple_histogram",
+            "parse_plotter": "parse_pickle",
             "parse_function": "parse_multiple_histogram_output",
             "parse_function_args": [
                 "\\[(?P<name>[^,]*), (?P<type>[^]]*)\\]",
