@@ -7,7 +7,7 @@ export MAIN_PATH="$SCRIPT_DIR/pytorch/python/main_simple_ult.py"
 export SCREEN_PATH="$SCRATCH/bin/screen"
 export DATA_DIR="$SCRATCH/imagenet_subset"
 export VENV_DIR="$SCRATCH/pytorch_venv"
-export PLOT_PATH="$SCRATCH/scripts/eBPFs-tools/parser/parse-res.py"
+export PLOT_PATH="$SCRATCH/HASLabScripts/eBPFs-tools/parser/parse-res.py"
 
 if [ -z $1 ] ; then
         export MODEL="resnet50"
@@ -38,6 +38,11 @@ if [ -z $6 ] ; then
         export LOG="false"
 else
         export LOG=$6
+fi
+if [ -z $7 ] ; then
+        export SINGLE_NODE_SCRIPT="$SCRATCH/HASLabScripts/pytorch/run_models/slurm/run_single_node_screen.sh"
+else
+        export SINGLE_NODE_SCRIPT=$7
 fi
 
 SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Run_Model_Slurm.sh | awk '{print $4}')"

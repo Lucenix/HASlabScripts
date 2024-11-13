@@ -6,7 +6,7 @@ echo "I am $HOSTNAME!"
 module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
 TEST_TITLE=$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
-RESULT_DIR=$STAT_DIR/$TEST_TITLE
+RESULT_DIR=$STAT_DIR/$TEST_TITLE/$HOSTNAME
 
 # create statistics directory
 mkdir -p $RESULT_DIR
