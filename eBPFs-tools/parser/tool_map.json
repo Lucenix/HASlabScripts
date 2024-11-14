@@ -7,7 +7,7 @@
                 4,
                 ",",
                 2,
-                ["^C", "%"],
+                {"^C": "", "%%": ""},
                 "Timestamp",
                 {"REFS": "float", "MISSES": "float", "HIT%": "float"}
             ],
@@ -22,7 +22,7 @@
                 7,
                 " +",
                 0,
-                ["^C", "%"],
+                {"^C": ""},
                 "TIME",
                 {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
                 ["KBYTES", "COUNT"]
@@ -36,7 +36,7 @@
                 7,
                 " +",
                 0,
-                ["^C", "%"],
+                {"^C": ""},
                 "TIME",
                 {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
                 ["%RND", "%SEQ", "COUNT"]
@@ -50,7 +50,7 @@
                 7,
                 " +",
                 0,
-                ["^C", "%"],
+                {"^C": ""},
                 "TIME",
                 {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
                 ["%RND", "%SEQ", "KBYTES"]
@@ -66,7 +66,7 @@
                 0,
                 " +",
                 0,
-                ["^C", "%"],
+                {"^C": "", "%%": ""},
                 "TIME",
                 {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
                 ["HITS", "CACHED_MB"]
@@ -80,7 +80,7 @@
                 0,
                 " +",
                 0,
-                ["^C", "%"],
+                {"^C": "", "%%": ""},
                 "TIME",
                 {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
                 ["HITS", "MISSES", "DIRTIES", "HITRATIO", "BUFFERS_MB"]
@@ -94,7 +94,7 @@
                 0,
                 " +",
                 0,
-                ["^C", "%"],
+                {"^C": "", "%%": ""},
                 "TIME",
                 {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
                 ["MISSES", "DIRTIES", "HITRATIO", "BUFFERS_MB", "CACHED_MB"]
