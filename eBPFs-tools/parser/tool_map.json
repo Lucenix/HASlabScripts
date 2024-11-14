@@ -66,7 +66,7 @@
                 0,
                 " +",
                 0,
-                {"^C": "", "%%": ""},
+                {"^C": "", "%": ""},
                 "TIME",
                 {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
                 ["HITS", "CACHED_MB"]

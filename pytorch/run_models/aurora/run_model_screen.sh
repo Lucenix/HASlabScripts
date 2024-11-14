@@ -42,6 +42,7 @@ TEST_TITLE=$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
 RESULT_DIR=$STAT_DIR/$TEST_TITLE
 
 # create statistics directory
+rm -r $RESULT_DIR
 mkdir -p $RESULT_DIR
 
 #spawn process
