@@ -19,7 +19,7 @@ BEGIN
 }
 
 profile:hz:99
-/pid/
+/pid && comm == "python3"/
 {
 	@cpu = lhist(cpu, 0, 1000, 1);
 }
