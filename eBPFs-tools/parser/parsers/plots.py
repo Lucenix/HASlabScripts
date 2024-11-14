@@ -32,9 +32,11 @@ def gen_histogram(setup, test, df, xlabel="", ylabel="Count", show=False):
                       legend_title_text='Legend')
 
     # Save the plot
-    output_file = utils.gen_output_file_name(setup, test)
-    fig.write_image(output_file, width=1080, height=720)
-    print("  -- Saved to %s" % output_file)
+    utils.save_plot(fig, setup, test)
+    # output_file = utils.gen_output_file_name(setup, test)
+    # fig.write_image(output_file, width=1080, height=720)
+    # print("  -- Saved to %s" % output_file)
+
     if show:
         fig.show()
 
@@ -79,12 +81,8 @@ def gen_time_series(df, setup, test, mode="", xlabel="", ylabel="Count", show=Fa
     fig.update_xaxes(tickangle=-45)
 
     # Save the plot
-    output_file = utils.gen_output_file_name(setup, test+"_"+mode)
-    fig.write_image(output_file, width=1080, height=720, scale=1)
+    utils.save_plot(fig, setup, test)
 
-
-
-    print("  -- Saved to %s" % output_file)
     if show:
         fig.show()
 
@@ -142,9 +140,8 @@ def gen_clustered_stacked_bar(data, setup, test, xlabel="", ylabel="Count", show
                       yaxis_title=ylabel)
 
     # Save the plot
-    output_file = utils.gen_output_file_name(setup, test)
-    fig.write_image(output_file, width=1080, height=720)
-    print("  -- Saved to %s" % output_file)
+    utils.save_plot(fig, setup, test)
+
     if show:
         fig.show()
 
@@ -154,17 +151,16 @@ def gen_heatmap(setup, test, data, xlabel="Time", ylabel="Interval", show=False)
 
     plot_title=setup + " " + test
 
-    plt.figure(figsize=(12, 8))
+    fig = plt.figure(figsize=(12, 8))
     sb.heatmap(data, cmap="YlGnBu", annot=False, fmt="g")
     plt.title(plot_title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
     # Save the plot
-    output_file = utils.gen_output_file_name(setup, test)
+    utils.save_plot(fig, setup, test)
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    print(f"  -- Saved to %s" % output_file)
+
     if show:
         plt.show()
 
@@ -197,7 +193,7 @@ def gen_plot(setup, test, df, x, Y, xlabel, ylabel, show=False):
 
     plot_title = setup + " " + test
     # plots action with time
-    plt.figure()
+    fig = plt.figure()
     for y in Y:
         plt.plot(df[x], df[y], label=Y[y], marker = "+")
     plt.xlabel(xlabel)
@@ -205,9 +201,7 @@ def gen_plot(setup, test, df, x, Y, xlabel, ylabel, show=False):
     plt.title(plot_title)
     plt.legend()
     
-    output_file = utils.gen_output_file_name(setup, test)
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    print(f"  -- Saved to %s" % output_file)
+    utils.save_plot(fig, setup, test)
     if show:
         plt.show()
     plt.close()
@@ -226,9 +220,7 @@ def gen_complete_bar(setup, test, x, y, xlabel, ylabel, show=False):
                       legend_title_text='Legend')
 
     # Save the plot
-    output_file = utils.gen_output_file_name(setup, test)
-    fig.write_image(output_file, width=1080, height=720)
-    print("  -- Saved to %s" % output_file)
+    utils.save_plot(fig, setup, test)
 
     if show:
         plt.show()
