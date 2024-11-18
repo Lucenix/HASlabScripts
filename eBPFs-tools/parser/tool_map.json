@@ -80,7 +80,7 @@
                 0,
                 " +",
                 0,
-                {"^C": "", "%%": ""},
+                {"^C": "", "%": ""},
                 "TIME",
                 {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
                 ["HITS", "MISSES", "DIRTIES", "HITRATIO", "BUFFERS_MB"]
@@ -94,7 +94,7 @@
                 0,
                 " +",
                 0,
-                {"^C": "", "%%": ""},
+                {"^C": "", "%": ""},
                 "TIME",
                 {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
                 ["MISSES", "DIRTIES", "HITRATIO", "BUFFERS_MB", "CACHED_MB"]

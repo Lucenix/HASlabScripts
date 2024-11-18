@@ -1,7 +1,9 @@
 import os
 import matplotlib
 import plotly
+import plotly.io as pio
 import pickle as pkl
+import mpld3
 
 """
 """
@@ -16,6 +18,9 @@ def save_plot(fig, setup, test):
 
     elif type(fig) is matplotlib.figure.Figure:
         fig.savefig(f'{output_file_name}.pdf', dpi=300, bbox_inches='tight')
+        #html_str = mpld3.fig_to_html(fig)
+        #with open(f'{output_file_name}.html', "w+") as fd:
+        #    fd.write(html_str)
         with open(f'{output_file_name}.pkl', "bw+") as fd:
             pkl.dump(fig, fd)
         print("  -- Saved to %s" % f'{output_file_name}.pdf/pkl')
