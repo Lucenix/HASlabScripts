@@ -1,12 +1,11 @@
 #!/bin/bash
-SCRATCH="/projects/a97485"
+export SCRATCH="/projects/a97485"
 export SCREEN_PATH="$SCRATCH/bin/screen"
 
 if [ -z $1 -o -z $2 ]
 then
-    echo "Usage: $0 <relative output folder name for tests> <absolute path for script to run>"
+    echo "Usage: $0 <absolute path for script to run> <output dir name relative to statistics dir in machine> "
 else
-    export STAT_DIR="$SCRATCH/statistics/$1"
     module load ncurses
-    $SCREEN_PATH -S bulk -d -m ./bulk_run_script.sh $2
+    $SCREEN_PATH -S bulk -d -m ./bulk_run_script.sh $1 $2
 fi
