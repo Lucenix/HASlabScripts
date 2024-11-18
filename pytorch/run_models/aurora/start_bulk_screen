@@ -1,10 +1,8 @@
 #!/bin/bash
 
-SCRATCH="/home/gsd/andrelucena"
 if [ -z $1 -o -z $2 ]
 then
-    echo "Usage: $0 <relative output folder name for tests> <absolute path for script to run>"
+    echo "Usage: $0 <output dir name relative to statistics dir in machine> <absolute path for script to run>"
 else
-    export STAT_DIR="$SCRATCH/statistics/$1"
-    screen -S bulk -d -m ./bulk_run_script.sh $2
+    screen -S bulk -d -m ./bulk_run_script.sh $1 $2
 fi

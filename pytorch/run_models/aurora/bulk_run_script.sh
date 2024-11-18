@@ -1,12 +1,11 @@
 #!/bin/bash
 
- if [ -z $1 ] ; then
-     echo "First argument needed: script to bulk run for each combination"
+ if [ -z $1 -o -z $2 ] ; then
+     echo "Usage: $0 <output dir name relative to statistics dir in machine> <absolute path for script to run>"
  else
- 
      for model in "alexnet" "resnet50"
      do
-         for n_epoch in 2 3
+         for n_epoch in 2
          do
              for batch_size in 32 64
              do
@@ -14,7 +13,7 @@
                  do
                      for log in true false
                      do
-                         $1 $model $n_epoch $batch_size $save_every $log
+                         $2 $model $n_epoch $batch_size $save_every $log $1
                      done
                  done
              done

@@ -7,33 +7,39 @@ MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
+# export needed for ebpf-tool usage
 export SCREEN_PATH="screen"
 PLOT_DIR="$SCRATCH/scripts/eBPFs-tools/parser"
 
 if [ -z $1 ] ; then
-        MODEL="resnet50"
+        STAT_DIR="$SCRATCH/statistics/test"
 else
-        MODEL=$1
+        STAT_DIR="$SCRATCH/statistics/$1"
 fi
 if [ -z $2 ] ; then
-        N_EPOCHS=2
+        MODEL="resnet50"
 else
-        N_EPOCHS=$2
+        MODEL=$2
 fi
 if [ -z $3 ] ; then
-        BATCH_SIZE=64
+        N_EPOCHS=2
 else
-        BATCH_SIZE=$3
+        N_EPOCHS=$3
 fi
 if [ -z $4 ] ; then
-        SAVE_EVERY=1
+        BATCH_SIZE=64
 else
-        SAVE_EVERY=$4
+        BATCH_SIZE=$4
 fi
 if [ -z $5 ] ; then
+        SAVE_EVERY=1
+else
+        SAVE_EVERY=$5
+fi
+if [ -z $6 ] ; then
         LOG="false"
 else
-        LOG=$5
+        LOG=$6
 fi
 
 TEST_TITLE=$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
