@@ -1,7 +1,7 @@
 #!/bin/bash
 
  if [ -z $1 -o -z $2 ] ; then
-     echo "Usage: $0 <output dir name relative to statistics dir in machine> <absolute path for script to run>"
+     echo "Usage: $0 <absolute path for script to run> <output dir name relative to statistics dir in machine>"
  else
      for model in "alexnet" "resnet50"
      do
@@ -13,7 +13,7 @@
                  do
                      for log in true false
                      do
-                         $2 $model $n_epoch $batch_size $save_every $log $1
+                         $1 $2 $model $n_epoch $batch_size $save_every $log
                      done
                  done
              done
