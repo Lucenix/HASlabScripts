@@ -3,7 +3,7 @@ import matplotlib
 import plotly
 import plotly.io as pio
 import pickle as pkl
-import mpld3
+#import mpld3
 
 """
 """
