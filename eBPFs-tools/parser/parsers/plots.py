@@ -204,7 +204,7 @@ def gen_plot(setup, test, df, x, Y, xlabel, ylabel, show=False):
     utils.save_plot(fig, setup, test)
     if show:
         plt.show()
-    plt.close()
+    plt.close(fig)
 
 def gen_complete_bar(setup, test, x, y, xlabel, ylabel, show=False):
     plot_title = setup + " " + test
