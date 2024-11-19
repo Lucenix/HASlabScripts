@@ -19,6 +19,7 @@ BEGIN
 }
 
 tracepoint:block:block_rq_issue
+/ comm == "python3" /
 {
 	@[args.comm] = hist(args.bytes);
 }
