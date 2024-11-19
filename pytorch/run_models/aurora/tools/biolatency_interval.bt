@@ -24,23 +24,32 @@ tracepoint:block:block_bio_queue
 
 tracepoint:block:block_rq_complete,
 tracepoint:block:block_bio_complete
-/@start[args.sector] && comm == "python3"/
+/@start[args.sector]/
 {
-	@usecs = hist((nsecs - @start[args.sector]) / 1000);
+
+	if(strcontains(args.rwbs, "R")){
+		@read_usecs = hist((nsecs - @start[args.sector]) / 1000);
+	} else {
+		@write_usecs = hist((nsecs - @start[args.sector]) / 1000);
+	}
+
 	delete(@start[args.sector]);
 }
 
 interval:s:60
 {
 	time();
-	print(@usecs);
-	clear(@usecs)
+	print(@read_usecs);
+	clear(@read_usecs);
+	print(@write_usecs);
+	clear(@write_usecs);
 }
 
 END
 {
     time();
-    print(@usecs);
-    clear(@usecs);
-	clear(@start);
+    print(@read_usecs);
+	clear(@read_usecs);
+	print(@write_usecs);
+	clear(@write_usecs);
 }

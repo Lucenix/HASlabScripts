@@ -15,16 +15,23 @@
 
 BEGIN
 {
-	printf("Tracing block device I/O... Hit Ctrl-C to end.\n");
+	printf("Tracing python3 block device I/O... Hit Ctrl-C to end.\n");
 }
 
 tracepoint:block:block_rq_issue
 / comm == "python3" /
 {
-	@[args.comm] = hist(args.bytes);
+	if(strcontains(args.rwbs, "R")){
+		@read_size = hist(args.bytes);
+	} else {
+		@write_size = hist(args.bytes);
+	}
 }
 
 END
 {
-	printf("\nI/O size (bytes) histograms by process name:");
+	print(@read_size);
+	clear(@read_size);
+	print(@write_size);
+	clear(@write_size);
 }
