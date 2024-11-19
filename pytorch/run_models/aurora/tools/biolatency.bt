@@ -17,14 +17,14 @@ BEGIN
 }
 
 tracepoint:block:block_bio_queue
-/comm == "python3"/
 {
 	@start[args.sector] = nsecs;
+    printf("%s\n", args.rwbs);
 }
 
 tracepoint:block:block_rq_complete,
 tracepoint:block:block_bio_complete
-/@start[args.sector] && comm == "python3"/
+/@start[args.sector]/
 {
 	@usecs = hist((nsecs - @start[args.sector]) / 1000);
 	delete(@start[args.sector]);
