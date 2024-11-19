@@ -21,7 +21,9 @@ BEGIN
 
 tracepoint:syscalls:sys_enter_*
 {
-    @syscall[probe] = count();
+    if(comm == "python3"){
+        @syscall[probe] = count();
+    }
 
 	@process[comm] = count();
 }
