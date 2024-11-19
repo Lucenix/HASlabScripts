@@ -26,3 +26,8 @@ tracepoint:syscalls:sys_enter_*recv*
 {
 	@[probe, ustack, comm] = count();
 }
+
+interval:s:60
+{
+	time(); print(@); clear(@);
+}

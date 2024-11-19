@@ -1,4 +1,4 @@
-#!/usr/local/bin/bpftrace
+#!/usr/bin/env bpftrace
 /*
  * biopattern - Identify random/sequential disk access patterns.
  *
@@ -20,6 +20,7 @@ BEGIN
 }
 
 tracepoint:block:block_rq_complete
+/ comm == "python3" /
 {
 	if (@lastsector[args->dev] == args->sector) {
 		@sequential++;

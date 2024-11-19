@@ -49,7 +49,13 @@ tracepoint:sched:sched_switch
 	delete(@qtime[args.next_pid]);
 }
 
+interval:s:60
+{
+	time(); print(@usecs); clear(@usecs); 
+}
+
 END
 {
+    time(); print(@usecs); clear(@usecs)
 	clear(@qtime);
 }

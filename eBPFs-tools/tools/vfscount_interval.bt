@@ -29,3 +29,15 @@ kprobe:vfs_*
 {
 	@[func] = count();
 }
+
+interval:s:60{
+    time();
+    print(@);
+    clear(@);
+}
+
+END{
+    time(); print(@); clear(@);
+}
+
+

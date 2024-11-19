@@ -28,9 +28,19 @@ tracepoint:block:block_rq_issue
 	}
 }
 
+interval:s:60
+{
+	time();
+	print(@read_size);
+	clear(@read_size);
+	print(@write_size);
+	clear(@write_size);
+}
+
 END
 {
-	print(@read_size);
+    time();
+    print(@read_size);
 	clear(@read_size);
 	print(@write_size);
 	clear(@write_size);

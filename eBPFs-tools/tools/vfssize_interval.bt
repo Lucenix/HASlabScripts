@@ -41,7 +41,13 @@ kretprobe:vfs_writev
 	delete(@file[tid]);
 }
 
+interval:s:60
+{
+	time(); print(@); clear(@);
+}
+
 END
 {
+    time(); print(@); clear(@);
 	clear(@file);
 }

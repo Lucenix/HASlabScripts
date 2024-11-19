@@ -45,8 +45,14 @@ kretprobe:xfs_file_fsync
 	delete(@name[tid]);
 }
 
+interval:s:60
+{
+	time(); print(@us); clear(@us);
+}
+
 END
 {
+    time(); print(@us); clear(@us);
 	clear(@start);
 	clear(@name);
 }
