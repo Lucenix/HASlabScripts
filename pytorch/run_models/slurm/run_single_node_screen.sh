@@ -6,8 +6,8 @@ echo "I am $HOSTNAME!"
 
 module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
-TEST_TITLE=$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
-RESULT_DIR=$STAT_DIR/$TEST_TITLE/$HOSTNAME
+RESULT_DIR="$SCRATCH/statistics/$TEST_TITLE/$HOSTNAME"
+RELATIVE_PLOT_DIR=$TEST_NAME/$TEST_TITLE/$HOSTNAME
 
 # create statistics directory
 rm -r $RESULT_DIR
@@ -54,6 +54,6 @@ join_process()
 join_process dstat
 join_process nvidia
 
-cd $PLOT_DIR
+cd $PLOTTER_DIR
 
-python $PLOT_DIR/parse-res.py $RESULT_DIR $TEST_TITLE
+python ./parse-res.py $RESULT_DIR $RELATIVE_PLOT_DIR

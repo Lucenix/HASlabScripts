@@ -8,12 +8,12 @@ DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
 SCREEN_PATH="screen"
-PLOT_DIR="$SCRATCH/scripts/eBPFs-tools/parser"
+PLOTTER_DIR="$SCRATCH/scripts/eBPFs-tools/parser"
 
 if [ -z $1 ] ; then
-        STAT_DIR="$SCRATCH/statistics/test"
+        TEST_NAME="test"
 else
-        STAT_DIR="$SCRATCH/statistics/$1"
+        TEST_NAME="$1"
 fi
 if [ -z $2 ] ; then
         MODEL="resnet50"
@@ -42,7 +42,8 @@ else
 fi
 
 TEST_TITLE=$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
-RESULT_DIR=$STAT_DIR/$TEST_TITLE
+RESULT_DIR="$SCRATCH/statistics/$TEST_NAME/$TEST_TITLE"
+RELATIVE_PLOT_DIR=$TEST_NAME/$TEST_TITLE
 
 # create statistics directory
 rm -r $RESULT_DIR
@@ -87,6 +88,6 @@ join_process nvidia
 
 #python3 ../../dstat.py -cdnm --output ./dstat_arm_output
 
-cd $PLOT_DIR
+cd $PLOTTER_DIR
 
-python $PLOT_DIR/parse-res.py $RESULT_DIR $TEST_TITLE
+python ./parse-res.py $RESULT_DIR $RELATIVE_PLOT_DIR
