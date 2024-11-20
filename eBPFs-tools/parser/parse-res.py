@@ -293,7 +293,8 @@ def parse_multiple_heatmap(tool_name, xlabel, parser_function, *args):
             df = pd.DataFrame(title_output).fillna(0)
 
         title = title.replace("/", "_").replace(":", "_")
-        pl.gen_heatmap(setup, tool_name+"/"+title, df, ylabel=xlabel)
+        if not df.empty:
+            pl.gen_heatmap(setup, tool_name+"/"+title, df, ylabel=xlabel)
 
 def parse_flamegraph(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results into a flamegraph")

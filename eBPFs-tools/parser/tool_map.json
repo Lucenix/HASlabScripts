@@ -141,10 +141,12 @@
     ],
     "biolatency": [
         {
-            "parse_plotter": "parse_histogram",
-            "parse_function": "parse_histogram_output",
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_multiple_histogram_output",
             "parse_function_args": [
+                "@(?P<name>[^:]+)",
                 "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name"],
                 "usecs",
                 "count"
             ],
@@ -153,10 +155,12 @@
     ],
     "biolatency_interval": [
         {
-            "parse_plotter": "parse_heatmap",
-            "parse_function": "parse_histogram_output",
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
             "parse_function_args": [
+                "@(?P<name>[^:]+)",
                 "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name"],
                 "usecs",
                 "count"
             ],
