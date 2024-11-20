@@ -355,8 +355,7 @@ def process_tool_output(args, tool_map):
     for tool_name in tool_name_list:
         if tool_name in tool_map:
             mode = len(tool_map[tool_name]) > 1
-            i = 0
-            for tool_config in tool_map[tool_name]:
+            for i,tool_config in enumerate(tool_map[tool_name]):
                 parse_plotter = tool_config.parse_plotter
                 parse_function = tool_config.parse_function
                 parse_function_args = tool_config.parse_function_args
@@ -364,7 +363,6 @@ def process_tool_output(args, tool_map):
 
                 parse_function_args.insert(0, os.path.join(args.path, tool_name))
                 parse_plotter(tool_name+("_" + str(i) if mode else ""), xlabel, parse_function, *parse_function_args)
-                i += 1
         else:
             print(f"No available parser for tool: {tool_name}")
 
