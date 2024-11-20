@@ -321,6 +321,17 @@
                 "count"
             ],
             "xlabel": "(C)PUs"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "\\[(?P<cpu>\\d+[A-Za-z]?)(\\]|\\,\\s\\d+[A-Za-z]?\\))\\s+(?P<count>\\d+)",
+                "[",
+                "cpu",
+                "count"
+            ],
+            "xlabel": "(C)PU"
         }
     ],
     "signals": [
