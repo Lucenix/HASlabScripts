@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.validators.scatter.marker import SymbolValidator
+from plotly.subplots import make_subplots
 import parsers.utils as utils
 import matplotlib.pyplot as plt
 import seaborn as sb
@@ -85,6 +86,66 @@ def gen_time_series(df, setup, test, mode="", xlabel="", ylabel="Count", show=Fa
 
     if show:
         fig.show()
+
+
+def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel="Count", show=False):
+    print("  -- Generating stacked time series...")
+
+    names_len = len(grouped_dfs)
+
+    fig = make_subplots(
+        rows=names_len, 
+        cols=1, 
+        shared_xaxes=False, 
+        shared_yaxes=True, 
+        vertical_spacing=0.02, 
+        row_titles=["( " + name + " )" for name in grouped_dfs.keys()], 
+    )
+
+    for i, (_, df) in enumerate(grouped_dfs.items(), start=1):
+        for label in df.columns:
+            fig.append_trace(go.Scatter(
+                x=df.index,
+                y=df[label],
+                mode="lines+markers",
+                name=label
+            ), row=i, col=1)
+
+    plot_title = f"{setup} {test} {mode}"
+    fig.update_layout(
+        title=plot_title,
+        title_x=0.5,
+        legend_title_text=xlabel,
+        showlegend=True,
+        legend=dict(
+            orientation="v", 
+            x=1.05, 
+            y=1, 
+            xanchor="left", 
+            yanchor="top"
+        ),
+        margin=dict(t=50, b=100, l=70, r=150), 
+        height=names_len * 300 
+    )
+
+    for i in range(1, names_len + 1):
+        fig.update_xaxes(
+            title_text="Time", 
+            tickangle=-45, 
+            showticklabels=True, 
+            row=i, col=1
+        )
+
+    fig.update_yaxes(showticklabels=True, tickangle=0)
+
+    # save the plot
+    utils.save_plot(fig, setup, test, False)
+
+    if show:
+        fig.show()
+
+
+
 
 """
     Generate a clustered stacked bar plot

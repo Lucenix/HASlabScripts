@@ -241,6 +241,12 @@ def parse_time_series(tool_name, xlabel, parser_function, *args):
     if len(df) > 0:
         pl.gen_time_series(df, setup, tool_name, "", xlabel=xlabel)
 
+def parse_stacked_time_series(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results into a time series")
+    dfs = parser_function(*args)
+    if len(dfs) > 0:
+        pl.gen_time_series_stacked(dfs, setup, tool_name, "", xlabel=xlabel)
+
 def parse_time_series_pickle(tool_name, xlabel, parser_function, *args):
     df = parser_function(*args)
     os.makedirs(f"plots/{setup}", exist_ok=True)

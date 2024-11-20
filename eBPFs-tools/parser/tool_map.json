@@ -1,4 +1,30 @@
 {
+    "syscount_pid_tid_interval": [
+        {
+            "parse_plotter": "parse_stacked_time_series",
+            "parse_function": "parse_2_args_time_series_output",
+            "parse_function_args": [
+                "@process\\[(?P<pid>[^,]*), tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "@process",
+                "pid",
+                "syscall",
+                "count"
+            ],
+            "xlabel": "pid Syscall"
+        },
+        {
+            "parse_plotter": "parse_stacked_time_series",
+            "parse_function": "parse_2_args_time_series_output",
+            "parse_function_args": [
+                "@thread\\[(?P<tid>[^,]*), tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "@thread",
+                "tid",
+                "syscall",
+                "count"
+            ],
+            "xlabel": "tid Syscall"
+        }
+    ],
     "icstat": [
         {
             "parse_plotter": "parse_time_series",

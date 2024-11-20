@@ -7,12 +7,13 @@ import pickle as pkl
 
 """
 """
-def save_plot(fig, setup, test):
+def save_plot(fig, setup, test, savePDF=True):
     output_file_name = gen_output_file_name(setup, test, format="")
 
     if type(fig) is plotly.graph_objs._figure.Figure:
 
-        fig.write_image(f'{output_file_name}.pdf', width=1080, height=720)
+        if savePDF:
+            fig.write_image(f'{output_file_name}.pdf', width=1080, height=720)
         fig.write_html(f'{output_file_name}.html')
         print("  -- Saved to %s" % f'{output_file_name}.pdf/html')
 
