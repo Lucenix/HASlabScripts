@@ -330,11 +330,16 @@ def load_tool_map(file_path="tool_map.json"):
 
 def process_tool_output(args, tool_map):
     tool_name_list = []
-
+    
     for target in os.listdir(args.path):
-        if os.path.isfile(os.path.join(args.path, target)):
+        target_path = os.path.join(args.path, target)
+        if os.path.isfile(target_path):
+            with open(target_path, "r") as fd:
+                data = fd.read()
+            with open(target_path, "w") as fd:
+                data = data.replace("^C", "")
+                fd.write(data)
             if target.endswith(".bt"):
-                target_path = os.path.join(args.path, target)
                 renamed_target_path = os.path.join(args.path, target.removesuffix(".bt"))
                 os.rename(target_path, renamed_target_path)
                 target = target.removesuffix(".bt")
