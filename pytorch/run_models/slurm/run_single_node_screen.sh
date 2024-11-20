@@ -6,7 +6,7 @@ echo "I am $HOSTNAME!"
 
 module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
-RESULT_DIR="$SCRATCH/statistics/$TEST_TITLE/$HOSTNAME"
+RESULT_DIR="$SCRATCH/statistics/$TEST_NAME/$TEST_TITLE/$HOSTNAME"
 RELATIVE_PLOT_DIR=$TEST_NAME/$TEST_TITLE/$HOSTNAME
 
 # create statistics directory
