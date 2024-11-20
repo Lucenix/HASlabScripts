@@ -379,9 +379,9 @@
             "parse_plotter": "parse_multiple_histogram",
             "parse_function": "parse_multiple_histogram_output",
             "parse_function_args": [
-                "\\[(?P<process_name>[^]]*)\\]",
+                "@(?P<name>[^:]+)",
                 "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
-                ["process_name"],
+                ["name"],
                 "size",
                 "count"
             ],
@@ -393,9 +393,9 @@
             "parse_plotter": "parse_multiple_heatmap",
             "parse_function": "parse_multiple_histogram_output",
             "parse_function_args": [
-                "\\[(?P<process_name>[^]]*)\\]",
+                "@(?P<name>[^:]+)",
                 "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
-                ["process_name"],
+                ["name"],
                 "size",
                 "count"
             ],
