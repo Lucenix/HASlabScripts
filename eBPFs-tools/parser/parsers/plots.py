@@ -130,7 +130,6 @@ def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel
 
     for i in range(1, names_len + 1):
         fig.update_xaxes(
-            title_text="Time", 
             tickangle=-45, 
             showticklabels=True, 
             row=i, col=1
