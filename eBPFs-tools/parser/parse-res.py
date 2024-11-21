@@ -30,16 +30,16 @@ def parse_dstat_plots(tool_name, xlabel, parser_function, *args):
     
     # data treatment
     df.rename(columns={
-    'read':'read_io_total_nops',
-    'writ':'write_io_total_nops',
+    'read':'read_dsk_total_bytes',
+    'writ':'write_dsk_total_bytes',
     'time':'system_time',
     'usr':'usr_cpu_usage',
     'sys':'sys_cpu_usage',
     'idl':'idl_cpu_usage',
     'wai':'wai_cpu_usage',
     'stl':'stl_cpu_usage',
-    'read.1':'read_dsk_total_bytes',
-    'writ.1':'writ_dsk_total_bytes',
+    'read.1':'read_io_total_nops',
+    'writ.1':'write_io_total_nops',
     'used':'used_memory',
     'free':'free_memory',
     'buff':'buff_memory',
