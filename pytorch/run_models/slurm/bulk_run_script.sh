@@ -15,11 +15,7 @@
                     do
                         for log in true false
                         do
-<<<<<<< HEAD
-                            ./sbatch_run_model.sh $model $n_nodes $n_epoch $batch_size $save_every $log $1
-=======
                             ./sbatch_run_model.sh $1 $2 $model $n_nodes $n_epoch $batch_size $save_every $log
->>>>>>> e867054bf39c3a8ab05140002a3cf9fbe723c593
                         done
                     done
                 done
