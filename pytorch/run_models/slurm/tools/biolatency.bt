@@ -17,6 +17,7 @@ BEGIN
 }
 
 tracepoint:block:block_bio_queue
+/comm == "python3" /
 {
 	@start[args.sector] = nsecs;
 }
@@ -25,7 +26,13 @@ tracepoint:block:block_rq_complete,
 tracepoint:block:block_bio_complete
 /@start[args.sector]/
 {
-	@usecs = hist((nsecs - @start[args.sector]) / 1000);
+	
+	if(strcontains(args.rwbs, "R")){
+		@read_usecs = hist((nsecs - @start[args.sector]) / 1000);
+	} else {
+		@write_usecs = hist((nsecs - @start[args.sector]) / 1000);
+	}
+
 	delete(@start[args.sector]);
 }
 

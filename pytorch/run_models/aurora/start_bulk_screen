@@ -1,3 +1,8 @@
 #!/bin/bash
 
-screen -S bulk -d -m ./bulk_run_script.sh ./run_model_screen_ebpfs.sh
+if [ -z $1 -o -z $2 ]
+then
+    echo "Usage: $0 <absolute path for script to run> <output dir name relative to statistics dir in machine> "
+else
+    screen -S bulk -d -m ./bulk_run_script.sh $1 $2
+fi

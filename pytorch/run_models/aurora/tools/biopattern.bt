@@ -20,6 +20,7 @@ BEGIN
 }
 
 tracepoint:block:block_rq_complete
+/ comm == "python3" /
 {
 	if (@lastsector[args->dev] == args->sector) {
 		@sequential++;

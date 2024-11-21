@@ -7,39 +7,50 @@ export MAIN_PATH="$SCRIPT_DIR/pytorch/python/main_simple_ult.py"
 export SCREEN_PATH="$SCRATCH/bin/screen"
 export DATA_DIR="$SCRATCH/imagenet_subset"
 export VENV_DIR="$SCRATCH/pytorch_venv"
-export STAT_DIR="$SCRATCH/statistics/eBPFs_subset"
-export SINGLE_NODE_SCRIPT="$SCRIPT_DIR/pytorch/run_models/slurm/run_single_node_screen_eBPFs.sh"
+export PLOTTER_DIR="$SCRATCH/HASLabScripts/eBPFs-tools/parser"
 
 if [ -z $1 ] ; then
-        export MODEL="resnet50"
+        export SINGLE_NODE_SCRIPT="$SCRATCH/HASLabScripts/pytorch/run_models/slurm/run_single_node_screen.sh"
 else
-        export MODEL=$1
+        export SINGLE_NODE_SCRIPT=$1
 fi
 if [ -z $2 ] ; then
-        export N_NODES=4
+        export TEST_NAME="test"
 else
-        export N_NODES=$2
+        export TEST_NAME="$2"
 fi
 if [ -z $3 ] ; then
-        export N_EPOCHS=2
+        export MODEL="resnet50"
 else
-        export N_EPOCHS=$3
+        export MODEL=$3
 fi
 if [ -z $4 ] ; then
-        export BATCH_SIZE=64
+        export N_NODES=2
 else
-        export BATCH_SIZE=$4
+        export N_NODES=$4
 fi
 if [ -z $5 ] ; then
-        export SAVE_EVERY=1
+        export N_EPOCHS=2
 else
-        export SAVE_EVERY=$5
+        export N_EPOCHS=$5
 fi
 if [ -z $6 ] ; then
+        export BATCH_SIZE=64
+else
+        export BATCH_SIZE=$6
+fi
+if [ -z $7 ] ; then
+        export SAVE_EVERY=1
+else
+        export SAVE_EVERY=$7
+fi
+if [ -z $8 ] ; then
         export LOG="false"
 else
-        export LOG=$6
+        export LOG=$8
 fi
+
+export TEST_TITLE=$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
 
 SLURM_NUMBER="$(sbatch -n $N_NODES -N $N_NODES Run_Model_Slurm.sh | awk '{print $4}')"
 

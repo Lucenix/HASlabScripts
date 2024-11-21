@@ -1,4 +1,4 @@
-#!/usr/local/bin/bpftrace
+#!/usr/bin/env bpftrace
 /*
  * icstat - Inode cache hit statistics.
  *
@@ -11,12 +11,12 @@
  * When copying or porting, include this comment.
  *
  * 02-Feb-2019  Brendan Gregg   Created this.
+ * 18-oct-2024  Carlos Machado  Ported tool grafana
  */
 
 BEGIN
 {
-	printf("Tracing icache lookups... Hit Ctrl-C to end.\n");
-	printf("%10s %10s %5s\n", "REFS", "MISSES", "HIT%");
+	printf("Timestamp,REFS,MISSES,HIT%\n");
 }
 
 kretprobe:find_inode_fast
@@ -31,13 +31,13 @@ interval:s:1
 {
 	$hits = @refs - @misses;
 	$percent = @refs > 0 ? 100 * $hits / @refs : 0;
-	printf("%10d %10d %4d%%\n", @refs, @misses, $percent);
-	clear(@refs);
+	printf("%15s, %10d,%10d,%4d%%\n", strftime("%H:%M:%S.%f", nsecs), @refs, @misses, $percent);
+    clear(@refs);
 	clear(@misses);
 }
 
 END
 {
-	clear(@refs);
-	clear(@misses);
+    clear(@refs);
+    clear(@misses);
 }

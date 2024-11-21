@@ -1,4 +1,0 @@
-Log for pmlogger on aurora01.cluster.lsd.di.uminho.pt started Tue Oct 22 12:32:24 2024
-
-[Tue Oct 22 12:32:24] pmlogger(663513) Info: Start
-preprocessor cmd: /usr/libexec/pcp/bin/pmcpp -rs -I /var/lib/pcp/config/pmlogger 

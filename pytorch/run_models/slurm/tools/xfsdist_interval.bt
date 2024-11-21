@@ -28,6 +28,7 @@ kprobe:xfs_file_read_iter,
 kprobe:xfs_file_write_iter,
 kprobe:xfs_file_open,
 kprobe:xfs_file_fsync
+/comm == "python3"/
 {
 	@start[tid] = nsecs;
 	@name[tid] = func;
@@ -37,7 +38,7 @@ kretprobe:xfs_file_read_iter,
 kretprobe:xfs_file_write_iter,
 kretprobe:xfs_file_open,
 kretprobe:xfs_file_fsync
-/@start[tid]/
+/@start[tid] && comm == "python3"/
 {
 	@us[@name[tid]] = hist((nsecs - @start[tid]) / 1000);
 	delete(@start[tid]);
@@ -51,6 +52,7 @@ interval:s:60
 
 END
 {
+    time(); print(@us); clear(@us);
 	clear(@start);
 	clear(@name);
 }

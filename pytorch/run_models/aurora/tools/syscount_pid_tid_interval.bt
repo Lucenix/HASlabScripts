@@ -1,0 +1,31 @@
+#!/usr/bin/env bpftrace
+
+tracepoint:syscalls:sys_enter_*
+/ comm == "python3" /
+{
+    @process[pid, probe] = count();
+    @thread[tid, probe] = count();
+	@syscall[probe] = count();
+}
+
+interval:s:60
+{
+	time();
+	print(@process);
+	clear(@process);
+	print(@thread);
+	clear(@thread);
+	print(@syscall);
+	clear(@syscall);
+}
+
+END
+{
+	time();
+	print(@process);
+	clear(@process);
+	print(@thread);
+	clear(@thread);
+	print(@syscall);
+	clear(@syscall);
+}

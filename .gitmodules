@@ -1,0 +1,3 @@
+[submodule "eBPFs-tools/parser/FlameGraph"]
+	path = eBPFs-tools/parser/FlameGraph
+	url = https://github.com/brendangregg/FlameGraph

@@ -32,4 +32,12 @@ interval:s:1
 	$hits = @refs - @misses;
 	$percent = @refs > 0 ? 100 * $hits / @refs : 0;
 	printf("%15s, %10d,%10d,%4d%%\n", strftime("%H:%M:%S.%f", nsecs), @refs, @misses, $percent);
+    clear(@refs);
+	clear(@misses);
+}
+
+END
+{
+    clear(@refs);
+    clear(@misses);
 }

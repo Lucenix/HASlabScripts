@@ -30,11 +30,13 @@ BEGIN
 
 tracepoint:sched:sched_wakeup,
 tracepoint:sched:sched_wakeup_new
+/comm == "python3"/
 {
 	@qtime[args.pid] = nsecs;
 }
 
 tracepoint:sched:sched_switch
+/comm == "python3"/
 {
 	if (args.prev_state == TASK_RUNNING) {
 		@qtime[args.prev_pid] = nsecs;
@@ -54,5 +56,6 @@ interval:s:60
 
 END
 {
+    time(); print(@usecs); clear(@usecs)
 	clear(@qtime);
 }

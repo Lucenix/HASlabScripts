@@ -16,22 +16,21 @@
 BEGIN
 {
 	printf("Counting syscalls... Hit Ctrl-C to end.\n");
-	// ausyscall --dump | awk 'NR > 1 { printf("\t@sysname[%d] = \"%s\";\n", $1, $2); }'
 }
 
-tracepoint:raw_syscalls:sys_enter
+tracepoint:syscalls:sys_enter_*
 {
-	@syscall[args.id] = count();
+	@syscall[probe] = count();
 	@process[comm] = count();
 }
 
 END
 {
-	printf("\nTop 10 syscalls IDs:\n");
-	print(@syscall, 10);
+    printf("\nTop 50 syscalls IDs:\n");
+	print(@syscall);
 	clear(@syscall);
 
-	printf("\nTop 10 processes:\n");
-	print(@process, 10);
+	printf("\nTop 50 processes:\n");
+	print(@process);
 	clear(@process);
 }

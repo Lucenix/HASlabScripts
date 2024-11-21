@@ -1,0 +1,647 @@
+{
+    "syscount_pid_tid_interval": [
+        {
+            "parse_plotter": "parse_stacked_time_series",
+            "parse_function": "parse_2_args_time_series_output",
+            "parse_function_args": [
+                "@process\\[(?P<pid>[^,]*), tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "@process",
+                "pid",
+                "syscall",
+                "count"
+            ],
+            "xlabel": "pid Syscall"
+        },
+        {
+            "parse_plotter": "parse_stacked_time_series",
+            "parse_function": "parse_2_args_time_series_output",
+            "parse_function_args": [
+                "@thread\\[(?P<tid>[^,]*), tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "@thread",
+                "tid",
+                "syscall",
+                "count"
+            ],
+            "xlabel": "tid Syscall"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "@syscall\\[tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "@syscall[tracepoint:syscalls:",
+                "syscall",
+                "count"
+            ],
+            "xlabel": "Syscall"
+        }
+    ],
+    "icstat": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                4,
+                ",",
+                2,
+                {"^C": "", "%%": ""},
+                "Timestamp",
+                {"REFS": "float", "MISSES": "float", "HIT%": "float"}
+            ],
+            "xlabel": "System Time"
+        }
+    ],
+    "biopattern": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                7,
+                " +",
+                0,
+                {"^C": ""},
+                "TIME",
+                {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
+                ["KBYTES", "COUNT"]
+            ],
+            "xlabel": "Percentages"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                7,
+                " +",
+                0,
+                {"^C": ""},
+                "TIME",
+                {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
+                ["%RND", "%SEQ", "COUNT"]
+            ],
+            "xlabel": "KBytes"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                7,
+                " +",
+                0,
+                {"^C": ""},
+                "TIME",
+                {"%RND": "float", "%SEQ": "float", "COUNT": "float", "KBYTES": "float"},
+                ["%RND", "%SEQ", "KBYTES"]
+            ],
+            "xlabel": "Count"
+        }
+    ],
+    "cachestat": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                0,
+                " +",
+                0,
+                {"^C": "", "%": ""},
+                "TIME",
+                {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
+                ["HITS", "CACHED_MB"]
+            ],
+            "xlabel": "Percentages"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                0,
+                " +",
+                0,
+                {"^C": "", "%": ""},
+                "TIME",
+                {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
+                ["HITS", "MISSES", "DIRTIES", "HITRATIO", "BUFFERS_MB"]
+            ],
+            "xlabel": "Cached"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                0,
+                " +",
+                0,
+                {"^C": "", "%": ""},
+                "TIME",
+                {"HITS": "float", "MISSES": "float", "DIRTIES": "float", "HITRATIO": "float", "BUFFERS_MB": "float", "CACHED_MB": "float"},
+                ["MISSES", "DIRTIES", "HITRATIO", "BUFFERS_MB", "CACHED_MB"]
+            ],
+            "xlabel": "Hits"
+        }
+    ],
+    "gpu.csv": [
+        {
+            "parse_plotter": "parse_gpu_plots",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                0
+            ],
+            "xlabel": ""
+        }
+    ],
+    "dstat.csv": [
+        {
+            "parse_plotter": "parse_dstat_plots",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                5
+            ],
+            "xlabel": ""
+        }
+    ],
+    "out.out": [
+        {
+            "parse_plotter": "parse_out_plots",
+            "parse_function": "parse_csv_output",
+            "parse_function_args": [
+                5,
+                "/",
+                0,
+                [],
+                "",
+                {},
+                [],
+                ["system_time"]
+            ],
+            "xlabel": ""
+        }
+    ],
+    "biolatency": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "@(?P<name>[^:]+)",
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name"],
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "biolatency_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "@(?P<name>[^:]+)",
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name"],
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "syscount": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@syscall\\[tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "syscall",
+                "count",
+                "@syscall",
+                true
+            ],
+            "xlabel": "Syscall"
+        },
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@syscall\\[tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "process",
+                "count",
+                "@process",
+                true
+            ],
+            "xlabel": "Process"
+        }
+    ],
+    "syscount_interval": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "@syscall\\[tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "@syscall[tracepoint:syscalls:",
+                "syscall",
+                "count"
+            ],
+            "xlabel": "Syscall"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "@process\\[(?P<process>.*)\\]:\\s+(?P<count>\\d+)",
+                "@process",
+                "process",
+                "count"
+            ],
+            "xlabel": "Process"
+        }
+    ],
+    "fsrwstat": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_fsrwstat_output",
+            "parse_function_args": [[]],
+            "xlabel": "Time"
+        }
+    ],
+    "runqlat": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "runqlat_interval": [
+        {
+            "parse_plotter": "parse_heatmap",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "runqlen": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<length>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "length",
+                "count"
+            ],
+            "xlabel": "Run queue length"
+        }
+    ],
+    "runqlen_interval": [
+        {
+            "parse_plotter": "parse_heatmap",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<length>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "length",
+                "count"
+            ],
+            "xlabel": "Run queue length"
+        }
+    ],
+    "cpuwalk": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<cpu>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "cpu",
+                "count"
+            ],
+            "xlabel": "(C)PUs"
+        }
+    ],
+    "cpuwalk_interval": [
+        {
+            "parse_plotter": "parse_heatmap",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<cpu>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "cpu",
+                "count"
+            ],
+            "xlabel": "(C)PUs"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "\\[(?P<cpu>\\d+[A-Za-z]?)(\\]|\\,\\s\\d+[A-Za-z]?\\))\\s+(?P<count>\\d+)",
+                "[",
+                "cpu",
+                "count"
+            ],
+            "xlabel": "(C)PU"
+        }
+    ],
+    "signals": [
+        {
+            "parse_plotter": "parse_clustered_stacked_bar",
+            "parse_function": "parse_signals_output",
+            "parse_function_args": [],
+            "xlabel": "Command"
+        }
+    ],
+    "vfscount": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@\\[vfs_(?P<vfs>.*)\\]:\\s+(?P<count>\\d+)",
+                "vfs",
+                "count",
+                "@",
+                true
+            ],
+            "xlabel": "vfs function"
+        }
+    ],
+    "vfscount_interval": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "@\\[vfs_(?P<vfs>.*)\\]:\\s+(?P<count>\\d+)",
+                "@",
+                "vfs",
+                "count"
+            ],
+            "xlabel": "VFS function"
+        }
+    ],
+    "vfssize": [
+        {
+            "parse_plotter": "parse_pickle",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<name>[^,]*), (?P<type>[^]]*)\\]",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name", "type"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "vfssize_interval": [
+        {
+            "parse_plotter": "parse_pickle_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<name>[^,]*), (?P<type>[^]]*)\\]",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name", "type"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "ext4dist": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[ext4\\_(?P<operation>[^]]*)\\]",
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "bitesize": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "@(?P<name>[^:]+)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "bitesize_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "@(?P<name>[^:]+)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["name"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "netsize": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "(?P<operation>[^]]*)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "netsize_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "(?P<operation>[^]]*)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "funccount": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@functions\\[kprobe:(?P<function>.*)\\]:\\s+(?P<count>\\d+)",
+                "function",
+                "count",
+                "@functions",
+                true
+            ],
+            "xlabel": "Function"
+        }
+    ],
+    "xfsdist": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<function>[^]]*)\\]",
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["function"],
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "xfsdist_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "\\[(?P<function>[^]]*)\\]",
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["function"],
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "pidpersec": [
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_pidpersec_output",
+            "parse_function_args": [[]],
+            "xlabel": "Time"
+        }
+    ],
+    "faults": [
+        {
+            "parse_plotter": "parse_flamegraph",
+            "parse_function": "parse_flamegraph_collapse_output",
+            "parse_function_args": [],
+            "xlabel": ""
+        }
+    ],
+    "ffaults": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@\\[(?P<filename>.*)\\]:\\s+(?P<count>\\d+)",
+                "filename",
+                "count",
+                "@",
+                true,
+                ["torch"]
+            ],
+            "xlabel": "Filename"
+        }
+    ],
+    "ffaults_interval": [
+        {
+            "parse_plotter": "parse_time_series_pickle",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "@\\[(?P<filename>.*)\\]:\\s+(?P<count>\\d+)",
+                "@",
+                "filename",
+                "count"
+            ],
+            "xlabel": "Filename"
+        }
+    ],
+    "hfaults": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "@\\[[^,], (?P<process>.*)\\]:\\s+(?P<count>\\d+)",
+                "process",
+                "count",
+                "@",
+                true
+            ],
+            "xlabel": "Process"
+        }
+    ],
+    "nettxlat": [
+        {
+            "parse_plotter": "parse_histogram",
+            "parse_function": "parse_histogram_output",
+            "parse_function_args": [
+                "(?P<usecs>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                "usecs",
+                "count"
+            ],
+            "xlabel": "Time interval (usecs)"
+        }
+    ],
+    "socksize": [
+        {
+            "parse_plotter": "parse_multiple_histogram",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "@(?P<operation>[^:]*)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "socksize_interval": [
+        {
+            "parse_plotter": "parse_multiple_heatmap",
+            "parse_function": "parse_multiple_histogram_output",
+            "parse_function_args": [
+                "@(?P<operation>[^:]*)",
+                "(?P<size>\\[\\d+[A-Za-z]?(\\]|\\,\\s\\d+[A-Za-z]?\\)))\\s+(?P<count>\\d+)",
+                ["operation"],
+                "size",
+                "count"
+            ],
+            "xlabel": "Size (bytes)"
+        }
+    ],
+    "ioprofile": [
+        {
+            "parse_plotter": "parse_flamegraph",
+            "parse_function": "parse_flamegraph_output",
+            "parse_function_args": [
+                "@io\\[(?P<stack>.+?)\\]: (?P<count>\\d+)",
+                "stack",
+                "count",
+                true
+            ],
+            "xlabel": ""
+        }
+    ],
+    "socketio": [
+        {
+            "parse_plotter": "parse_flamegraph",
+            "parse_function": "parse_flamegraph_output",
+            "parse_function_args": [
+                "@io\\[(?P<stack>.+?)\\]: (?P<count>\\d+)",
+                "stack",
+                "count",
+                true
+            ],
+            "xlabel": ""
+        }
+    ]
+}

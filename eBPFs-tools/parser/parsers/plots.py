@@ -1,7 +1,14 @@
+import pandas as pd
+import plotly
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.validators.scatter.marker import SymbolValidator
+from plotly.subplots import make_subplots
 import parsers.utils as utils
+import matplotlib.pyplot as plt
+import seaborn as sb
+import subprocess
+import os
 
 """
     Generate a histogram
@@ -27,9 +34,11 @@ def gen_histogram(setup, test, df, xlabel="", ylabel="Count", show=False):
                       legend_title_text='Legend')
 
     # Save the plot
-    output_file = utils.gen_output_file_name(setup, test)
-    fig.write_image(output_file, width=1080, height=720)
-    print("  -- Saved to %s" % output_file)
+    utils.save_plot(fig, setup, test)
+    # output_file = utils.gen_output_file_name(setup, test)
+    # fig.write_image(output_file, width=1080, height=720)
+    # print("  -- Saved to %s" % output_file)
+
     if show:
         fig.show()
 
@@ -74,14 +83,80 @@ def gen_time_series(df, setup, test, mode="", xlabel="", ylabel="Count", show=Fa
     fig.update_xaxes(tickangle=-45)
 
     # Save the plot
-    output_file = utils.gen_output_file_name(setup, test+"_"+mode)
-    fig.write_image(output_file, width=1080, height=720, scale=1)
+    utils.save_plot(fig, setup, test)
 
-
-
-    print("  -- Saved to %s" % output_file)
     if show:
         fig.show()
+
+
+def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel="Count", show=False):
+    print("  -- Generating stacked time series...")
+
+    labels = {}
+
+    names_len = len(grouped_dfs)
+
+    fig = make_subplots(
+        rows=names_len, 
+        cols=1, 
+        shared_xaxes=True, 
+        shared_yaxes='columns', 
+        vertical_spacing=0.02, 
+        row_titles=["( " + name + " )" for name in grouped_dfs.keys()], 
+    )
+
+    colors=plotly.colors.DEFAULT_PLOTLY_COLORS
+
+    for i, (_, df) in enumerate(grouped_dfs.items(), start=1):
+        for label in df.columns:
+            showlegend = (label not in labels)
+            if showlegend:
+                labels[label] = len(labels)
+            fig.append_trace(go.Scatter(
+                x=df.index,
+                y=df[label],
+                mode="lines+markers",
+                name=label,
+                legendgroup=label,
+                showlegend=showlegend,
+                line=dict(color=colors[labels[label] % len(colors)]),
+                marker=dict(color=colors[labels[label] % len(colors)])
+            ), row=i, col=1)
+
+    plot_title = f"{setup} {test} {mode}"
+    fig.update_layout(
+        title=plot_title,
+        title_x=0.5,
+        legend_title_text=xlabel,
+        showlegend=True,
+        legend=dict(
+            orientation="v", 
+            x=1.05, 
+            y=1, 
+            xanchor="left", 
+            yanchor="top"
+        ),
+        margin=dict(t=50, b=100, l=70, r=150), 
+        height=names_len * 300
+    )
+
+    for i in range(1, names_len + 1):
+        fig.update_xaxes(
+            tickangle=-45, 
+            showticklabels=True, 
+            row=i, col=1
+        )
+
+    fig.update_yaxes(showticklabels=True, tickangle=0)
+
+    # save the plot
+    utils.save_plot(fig, setup, test, False)
+
+    if show:
+        fig.show()
+
+
+
 
 """
     Generate a clustered stacked bar plot
@@ -137,8 +212,89 @@ def gen_clustered_stacked_bar(data, setup, test, xlabel="", ylabel="Count", show
                       yaxis_title=ylabel)
 
     # Save the plot
-    output_file = utils.gen_output_file_name(setup, test)
-    fig.write_image(output_file, width=1080, height=720)
-    print("  -- Saved to %s" % output_file)
+    utils.save_plot(fig, setup, test)
+
     if show:
         fig.show()
+
+def gen_heatmap(setup, test, data, xlabel="Time", ylabel="Interval", show=False):
+
+    print("  -- Generating Heatmap...")
+
+    plot_title=setup + " " + test
+
+    fig = plt.figure(figsize=(12, 8))
+    sb.heatmap(data, cmap="YlGnBu", annot=True, fmt="g")
+    plt.title(plot_title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    # Save the plot
+    utils.save_plot(fig, setup, test)
+
+
+    if show:
+        plt.show()
+
+    plt.close()
+
+def gen_flamegraph(setup, test, data, xlabel=""):
+    print("  -- Generating Flamegraph...")
+
+    plot_title = setup + " " + test
+
+    temp_file_path = "FlameGraph/flamegraph.temp"
+
+    with open(temp_file_path, "w") as temp_file:
+        temp_file.write(data)
+
+    program = ["./FlameGraph/flamegraph.pl", temp_file_path, "--title", plot_title, "--subtitle", xlabel]
+
+    # Save the plot
+    output_file = utils.gen_output_file_name(setup, test, format=".svg")
+    with open(output_file, "w") as out_file:
+        try:
+            subprocess.run(program, stdout=out_file, check=True)
+            print(f"  -- Saved to %s" % output_file)
+        except subprocess.CalledProcessError as e:
+            print(f"  -- Failed to save to %s : %s" % (output_file,e))
+
+    os.remove(temp_file_path)
+
+def gen_plot(setup, test, df, x, Y, xlabel, ylabel, show=False):
+
+    plot_title = setup + " " + test
+    # plots action with time
+    fig = plt.figure()
+    for y in Y:
+        plt.plot(df[x], df[y], label=Y[y], marker = "+")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(plot_title)
+    plt.legend()
+    
+    utils.save_plot(fig, setup, test)
+    if show:
+        plt.show()
+    plt.close(fig)
+
+def gen_complete_bar(setup, test, x, y, xlabel, ylabel, show=False):
+    plot_title = setup + " " + test
+    plt.figure()
+    fig = px.bar(x=x, y=y)
+
+    # update layout
+    plot_title = setup + " " + test
+    fig.update_layout(title=plot_title,
+                      title_x=0.5,
+                      xaxis_title=xlabel,
+                      yaxis_title=ylabel,
+                      legend_title_text='Legend')
+
+    # Save the plot
+    utils.save_plot(fig, setup, test)
+
+    if show:
+        plt.show()
+
+    plt.close()

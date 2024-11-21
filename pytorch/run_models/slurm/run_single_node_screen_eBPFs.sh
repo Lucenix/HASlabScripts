@@ -5,8 +5,12 @@ echo "I am $HOSTNAME!"
 
 module load Python/3.11.2-GCCcore-12.2.0-bare CUDA/11.7.0 ncurses
 
+RESULT_DIR="$SCRATCH/statistics/$TEST_NAME/$TEST_TITLE/$HOSTNAME"
+RELATIVE_PLOT_DIR=$TEST_NAME/$TEST_TITLE/$HOSTNAME
+
 # create statistics directory
-mkdir -p $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME
+rm -r $RESULT_DIR
+mkdir -p $RESULT_DIR
 
 #spawn process
 # --$1: process identifier
@@ -28,11 +32,11 @@ spawn_nvidia_process ()
 # activate venv
 source "${VENV_DIR}/bin/activate"
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/dstat.csv ;
+spawn_dstat_process dstat $RESULT_DIR/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/gpu.csv ;
+spawn_nvidia_process nvidia $RESULT_DIR/gpu.csv
 # start eBPFs
-$SCRIPT_DIR/pytorch/run_models/slurm/run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME
+$SCRIPT_DIR/pytorch/run_models/slurm/run-eBPF-tools.sh start $RESULT_DIR
 
 { time torchrun \
 --nnodes $N_NODES \
@@ -40,7 +44,7 @@ $SCRIPT_DIR/pytorch/run_models/slurm/run-eBPF-tools.sh start $STAT_DIR/$MODEL\_$
 --rdzv_id $2 \
 --rdzv_backend c10d \
 --rdzv_endpoint $1:29500 \
-$MAIN_PATH --dist true --model $MODEL --epochs $N_EPOCHS --save_every $SAVE_EVERY --batch_size $BATCH_SIZE --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/out.out ; } 2>> $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME/out.out ;
+$MAIN_PATH --dist true --model $MODEL --epochs $N_EPOCHS --save_every $SAVE_EVERY --batch_size $BATCH_SIZE --enable_log $LOG $DATA_DIR > $RESULT_DIR/out.out ; } 2>> $RESULT_DIR/out.out ;
 
 join_process() 
 {
@@ -50,4 +54,8 @@ join_process()
 
 join_process dstat
 join_process nvidia
-$SCRIPT_DIR/pytorch/run_models/slurm/run-eBPF-tools.sh stop $STAT_DIR/$MODEL\_$N_NODES\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG/$HOSTNAME
+$SCRIPT_DIR/pytorch/run_models/slurm/run-eBPF-tools.sh stop $RESULT_DIR
+
+cd $PLOTTER_DIR
+
+python ./parse-res.py $RESULT_DIR $RELATIVE_PLOT_DIR

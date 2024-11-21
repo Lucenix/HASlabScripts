@@ -25,6 +25,7 @@ BEGIN
 }
 
 kprobe:vfs_*
+/ comm == "python3" /
 {
 	@[func] = count();
 }

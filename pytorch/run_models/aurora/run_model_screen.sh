@@ -1,22 +1,22 @@
 #!/bin/sh
 
-sudo echo 1 > /proc/sys/vm/drop_caches
+sudo bash -c "echo 3 > /proc/sys/vm/drop_caches"
 
 SCRATCH="/home/gsd/andrelucena"
 MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"
-STAT_DIR="$SCRATCH/statistics/control_subset"
 SCREEN_PATH="screen"
-# model and save every is defined in main
+PLOTTER_DIR="$SCRATCH/scripts/eBPFs-tools/parser"
+
 if [ -z $1 ] ; then
-        SAVE_EVERY=1
+        TEST_NAME="test"
 else
-        SAVE_EVERY=$1
+        TEST_NAME="$1"
 fi
 if [ -z $2 ] ; then
-        MODEL=alexnet
+        MODEL="resnet50"
 else
         MODEL=$2
 fi
@@ -31,13 +31,23 @@ else
         BATCH_SIZE=$4
 fi
 if [ -z $5 ] ; then
-        LOG=false
+        SAVE_EVERY=1
 else
-        LOG=$5
+        SAVE_EVERY=$5
+fi
+if [ -z $6 ] ; then
+        LOG="false"
+else
+        LOG=$6
 fi
 
+TEST_TITLE=$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG
+RESULT_DIR="$SCRATCH/statistics/$TEST_NAME/$TEST_TITLE"
+RELATIVE_PLOT_DIR=$TEST_NAME/$TEST_TITLE
+
 # create statistics directory
-mkdir -p $STAT_DIR
+rm -r $RESULT_DIR
+mkdir -p $RESULT_DIR
 
 #spawn process
 # --$1: process identifier
@@ -66,14 +76,18 @@ join_process()
 source "${VENV_DIR}/bin/activate"
 
 # spawn dstat
-spawn_dstat_process dstat $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.csv
+spawn_dstat_process dstat $RESULT_DIR/dstat.csv
 # spawn nvidia
-spawn_nvidia_process nvidia $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG\_gpu.csv
+spawn_nvidia_process nvidia $RESULT_DIR/gpu.csv
 
-{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.out ; } 2>> $STAT_DIR/$MODEL\_$N_EPOCHS\_$BATCH_SIZE\_$SAVE_EVERY\_$LOG.out ;
+{ time python3 $MAIN_PATH --model $MODEL --epochs $N_EPOCHS --batch_size $BATCH_SIZE --save_every $SAVE_EVERY --enable_log $LOG $DATA_DIR > $RESULT_DIR/out.out ; } 2>> $RESULT_DIR/out.out ;
 
 # join processes
 join_process dstat
 join_process nvidia
 
 #python3 ../../dstat.py -cdnm --output ./dstat_arm_output
+
+cd $PLOTTER_DIR
+
+python ./parse-res.py $RESULT_DIR $RELATIVE_PLOT_DIR
