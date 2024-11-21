@@ -100,7 +100,7 @@ def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel
         rows=names_len, 
         cols=1, 
         shared_xaxes=True, 
-        shared_yaxes=False, 
+        shared_yaxes='columns', 
         vertical_spacing=0.02, 
         row_titles=["( " + name + " )" for name in grouped_dfs.keys()], 
     )
