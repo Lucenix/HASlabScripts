@@ -1,4 +1,5 @@
 import pandas as pd
+import plotly
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.validators.scatter.marker import SymbolValidator
@@ -91,25 +92,34 @@ def gen_time_series(df, setup, test, mode="", xlabel="", ylabel="Count", show=Fa
 def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel="Count", show=False):
     print("  -- Generating stacked time series...")
 
+    labels = set()
+
     names_len = len(grouped_dfs)
 
     fig = make_subplots(
         rows=names_len, 
         cols=1, 
-        shared_xaxes=False, 
-        shared_yaxes=True, 
+        shared_xaxes=True, 
+        shared_yaxes=False, 
         vertical_spacing=0.02, 
         row_titles=["( " + name + " )" for name in grouped_dfs.keys()], 
     )
 
+    colors=plotly.colors.DEFAULT_PLOTLY_COLORS
+
     for i, (_, df) in enumerate(grouped_dfs.items(), start=1):
-        for label in df.columns:
+        for j, label in enumerate(df.columns):
             fig.append_trace(go.Scatter(
                 x=df.index,
                 y=df[label],
                 mode="lines+markers",
-                name=label
+                name=label,
+                legendgroup=label,
+                showlegend=(label not in labels),
+                line=dict(color=colors[j % len(colors)]),
+                marker=dict(color=colors[j % len(colors)])
             ), row=i, col=1)
+            labels.add(label)
 
     plot_title = f"{setup} {test} {mode}"
     fig.update_layout(
@@ -125,7 +135,7 @@ def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel
             yanchor="top"
         ),
         margin=dict(t=50, b=100, l=70, r=150), 
-        height=names_len * 300 
+        height=names_len * 300
     )
 
     for i in range(1, names_len + 1):
