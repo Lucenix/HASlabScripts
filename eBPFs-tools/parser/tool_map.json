@@ -23,6 +23,17 @@
                 "count"
             ],
             "xlabel": "tid Syscall"
+        },
+        {
+            "parse_plotter": "parse_time_series",
+            "parse_function": "parse_time_series_output",
+            "parse_function_args": [
+                "@syscall\\[tracepoint:syscalls:sys_enter_(?P<syscall>.*)\\]:\\s+(?P<count>\\d+)",
+                "@syscall[tracepoint:syscalls:",
+                "syscall",
+                "count"
+            ],
+            "xlabel": "Syscall"
         }
     ],
     "icstat": [

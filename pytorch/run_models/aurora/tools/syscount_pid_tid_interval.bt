@@ -5,6 +5,7 @@ tracepoint:syscalls:sys_enter_*
 {
     @process[pid, probe] = count();
     @thread[tid, probe] = count();
+	@syscall[probe] = count();
 }
 
 interval:s:60
@@ -14,6 +15,8 @@ interval:s:60
 	clear(@process);
 	print(@thread);
 	clear(@thread);
+	print(@syscall);
+	clear(@syscall);
 }
 
 END
@@ -23,4 +26,6 @@ END
 	clear(@process);
 	print(@thread);
 	clear(@thread);
+	print(@syscall);
+	clear(@syscall);
 }
