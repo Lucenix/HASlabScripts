@@ -55,7 +55,7 @@ def parse_dstat_plots(tool_name, xlabel, parser_function, *args):
                 'System Time', 'Number of Operations')
     
     # generate read/write disk bytes timeline
-    pl.gen_plot(setup, 'IO Disk Timeline', df, 'system_time', {'read_dsk_total_bytes': 'Reads', 'writ_dsk_total_bytes' : 'Writes'}, 
+    pl.gen_plot(setup, 'IO Disk Timeline', df, 'system_time', {'read_dsk_total_bytes': 'Reads', 'write_dsk_total_bytes' : 'Writes'}, 
                 'System Time', 'Disk Operations (Bytes)')
     
     # generate memory usage timeline
