@@ -31,7 +31,7 @@ def parse_csv_output(file, skiprows=0, delimiter=',', skipfooter=0, ignore_strin
 """
     Parse simple histogram bpftrace output file, with or without time
 """
-def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[", reverse=False):
+def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[", reverse=False, agg=[]):
     data = {}
     current_time = None
     pattern = re.compile(pattern_text)
@@ -51,12 +51,27 @@ def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[",
                         key = match.group(key_group)
                         count = int(match.group(count_group))
 
+                        
                         if current_time:
-                            data[current_time][key] = count
+                            if agg:
+                                for agg_word in agg:
+                                    if key.startswith(agg_word):
+                                        data[current_time][agg_word + "_" + str(count)] = count
+                                        break
+                            else:
+                                data[current_time][key] = count
                         else:
-                            if None not in data:
-                                data[None] = {}
-                            data[None][key] = count
+                            if agg:
+                                if None not in data:
+                                    data[None] = {}
+                                for agg_word in agg:
+                                    if key.startswith(agg_word):
+                                        data[None][agg_word + "_" + str(count)] = count
+                                        break
+                            else:
+                                if None not in data:
+                                    data[None] = {}
+                                data[None][key] = count
     except FileNotFoundError:
         return data
     

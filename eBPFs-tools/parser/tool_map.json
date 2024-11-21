@@ -534,7 +534,8 @@
                 "filename",
                 "count",
                 "@",
-                true
+                true,
+                ["torch"]
             ],
             "xlabel": "Filename"
         }
