@@ -123,9 +123,6 @@ def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel
                 marker=dict(color=colors[labels[label] % len(colors)])
             ), row=i, col=1)
 
-    print(labels)
-    print(colors[labels[label] % len(colors)])
-
     plot_title = f"{setup} {test} {mode}"
     fig.update_layout(
         title=plot_title,
