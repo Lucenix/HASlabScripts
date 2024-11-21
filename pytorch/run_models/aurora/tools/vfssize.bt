@@ -19,6 +19,7 @@ kprobe:vfs_read,
 kprobe:vfs_readv,
 kprobe:vfs_write,
 kprobe:vfs_writev
+/ comm == "python3" /
 {
 	@file[tid] = arg0;
 }

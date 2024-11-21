@@ -1,5 +1,4 @@
 
-import itertools
 import re
 import pandas as pd
 from datetime import datetime
@@ -32,7 +31,7 @@ def parse_csv_output(file, skiprows=0, delimiter=',', skipfooter=0, ignore_strin
 """
     Parse simple histogram bpftrace output file, with or without time
 """
-def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[", reverse=False):
+def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[", reverse=False, agg=[]):
     data = {}
     current_time = None
     pattern = re.compile(pattern_text)
@@ -52,12 +51,27 @@ def parse_histogram_output(file, pattern_text, key_group, count_group, mark="[",
                         key = match.group(key_group)
                         count = int(match.group(count_group))
 
+                        
                         if current_time:
-                            data[current_time][key] = count
+                            if agg:
+                                for agg_word in agg:
+                                    if key.startswith(agg_word):
+                                        data[current_time][agg_word + "_" + str(count)] = count
+                                        break
+                            else:
+                                data[current_time][key] = count
                         else:
-                            if None not in data:
-                                data[None] = {}
-                            data[None][key] = count
+                            if agg:
+                                if None not in data:
+                                    data[None] = {}
+                                for agg_word in agg:
+                                    if key.startswith(agg_word):
+                                        data[None][agg_word + "_" + str(count)] = count
+                                        break
+                            else:
+                                if None not in data:
+                                    data[None] = {}
+                                data[None][key] = count
     except FileNotFoundError:
         return data
     
@@ -104,10 +118,6 @@ def parse_multiple_histogram_output(file, histogram_pattern_text, pattern_text, 
         return {}
     
     return data
-
-
-import re
-import pandas as pd
 
 def parse_time_series_output(file, pattern_text, start, key_group, count_group, filter_labels=[]):
     all_data = {}
@@ -157,6 +167,63 @@ def parse_time_series_output(file, pattern_text, start, key_group, count_group, 
     
     df = pd.DataFrame(all_data).set_index('time')
     return df
+
+def parse_2_args_time_series_output(file, pattern_text, start, name_group, label_group, count_group):
+    grouped_data = {}
+    current_time = ""
+
+    try:
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if re.search(r'\d\d:\d\d:\d\d', line):
+                    time_match = re.search(r'\d\d:\d\d:\d\d', line)
+                    if time_match:
+                        current_time = time_match.group(0)
+                
+                elif line.startswith(start):
+                    match = re.search(pattern_text, line)
+                    if match:
+                        name = match.group(name_group)
+                        label = match.group(label_group)
+                        count = int(match.group(count_group))
+                        
+                        if name not in grouped_data:
+                            grouped_data[name] = {
+                                "time": [],
+                                "counts": {}
+                            }
+                        
+                        name_data = grouped_data[name]
+                        
+                        if not name_data["time"] or name_data["time"][-1] != current_time:
+                            name_data["time"].append(current_time)
+
+                        if label not in name_data["counts"]:
+                            name_data["counts"][label] = []
+
+                        name_data["counts"][label].append(count)
+
+            for name, data in grouped_data.items():
+                time_series_length = len(data["time"])
+                for label, counts in data["counts"].items():
+                    while len(counts) < time_series_length:
+                        counts.append(0)
+
+    except FileNotFoundError:
+        print("File not found.")
+        return {}
+
+    grouped_dfs = {}
+    for name, data in grouped_data.items():
+        df_data = {"time": data["time"]}
+        for label, counts in data["counts"].items():
+            df_data[label] = counts
+        
+        df = pd.DataFrame(df_data).set_index("time")
+        grouped_dfs[name] = df
+
+    return grouped_dfs
 
 
 """

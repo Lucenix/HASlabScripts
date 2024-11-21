@@ -241,6 +241,12 @@ def parse_time_series(tool_name, xlabel, parser_function, *args):
     if len(df) > 0:
         pl.gen_time_series(df, setup, tool_name, "", xlabel=xlabel)
 
+def parse_stacked_time_series(tool_name, xlabel, parser_function, *args):
+    print(f"> Parsing {tool_name} results into a time series")
+    dfs = parser_function(*args)
+    if len(dfs) > 0:
+        pl.gen_time_series_stacked(dfs, setup, tool_name, "", xlabel=xlabel)
+
 def parse_time_series_pickle(tool_name, xlabel, parser_function, *args):
     df = parser_function(*args)
     os.makedirs(f"plots/{setup}", exist_ok=True)
@@ -349,14 +355,14 @@ def process_tool_output(args, tool_map):
     for tool_name in tool_name_list:
         if tool_name in tool_map:
             mode = len(tool_map[tool_name]) > 1
-            for tool_config in tool_map[tool_name]:
+            for i,tool_config in enumerate(tool_map[tool_name]):
                 parse_plotter = tool_config.parse_plotter
                 parse_function = tool_config.parse_function
                 parse_function_args = tool_config.parse_function_args
                 xlabel = tool_config.xlabel
 
                 parse_function_args.insert(0, os.path.join(args.path, tool_name))
-                parse_plotter(tool_name+("_" + xlabel if mode else ""), xlabel, parse_function, *parse_function_args)
+                parse_plotter(tool_name+("_" + str(i) if mode else ""), xlabel, parse_function, *parse_function_args)
         else:
             print(f"No available parser for tool: {tool_name}")
 

@@ -7,6 +7,18 @@ import matplotlib.pyplot as plt
 
 df = None
 
+def plot(df_param: pd.DataFrame, x, y, title):
+    dt = df_param
+    # plots action with time
+    fig = plt.figure()
+    plt.plot(dt[x], dt[y], markersize = 5.0, marker = "+")
+    plt.xlabel(x)
+    plt.ylabel(y)
+    plt.title(title)
+    plt.legend()
+    plt.show()
+    plt.close(fig)
+
 def plot_actiontimeline():
     plot_title = "Action Timeline"
     # plots action with time
@@ -38,7 +50,7 @@ def main():
     args = sys.argv[1:]
 
     if len(args) != 1:
-        print("Incorrect Usage\nUsage: python databse-parser [DATABASE-FILE-PATH]")
+        print("Incorrect Usage\nUsage: python database-parser [DATABASE-FILE-PATH]")
 
     parser = argparse.ArgumentParser(description='database-file parser')
     parser.add_argument('path', nargs='?', default='.')
