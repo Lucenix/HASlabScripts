@@ -16,7 +16,7 @@ else
                     do
                         for log in true false
                         do
-                            $1 $model $n_nodes $n_epoch $batch_size $save_every $log
+                            ./sbatch_run_model.sh $model $n_nodes $n_epoch $batch_size $save_every $log $1
                         done
                     done
                 done
