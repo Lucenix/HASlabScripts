@@ -92,7 +92,7 @@ def gen_time_series(df, setup, test, mode="", xlabel="", ylabel="Count", show=Fa
 def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel="Count", show=False):
     print("  -- Generating stacked time series...")
 
-    labels = set()
+    labels = {}
 
     names_len = len(grouped_dfs)
 
@@ -100,7 +100,7 @@ def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel
         rows=names_len, 
         cols=1, 
         shared_xaxes=True, 
-        shared_yaxes=False, 
+        shared_yaxes='columns', 
         vertical_spacing=0.02, 
         row_titles=["( " + name + " )" for name in grouped_dfs.keys()], 
     )
@@ -108,18 +108,20 @@ def gen_time_series_stacked(grouped_dfs, setup, test, mode="", xlabel="", ylabel
     colors=plotly.colors.DEFAULT_PLOTLY_COLORS
 
     for i, (_, df) in enumerate(grouped_dfs.items(), start=1):
-        for j, label in enumerate(df.columns):
+        for label in df.columns:
+            showlegend = (label not in labels)
+            if showlegend:
+                labels[label] = len(labels)
             fig.append_trace(go.Scatter(
                 x=df.index,
                 y=df[label],
                 mode="lines+markers",
                 name=label,
                 legendgroup=label,
-                showlegend=(label not in labels),
-                line=dict(color=colors[j % len(colors)]),
-                marker=dict(color=colors[j % len(colors)])
+                showlegend=showlegend,
+                line=dict(color=colors[labels[label] % len(colors)]),
+                marker=dict(color=colors[labels[label] % len(colors)])
             ), row=i, col=1)
-            labels.add(label)
 
     plot_title = f"{setup} {test} {mode}"
     fig.update_layout(
