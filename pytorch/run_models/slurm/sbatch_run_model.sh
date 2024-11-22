@@ -10,7 +10,7 @@ export VENV_DIR="$SCRATCH/pytorch_venv"
 export PLOTTER_DIR="$SCRATCH/HASLabScripts/eBPFs-tools/parser"
 
 if [ -z $1 ] ; then
-        export SINGLE_NODE_SCRIPT="$SCRATCH/HASLabScripts/pytorch/run_models/slurm/run_single_node_screen.sh"
+        export SINGLE_NODE_SCRIPT="$SCRATCH/HASLabScripts/pytorch/run_models/slurm/run_single_node_screen_eBPFs.sh"
 else
         export SINGLE_NODE_SCRIPT=$1
 fi
