@@ -1,0 +1,17 @@
+#!/usr/bin/env bpftrace
+/*
+ * pidsnoop - List new python3 processes creation.
+ *
+ * 22-Nov-2024  Carlos Machado   Created this.
+ */
+
+BEGIN
+{
+    printf("%-14s %7s %7s %s\n", "TIME,", "PPID,", "PID,", "COMM");
+}
+
+tracepoint:sched:sched_process_fork
+/ args.parent_comm == "python3" /
+{
+    printf("%-14s, %7d, %7d, %s\n", strftime("%H:%M:%S.%f", nsecs), args.parent_pid, args.child_pid, args.child_comm);
+}
