@@ -20,6 +20,7 @@ BEGIN
 }
 
 kretprobe:find_inode_fast
+/ comm == "python3" /
 {
 	@refs++;
 	if (retval == 0) {
