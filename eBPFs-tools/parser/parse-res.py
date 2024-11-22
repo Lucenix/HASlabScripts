@@ -73,6 +73,11 @@ def parse_dstat_plots(tool_name, xlabel, parser_function, *args):
                 {'usr_cpu_usage': 'usr CPU usage', 'sys_cpu_usage' : 'sys CPU usage', 'idl_cpu_usage': 'idl CPU usage', 'wai_cpu_usage': 'wai CPU usage'}, 
                 'System Time', 'CPU (%)')
 
+    # generate paging timeline
+    pl.gen_plot(setup, 'Paging Timeline', df, 'system_time', 
+                {'in_paging': '# Pages In', 'out_paging' : '# Pages Out'}, 
+                'System Time', 'Count')
+
 
 def parse_gpu_plots(tool_name, xlabel, parser_function, *args):
     print(f"> Parsing {tool_name} results")
