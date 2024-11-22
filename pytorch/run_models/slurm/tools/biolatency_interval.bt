@@ -17,8 +17,9 @@ BEGIN
 }
 
 tracepoint:block:block_bio_queue
-/comm == "python3"/
+/comm == "python3" /
 {
+	@operation[args.sector] = strcontains(args.rwbs, "R") ? 1 : 0;
 	@start[args.sector] = nsecs;
 }
 
@@ -26,14 +27,15 @@ tracepoint:block:block_rq_complete,
 tracepoint:block:block_bio_complete
 /@start[args.sector]/
 {
-
-	if(strcontains(args.rwbs, "R")){
+	
+	if(@operation[args.sector]){
 		@read_usecs = hist((nsecs - @start[args.sector]) / 1000);
 	} else {
 		@write_usecs = hist((nsecs - @start[args.sector]) / 1000);
 	}
 
 	delete(@start[args.sector]);
+	delete(@operation[args.sector]);
 }
 
 interval:s:60
@@ -52,4 +54,6 @@ END
 	clear(@read_usecs);
 	print(@write_usecs);
 	clear(@write_usecs);
+	clear(@start);
+	clear(@operation);
 }

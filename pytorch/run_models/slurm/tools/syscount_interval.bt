@@ -21,10 +21,7 @@ BEGIN
 
 tracepoint:syscalls:sys_enter_*
 {
-    if(comm == "python3"){
-        @syscall[probe] = count();
-    }
-
+    @syscall[probe] = count();
 	@process[comm] = count();
 }
 
@@ -40,8 +37,8 @@ interval:s:60
 END
 {
     time();
-	print(@syscall, 50);
+	print(@syscall);
 	clear(@syscall);
-	print(@process, 50);
+	print(@process);
 	clear(@process);
 }

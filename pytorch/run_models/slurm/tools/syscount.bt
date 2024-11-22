@@ -16,25 +16,21 @@
 BEGIN
 {
 	printf("Counting syscalls... Hit Ctrl-C to end.\n");
-	// ausyscall --dump | awk 'NR > 1 { printf("\t@sysname[%d] = \"%s\";\n", $1, $2); }'
 }
 
 tracepoint:syscalls:sys_enter_*
 {
-    if(comm == "python3"){
-        @syscall[probe] = count();
-    }
-
+	@syscall[probe] = count();
 	@process[comm] = count();
 }
 
 END
 {
     printf("\nTop 50 syscalls IDs:\n");
-	print(@syscall, 50);
+	print(@syscall);
 	clear(@syscall);
 
 	printf("\nTop 50 processes:\n");
-	print(@process, 50);
+	print(@process);
 	clear(@process);
 }
