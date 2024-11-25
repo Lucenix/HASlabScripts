@@ -64,14 +64,19 @@ should not be used}
 \section{Background}
 
     \textit{Deep learning} is a subset of machine learning algorithms based on neural networks with many layers. Training is done by passing a data sample 
-    through the entire network layer by layer using the output of a previous layer as the input for the next one. The output of the final layer is a prediction of the result
-    and the differences, given by a chosen loss function, between this value and the ground, real truth are called gradients. This process is called the forward pass. 
-    The computed gradients are then used to update the weights of all the layers, using an optimization algorithm. This step is called backpropagation.
-    In each epoch the entire dataset is iterated through only once with the goal of converging to a minimum which represents all of the data samples (gradient descent), \\
-    To accelerate the training process, computation can be distributed among several workers, this is called Distributed Parallel learning and involves cloning
-    the model parameters among all the workers, each of the individual iterates through a subset of the data, the gradients are then averaged and shared with all the workers.
-    This way, all replicas of the network are updated with the same gradients ensuring all workers remain consistet with each other at the beginning of a new iteration.
-    \textit{Pytorch} [https://pytorch.org/] is a
+    through the entire network layer by layer using the output of a previous layer as the input for the next one, the output of the final layer is a prediction of the result 
+    and the diferences between this value and the ground truth are called gradients. This process is called the forward pass. 
+    The computed gradients are then used to update the weights of all the layers. This step is called backpropagation
+    In each epoch the entire dataset is iterated through only once with the goal of converging to a minimum witch represents all of the data samples (gradient decent) \\
+    To accelerate the training process computation can be distributed among several workers, this is called Distributed Parallel learning and involves cloning
+    the model parameters among all the workers, each of the individual iterates through a subset of the data, the gradients are then averaged and shared with all the workers,
+    this way, all replicas of the network are updated with the same gradients ensuring all workers remain consistet with each other. \\
+    As models get larger and more nodes are used in training, fault tolerance becomes an important issue, to address this it is common for the model state to be
+    saved periodicaly to persistent storage. Normaly this is done at epoch boundries (we can cite check freq here). In case of failure the model state can be loaded from
+    storage and training can be restarted. 
+    
+    \textit{Pytorch} [https://pytorch.org/] is an open source AI training library that provides utilities for operating on tensorst with GPU suport and dataloading, a library of
+    DNN models and suport for dataparallel training of AI models.
 
 \begin{itemize}
     
