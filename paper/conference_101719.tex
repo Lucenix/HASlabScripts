@@ -63,12 +63,15 @@ should not be used}
 
 \section{Background}
 
-    \textit{Deep learning} is a subset of machine learning algorithms based on neural networks with many layers. Training is done by passing all data
-    through the entire network to calculate a loss, this is called the forward pass, the network parameters are then updated using the calculated loss,
-    this is called backpropagation. \\
+    \textit{Deep learning} is a subset of machine learning algorithms based on neural networks with many layers. Training is done by passing a data sample 
+    through the entire network layer by layer using the output of a previous layer as the input for the next one, the output of the final layer is a prediction of the result 
+    and the diferences between this value and the ground truth are called gradients. This process is called the forward pass. 
+    The computed gradients are then used to update the weights of all the layers. This step is called backpropagation
+    In each epoch the entire dataset is iterated through only once with the goal of converging to a minimum witch represents all of the data samples (gradient decent) \\
     To accelerate the training process computation can be distributed among several workers, this is called Distributed Parallel learning and involves cloning
-    the model parameters among all the workers, each of the individualy processes a subset of the data, the loss is then averaged and all the workers update their
-    parameters with the same loss, ensuring consistency among all workers.
+    the model parameters among all the workers, each of the individual iterates through a subset of the data, the gradients are then averaged and shared with all the workers,
+    this way, all replicas of the network are updated with the same gradients ensuring all workers remain consistet with each other.
+    \textit{Pytorch} [https://pytorch.org/] is a
 
 \begin{itemize}
     
