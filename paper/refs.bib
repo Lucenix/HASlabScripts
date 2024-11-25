@@ -1,88 +1,179 @@
 
-@INPROCEEDINGS{8638422,
-  author={Chien, Steven W. D. and Markidis, Stefano and Sishtla, Chaitanya Prasad and Santos, Luis and Herman, Pawel and Narasimhamurthy, Sai and Laure, Erwin},
-  booktitle={2018 IEEE/ACM 3rd International Workshop on Parallel Data Storage \& Data Intensive Scalable Computing Systems (PDSW-DISCS)}, 
-  title={Characterizing Deep-Learning I/O Workloads in TensorFlow}, 
-  year={2018},
-  volume={},
-  number={},
-  pages={54-63},
-  keywords={Training;Pipelines;Checkpointing;Prefetching;Benchmark testing;Google;parallel-I/O;Input-pipeline;Deep-Learning;Tensorflow},
-  doi={10.1109/PDSW-DISCS.2018.00011}}
-
-@INPROCEEDINGS{nvme,
-  author={Zhu, Yue and Yu, Weikuan and Jiao, Bing and Mohror, Kathryn and Moody, Adam and Chowdhury, Fahim},
-  booktitle={2019 IEEE International Conference on Cluster Computing (CLUSTER)}, 
-  title={Efficient User-Level Storage Disaggregation for Deep Learning}, 
-  year={2019},
-  volume={},
-  number={},
-  pages={1-12},
-  keywords={Nonvolatile memory;Training;Deep learning;Fabrics;Protocols;Throughput;Performance evaluation},
-  doi={10.1109/CLUSTER.2019.8891023}}
-
-@article{LMDB,
-author = {Pumma, Sarunya and Si, Min and Feng, Wu-Chun and Balaji, Pavan},
-title = {Scalable Deep Learning via I/O Analysis and Optimization},
-year = {2019},
-issue_date = {June 2019},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-volume = {6},
-number = {2},
-issn = {2329-4949},
-url = {https://doi.org/10.1145/3331526},
-doi = {10.1145/3331526},
-abstract = {Scalable deep neural network training has been gaining prominence because of the increasing importance of deep learning in a multitude of scientific and commercial domains. Consequently, a number of researchers have investigated techniques to optimize deep learning systems. Much of the prior work has focused on runtime and algorithmic enhancements to optimize the computation and communication. Despite these enhancements, however, deep learning systems still suffer from scalability limitations, particularly with respect to data I/O. This situation is especially true for training models where the computation can be effectively parallelized, leaving I/O as the major bottleneck. In fact, our analysis shows that I/O can take up to 90\% of the total training time. Thus, in this article, we first analyze LMDB, the most widely used I/O subsystem of deep learning frameworks, to understand the causes of this I/O inefficiency. Based on our analysis, we propose LMDBIO—an optimized I/O plugin for scalable deep learning. LMDBIO includes six novel optimizations that together address the various shortcomings in existing I/O for deep learning. Our experimental results show that LMDBIO significantly outperforms LMDB in all cases and improves overall application performance by up to 65-fold on a 9,216-core system.},
-journal = {ACM Trans. Parallel Comput.},
-month = jul,
-articleno = {6},
-numpages = {34},
-keywords = {parallel I/O, Scalable deep learning, LMDBIO, LMDB, I/O in deep learning, I/O bottleneck, Caffe}
+@online{pytorch,
+    title = {Pytorch},
+    url = {https://pytorch.org/},
 }
 
-@INPROCEEDINGS{9229605,
-  author={Chien, Steven W. D. and Podobas, Artur and Peng, Ivy B. and Markidis, Stefano},
-  booktitle={2020 IEEE International Conference on Cluster Computing (CLUSTER)}, 
-  title={tf-Darshan: Understanding Fine-grained I/O Performance in Machine Learning Workloads}, 
-  year={2020},
-  volume={},
-  number={},
-  pages={359-370},
-  keywords={Training;Runtime library;Instruments;Data visualization;Machine learning;Tools;Optimization;Deep-Learning;Machine Learning;I/O;Data pre-processing;TensorFlow;profiling;tracing},
-  doi={10.1109/CLUSTER49012.2020.00046}}
+@inproceedings{checkfreq,
+    author = {Jayashree Mohan and Amar Phanishayee and Vijay Chidambaram},
+    title = {{CheckFreq}: Frequent, {Fine-Grained} {DNN} Checkpointing},
+    booktitle = {19th USENIX Conference on File and Storage Technologies (FAST
+                 21)},
+    year = {2021},
+    isbn = {978-1-939133-20-5},
+    pages = {203--216},
+    url = {https://www.usenix.org/conference/fast21/presentation/mohan},
+    publisher = {USENIX Association},
+    month = feb,
+}
 
-@INPROCEEDINGS{zoomin,
-  author={Wang, Teng and Byna, Suren and Lockwood, Glenn K. and Snyder, Shane and Carns, Philip and Kim, Sunggon and Wright, Nicholas J.},
-  booktitle={2019 19th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGRID)}, 
-  title={A Zoom-in Analysis of I/O Logs to Detect Root Causes of I/O Performance Bottlenecks}, 
-  year={2019},
-  volume={},
-  number={},
-  pages={102-111},
-  keywords={Tools;Servers;Bandwidth;Meteorology;Monitoring;Metadata;Instruments;Darshan;Lustre Monitoring Tools;Slurm;IO Analysis;IO Trace},
-  doi={10.1109/CCGRID.2019.00021}}
+@inproceedings{8638422,
+    author = {Chien, Steven W. D. and Markidis, Stefano and Sishtla, Chaitanya
+              Prasad and Santos, Luis and Herman, Pawel and Narasimhamurthy, Sai
+              and Laure, Erwin},
+    booktitle = {2018 IEEE/ACM 3rd International Workshop on Parallel Data
+                 Storage \& Data Intensive Scalable Computing Systems
+                 (PDSW-DISCS)},
+    title = {Characterizing Deep-Learning I/O Workloads in TensorFlow},
+    year = {2018},
+    volume = {},
+    number = {},
+    pages = {54-63},
+    keywords = {Training;Pipelines;Checkpointing;Prefetching;Benchmark
+                testing;Google;parallel-I/O;Input-pipeline;Deep-Learning;Tensorflow
+                },
+    doi = {10.1109/PDSW-DISCS.2018.00011},
+}
+
+@inproceedings{nvme,
+    author = {Zhu, Yue and Yu, Weikuan and Jiao, Bing and Mohror, Kathryn and
+              Moody, Adam and Chowdhury, Fahim},
+    booktitle = {2019 IEEE International Conference on Cluster Computing
+                 (CLUSTER)},
+    title = {Efficient User-Level Storage Disaggregation for Deep Learning},
+    year = {2019},
+    volume = {},
+    number = {},
+    pages = {1-12},
+    keywords = {Nonvolatile memory;Training;Deep
+                learning;Fabrics;Protocols;Throughput;Performance evaluation},
+    doi = {10.1109/CLUSTER.2019.8891023},
+}
+
+@article{LMDB,
+    author = {Pumma, Sarunya and Si, Min and Feng, Wu-Chun and Balaji, Pavan},
+    title = {Scalable Deep Learning via I/O Analysis and Optimization},
+    year = {2019},
+    issue_date = {June 2019},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    volume = {6},
+    number = {2},
+    issn = {2329-4949},
+    url = {https://doi.org/10.1145/3331526},
+    doi = {10.1145/3331526},
+    abstract = {Scalable deep neural network training has been gaining
+                prominence because of the increasing importance of deep learning
+                in a multitude of scientific and commercial domains. Consequently
+                , a number of researchers have investigated techniques to
+                optimize deep learning systems. Much of the prior work has
+                focused on runtime and algorithmic enhancements to optimize the
+                computation and communication. Despite these enhancements,
+                however, deep learning systems still suffer from scalability
+                limitations, particularly with respect to data I/O. This
+                situation is especially true for training models where the
+                computation can be effectively parallelized, leaving I/O as the
+                major bottleneck. In fact, our analysis shows that I/O can take
+                up to 90\% of the total training time. Thus, in this article, we
+                first analyze LMDB, the most widely used I/O subsystem of deep
+                learning frameworks, to understand the causes of this I/O
+                inefficiency. Based on our analysis, we propose LMDBIO—an
+                optimized I/O plugin for scalable deep learning. LMDBIO includes
+                six novel optimizations that together address the various
+                shortcomings in existing I/O for deep learning. Our experimental
+                results show that LMDBIO significantly outperforms LMDB in all
+                cases and improves overall application performance by up to
+                65-fold on a 9,216-core system.},
+    journal = {ACM Trans. Parallel Comput.},
+    month = jul,
+    articleno = {6},
+    numpages = {34},
+    keywords = {parallel I/O, Scalable deep learning, LMDBIO, LMDB, I/O in deep
+                learning, I/O bottleneck, Caffe},
+}
+
+@inproceedings{9229605,
+    author = {Chien, Steven W. D. and Podobas, Artur and Peng, Ivy B. and
+              Markidis, Stefano},
+    booktitle = {2020 IEEE International Conference on Cluster Computing
+                 (CLUSTER)},
+    title = {tf-Darshan: Understanding Fine-grained I/O Performance in Machine
+             Learning Workloads},
+    year = {2020},
+    volume = {},
+    number = {},
+    pages = {359-370},
+    keywords = {Training;Runtime library;Instruments;Data visualization;Machine
+                learning;Tools;Optimization;Deep-Learning;Machine
+                Learning;I/O;Data pre-processing;TensorFlow;profiling;tracing},
+    doi = {10.1109/CLUSTER49012.2020.00046},
+}
+
+@inproceedings{zoomin,
+    author = {Wang, Teng and Byna, Suren and Lockwood, Glenn K. and Snyder,
+              Shane and Carns, Philip and Kim, Sunggon and Wright, Nicholas J.},
+    booktitle = {2019 19th IEEE/ACM International Symposium on Cluster, Cloud
+                 and Grid Computing (CCGRID)},
+    title = {A Zoom-in Analysis of I/O Logs to Detect Root Causes of I/O
+             Performance Bottlenecks},
+    year = {2019},
+    volume = {},
+    number = {},
+    pages = {102-111},
+    keywords = {
+                Tools;Servers;Bandwidth;Meteorology;Monitoring;Metadata;Instruments;Darshan;Lustre
+                Monitoring Tools;Slurm;IO Analysis;IO Trace},
+    doi = {10.1109/CCGRID.2019.00021},
+}
 
 @inproceedings{10.1145/3337821.3337902,
-author = {Chowdhury, Fahim and Zhu, Yue and Heer, Todd and Paredes, Saul and Moody, Adam and Goldstone, Robin and Mohror, Kathryn and Yu, Weikuan},
-title = {I/O Characterization and Performance Evaluation of BeeGFS for Deep Learning},
-year = {2019},
-isbn = {9781450362955},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-url = {https://doi.org/10.1145/3337821.3337902},
-doi = {10.1145/3337821.3337902},
-abstract = {Parallel File Systems (PFSs) are frequently deployed on leadership High Performance Computing (HPC) systems to ensure efficient I/O, persistent storage and scalable performance. Emerging Deep Learning (DL) applications incur new I/O and storage requirements to HPC systems with batched input of small random files. This mandates PFSs to have commensurate features that can meet the needs of DL applications. BeeGFS is a recently emerging PFS that has grabbed the attention of the research and industry world because of its performance, scalability and ease of use. While emphasizing a systematic performance analysis of BeeGFS, in this paper, we present the architectural and system features of BeeGFS, and perform an experimental evaluation using cutting-edge I/O, Metadata and DL application benchmarks. Particularly, we have utilized AlexNet and ResNet-50 models for the classification of ImageNet dataset using the Livermore Big Artificial Neural Network Toolkit (LBANN), and ImageNet data reader pipeline atop TensorFlow and Horovod. Through extensive performance characterization of BeeGFS, our study provides a useful documentation on how to leverage BeeGFS for the emerging DL applications.},
-booktitle = {Proceedings of the 48th International Conference on Parallel Processing},
-articleno = {80},
-numpages = {10},
-location = {Kyoto, Japan},
-series = {ICPP '19}
+    author = {Chowdhury, Fahim and Zhu, Yue and Heer, Todd and Paredes, Saul and
+              Moody, Adam and Goldstone, Robin and Mohror, Kathryn and Yu,
+              Weikuan},
+    title = {I/O Characterization and Performance Evaluation of BeeGFS for Deep
+             Learning},
+    year = {2019},
+    isbn = {9781450362955},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    url = {https://doi.org/10.1145/3337821.3337902},
+    doi = {10.1145/3337821.3337902},
+    abstract = {Parallel File Systems (PFSs) are frequently deployed on
+                leadership High Performance Computing (HPC) systems to ensure
+                efficient I/O, persistent storage and scalable performance.
+                Emerging Deep Learning (DL) applications incur new I/O and
+                storage requirements to HPC systems with batched input of small
+                random files. This mandates PFSs to have commensurate features
+                that can meet the needs of DL applications. BeeGFS is a recently
+                emerging PFS that has grabbed the attention of the research and
+                industry world because of its performance, scalability and ease
+                of use. While emphasizing a systematic performance analysis of
+                BeeGFS, in this paper, we present the architectural and system
+                features of BeeGFS, and perform an experimental evaluation using
+                cutting-edge I/O, Metadata and DL application benchmarks.
+                Particularly, we have utilized AlexNet and ResNet-50 models for
+                the classification of ImageNet dataset using the Livermore Big
+                Artificial Neural Network Toolkit (LBANN), and ImageNet data
+                reader pipeline atop TensorFlow and Horovod. Through extensive
+                performance characterization of BeeGFS, our study provides a
+                useful documentation on how to leverage BeeGFS for the emerging
+                DL applications.},
+    booktitle = {Proceedings of the 48th International Conference on Parallel
+                 Processing},
+    articleno = {80},
+    numpages = {10},
+    location = {Kyoto, Japan},
+    series = {ICPP '19},
 }
 
 @inproceedings{initial,
-  title={Initial characterization of i/o in large-scale deep learning applications},
-  author={Chowdhury, Fahim and Liu, Jialin and Koziol, Quincey and Kurth, Thorsten and Farrell, Steven and Byna, Suren and Yu, W},
-  booktitle={3rd Joint International Workshop on Parallel Data Storage and Data Intensive Scalable Computing Systems (PDSW-DISCS’18) at the International Conference on High Performance Computing, Networking, Storage and Analysis},
-  year={2018}
+    title = {Initial characterization of i/o in large-scale deep learning
+             applications},
+    author = {Chowdhury, Fahim and Liu, Jialin and Koziol, Quincey and Kurth,
+              Thorsten and Farrell, Steven and Byna, Suren and Yu, W},
+    booktitle = {3rd Joint International Workshop on Parallel Data Storage and
+                 Data Intensive Scalable Computing Systems (PDSW-DISCS’18) at the
+                 International Conference on High Performance Computing,
+                 Networking, Storage and Analysis},
+    year = {2018},
 }
