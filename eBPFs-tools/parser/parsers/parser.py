@@ -168,6 +168,9 @@ def parse_time_series_output(file, pattern_text, start, key_group, count_group, 
     df = pd.DataFrame(all_data).set_index('time')
     return df
 
+import pandas as pd
+import re
+
 def parse_2_args_time_series_output(file, pattern_text, start, name_group, label_group, count_group):
     grouped_data = {}
     current_time = ""
@@ -202,7 +205,11 @@ def parse_2_args_time_series_output(file, pattern_text, start, name_group, label
                         if label not in name_data["counts"]:
                             name_data["counts"][label] = []
 
-                        name_data["counts"][label].append(count)
+                        time_index = len(name_data["time"]) - 1
+                        while len(name_data["counts"][label]) <= time_index:
+                            name_data["counts"][label].append(0)
+
+                        name_data["counts"][label][time_index] += count
 
             for name, data in grouped_data.items():
                 time_series_length = len(data["time"])
@@ -222,8 +229,10 @@ def parse_2_args_time_series_output(file, pattern_text, start, name_group, label
         
         df = pd.DataFrame(df_data).set_index("time")
         grouped_dfs[name] = df
+        
 
     return grouped_dfs
+
 
 
 """
