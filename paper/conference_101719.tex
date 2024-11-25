@@ -63,7 +63,17 @@ should not be used}
 
 \section{Background}
 
+    \textit{Deep learning} is a subset of machine learning algorithms based on neural networks with many layers. Training is done by passing all data
+    through the entire network to calculate a loss, this is called the forward pass, the network parameters are then updated using the calculated loss,
+    this is called backpropagation. \\
+    To accelerate the training process computation can be distributed among several workers, this is called Distributed Parallel learning and involves cloning
+    the model parameters among all the workers, each of the individualy processes a subset of the data, the loss is then averaged and all the workers update their
+    parameters with the same loss, ensuring consistency among all workers.
+
 \begin{itemize}
+    
+
+
     \item DL involves iterating multiple times (epochs) through a dataset
     \item Dl is a subset of machine learning algorithms based on neural networks
     \item for accuracy, all data is read exactly once per one epoch and is done in random reads(I/O intensive)
