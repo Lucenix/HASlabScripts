@@ -82,20 +82,20 @@ should not be used}
     
 
 
-    \item DL involves iterating multiple times (epochs) through a dataset
-    \item Dl is a subset of machine learning algorithms based on neural networks
+    % \item DL involves iterating multiple times (epochs) through a dataset
+    % \item Dl is a subset of machine learning algorithms based on neural networks
     \item for accuracy, all data is read exactly once per one epoch and is done in random reads(I/O intensive)
-    \item passing it through all the layers to calculate a loss (forward pass)
-    \item use calculated loss to update the learnable parameters of the network (backpropagation)
+    % \item passing it through all the layers to calculate a loss (forward pass)
+    % \item use calculated loss to update the learnable parameters of the network (backpropagation)
     \item SGD is an optimizer for loss function minimization widely used for its lower computation compared to working through the whole dataset 
     \item increasing batch-size in the last years, from the usual range of 32-256 \cite{nvme}
     \item DL is usually I/O-bound [need source], due to the use of accelerators (GPU), size of the data and random reads
-    \item pytorch is a DL framework with some particularities (Dataloader, ...)
+    % \item pytorch is a DL framework with some particularities (Dataloader, ...)
     \item Tensorflow is also a DL framework, with other particularities...
-    \item Imagenet
-    \item Distributed DNN training (data parallelism)
-    \item checkpointing involves saving the model state
-    \item in pytorch its done explicitly with torch.save() and in official workloads is done in-between epochs
+    % \item Imagenet
+    % \item Distributed DNN training (data parallelism)
+    % \item checkpointing involves saving the model state
+    % \item in pytorch its done explicitly with torch.save() and in official workloads is done in-between epochs
     \item eBPF's
 \end{itemize}
 
@@ -132,7 +132,14 @@ should not be used}
     \item high level description of the system
 \end{itemize}
 
-\section{Evaluation Methodology}
+\section{Evaluation}
+\subsection{Experimental Setup}
+
+We analyzed the training of the resnet50 \cite{resnet50} and alexnet \cite{resnet50} models
+provided by \textit{PyTorch} on a machine with a Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz
+
+
+\subsection{Methodology}
 
 \begin{itemize}
     \item dstat, nvidia-smi to get cost of using the tool
@@ -140,7 +147,7 @@ should not be used}
     \item grafana dashboard to get data 
 \end{itemize}
 
-\section{Evaluation Results}
+\subsection{Results}
 
 \section{Conclusion}
 
