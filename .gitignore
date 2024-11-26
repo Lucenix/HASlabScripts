@@ -7,7 +7,6 @@ eBPFs-tools/parser/examples
 eBPFs-tools/parser/plots
 *.qmd
 
-!conference_101719.pdf
 !conference_101719.tex
 
 __pycache__/
