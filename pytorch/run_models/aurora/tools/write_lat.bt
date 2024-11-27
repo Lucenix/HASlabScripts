@@ -16,8 +16,15 @@ tracepoint:syscalls:sys_enter_pwrite64
 kprobe:vfs_write
 / @start[tid] /
 {
-    @filename[tid] = str(((struct file *)arg0)->f_path.dentry->d_name.name);
-    @offset[tid]   = *arg3;
+    @file[tid] = arg0;
+    @offset[tid] = *arg3;
+}
+
+kretprobe:vfs_read
+/ @start[tid] /
+{ 
+    @filename[tid] = str(((struct file *)@file[tid])->f_path.dentry->d_name.name);
+    delete(@file[tid]);
 }
 
 tracepoint:syscalls:sys_exit_write,
@@ -35,8 +42,9 @@ tracepoint:syscalls:sys_exit_pwrite64
 
 END
 {
-    delete(@start[tid]);
-    delete(@filename[tid]);
-    delete(@count[tid]);
-    delete(@offset[tid]);
+    clear(@start);
+    clear(@filename);
+    clear(@file);
+    clear(@count);
+    clear(@offset);
 }
