@@ -76,21 +76,16 @@ should not be used}
 
     To accelerate the training process, the dataset can be distributed among several workers in Distributed Parallel Learning. The model parameters are cloned among all the workers, each of them iterates through a subset of the data, and then the gradients are averaged and shared with all the workers. This way, all replicas of the network are updated with the same gradients, ensuring all workers remain consistent with each other.
 
-    As models get larger and more nodes are used in training, especially in HPC centers, fault tolerance becomes an important issue. To address this issue, it is common for the model state to be
-    saved periodically to persistent storage. Normally, this is done at epoch boundaries \cite{checkfreq}. In case of failure the model state can be loaded from
-    storage and training can be restarted. 
+    As models get larger and more nodes are used in training, especially in High Performance Computing (HPC) centers, fault tolerance becomes an important issue. To address it, it is common for the model state to be saved periodically to persistent storage. Normally, this is done at epoch boundaries \cite{checkfreq}, which stalls the algorithm waiting for I/O. In case of failure the model state can be loaded from storage and training can be restarted.
 
-    
-
-    \textit{Pytorch} \cite{pytorch} is an open source AI training library that provides utilities for operating on tensors with GPU support and dataloading, a library of
-    DNN models and suport for dataparallel training of AI models.
+    Various frameworks exist to facilitate the Implementation of DL models, and each one tackles I/O differently. \textit{Pytorch} \cite{pytorch} is an up-and-coming open source AI training library, reportedly becoming commonplace in HPC centers. It provides utilities for operating on tensors with GPU support; various customizable data loading and checkpointing specifications, like parallel data treatment by different workers; a library of ready-to-use DNN models; and support for data parallel training of AI models.
 
     \subsection{eBPF}
 
     \textit{Extended Berkeley Packet Filter} (eBPF) is a technology that has attracted massive adoption by both industry and academia, with a wide range of applications such as network, storage, security and sandboxing. 
     The main advantages are being able to run programs in kernel without modifying the kernel source code nor rebooting the system in order to take effect \cite{eBPFSurvey}.
 
-    To facilitate the creation, compilation and execution of eBPF programs, bpftrace \cite{bpftrace}, a high-level tracing language inspired in DTrace, can be used in conjunction to a collection of tools, some are also available in \cite{bgreggBook}.
+    To facilitate the creation, compilation and execution of eBPF programs, bpftrace \cite{bpftrace}, a high-level tracing language inspired in DTrace, can be used in conjunction to a wide collection of tools, some are also available in \cite{bgreggBook}.
 \begin{itemize}
     % \item DL involves iterating multiple times (epochs) through a dataset
     % \item Dl is a subset of machine learning algorithms based on neural networks
