@@ -91,7 +91,7 @@ def main():
             torch.save(ckp, PATH)
             my_log(f"{datetime.datetime.now()}: Epoch {epoch} | Checkpoint saved at {PATH}")
 
-        subprocess.run("echo 3 > proc/sys/drop_caches")
+        subprocess.run("echo 3 > /proc/sys/drop_caches")
 
         #scheduler.step()
 
