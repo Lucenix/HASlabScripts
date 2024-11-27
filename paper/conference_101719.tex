@@ -69,17 +69,19 @@ should not be used}
 
     \textit{Deep learning} (DL) is a subset of machine learning, characterized by its bigger size and heterogeneity of both algorithms and training datasets, needed for accurate predictions \cite{gradient}. State-of-the-art DL utilizes the Stochastic Gradient Descent (SGD) method, which consists in breaking down sequential training epochs in iterations, wherein subsets of the entire dataset, called \textit{mini-batches}, are read, preprocessed in memory and fed to the algorithm. To reduce training time, this computation may be done in accelerators, like GPUs, and may also overlap the I/O of future batches. To maximize accuracy, in each epoch, each data sample is iterated through only once and is chosen randomly to integrate a batch. 
     
-    DL's I/O patterns have been attributed as the cause for the increasing storage bottleneck, found recently in DL applications \cite{beegfs}. On the one hand, the usual dataset's average sample is very small, but also very numerous. For example, 75\% of ImageNet's samples are smaller than 147 KB, while the dataset consists of over 14 million images. Allied with the random choosing of samples for batches, these patterns don't allow for the typical optimizations of traditional storage systems, directed at large and sequential patterns. On the other hand, the number of samples of each batch has been increasing over the last years, from 32, to 256 and, in some cases, to the 80.000s, in order to better utilize the higher computational power. This increase comes at an increased I/O load per iteration \cite{nvme}.
+    DL's I/O patterns have been attributed as the cause for the increasing storage bottleneck found recently in DL applications \cite{beegfs}. On the one hand, the usual dataset's average sample is very small, but also very numerous. For example, 75\% of ImageNet's samples are smaller than 147 KB, while the dataset consists of over 14 million images. Allied with the random choosing of samples for batches, these patterns don't allow for the typical optimizations of traditional storage systems, directed at large and sequential patterns. On the other hand, the number of samples of each batch has been increasing over the last years, from 32, to 256 and, in some cases, to the 80.000s, in order to better utilize the higher computational power \cite{nvme}. This comes at an increased I/O load per iteration, while also reducing the overlap between I/O and computation, as GPU tends to scale better with higher input sizes than the I/O to fetch them \cite{TFbenchmark}.
     % passing the chosen data as input through the entire network layer by layer, a method called the forward pass. Afterwards, a chosen loss function compares the difference the network's output and the known ground truth, and the gradient of this function is computed in regard to the network's weights. This step is named backpropagation. The gradients are then used to update the weights of all the layers, converging to a minimization of the loss function, through an algorithm called Gradient Descent, that uses the entire dataset as the input. Each pass of the entire dataset is called an epoch, and several are computed in order to converge to the minimum. \cite{gradient} acho que isto está muito grande e fala pouco do I/O
     
     %However, this approach is extremely costly due to the aforementioned dimension of the dataset, so state-of-the-art algorithms use Stochastic Gradient Descent (SGD) instead, an approximation that breaks an epoch into iterations, that go through the only a subset of the dataset, called a \textit{mini-batch}, as input, ensuring that each data sample is iterated through only once \cite{sgd}. Even if the original SGD only fetches a single data sample per iteration, the number of samples has been increasing over the last years, from 32, to 256 and ultimately to the 80.000s, in order to better utilize the increasing computational power afforded by the widespread utilization of GPUs as accelerators, but at an increased I/O load per iteration \cite{nvme}.
 
-    To accelerate the training process, the dataset can be distributed among several workers in Distributed Parallel Learning. The model parameters are cloned among all the workers, each of them iterates through a subset of the data, the gradients are then averaged and shared with all the workers. This way, all replicas of the network are updated with the same gradients, ensuring all workers remain consistent with each other.
+    To accelerate the training process, the dataset can be distributed among several workers in Distributed Parallel Learning. The model parameters are cloned among all the workers, each of them iterates through a subset of the data, and then the gradients are averaged and shared with all the workers. This way, all replicas of the network are updated with the same gradients, ensuring all workers remain consistent with each other.
 
     As models get larger and more nodes are used in training, especially in HPC centers, fault tolerance becomes an important issue. To address this issue, it is common for the model state to be
     saved periodically to persistent storage. Normally, this is done at epoch boundaries \cite{checkfreq}. In case of failure the model state can be loaded from
     storage and training can be restarted. 
+
     
+
     \textit{Pytorch} \cite{pytorch} is an open source AI training library that provides utilities for operating on tensors with GPU support and dataloading, a library of
     DNN models and suport for dataparallel training of AI models.
 
@@ -92,14 +94,14 @@ should not be used}
 \begin{itemize}
     % \item DL involves iterating multiple times (epochs) through a dataset
     % \item Dl is a subset of machine learning algorithms based on neural networks
-    \item for accuracy, all data is read exactly once per one epoch and is done in random reads(I/O intensive)
+    % \item for accuracy, all data is read exactly once per one epoch and is done in random reads(I/O intensive)
     % \item passing it through all the layers to calculate a loss (forward pass)
     % \item use calculated loss to update the learnable parameters of the network (backpropagation)
     % \item SGD is an optimizer for loss function minimization widely used for its lower computation compared to working through the whole dataset 
     %\item increasing batch-size in the last years, from the usual range of 32-256 \cite{nvme}
-    \item DL is usually I/O-bound [need source], due to the use of accelerators (GPU), size of the data and random reads
+    % \item DL is usually I/O-bound [need source], due to the use of accelerators (GPU), size of the data and random reads
     % \item pytorch is a DL framework with some particularities (Dataloader, ...)
-    \item Tensorflow is also a DL framework, with other particularities...
+    % \item Tensorflow is also a DL framework, with other particularities...
     % \item Imagenet
     % \item Distributed DNN training (data parallelism)
     % \item checkpointing involves saving the model state
