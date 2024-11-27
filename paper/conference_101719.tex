@@ -134,9 +134,13 @@ should not be used}
 \end{itemize}
 
 \section{Design}
-    The system is composed of two main modules:
-    \textit{Collector}. For collecting system information during model training
-    \textit{Parcer}. Responsible for agreggating the collected data into usable forms, the Parcer is divided into two submodules, the parcer, that aggregates the data collected andd the plotter which  
+    The system is composed of three main components:
+    \begin{itemize}
+        \item \textit{Collector}. Allows collecting system information during model training.
+        \item \textit{BackEnd}. Offers a method for storing, searching and analyzing the raw data collected.
+        \item \textit{Visualizer}. Provides a way to represent the data collected through different graphical formats in order to facilitate the understanding and analysis of complex logs by transforming them into more intuitive visual representations.
+    \end{itemize}
+    %\textit{Parcer}. Responsible for agreggating the collected data into usable forms, the Parcer is divided into two submodules, the parcer, that aggregates the data collected andd the plotter which  
 
 \section{Implementation}
     The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parcer eas imlemented using python and ploted with the matplotlib and plotly python libraries 
