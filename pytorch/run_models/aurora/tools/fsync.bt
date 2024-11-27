@@ -1,0 +1,16 @@
+#!/usr/bin/env bpftrace
+/*
+ * fsyncsnoop - List fsyncs on the system.
+ *
+ * 25-Nov-2024  Carlos Machado   Created this.
+ */
+
+BEGIN
+{
+    printf("%-14s %s\n", "TIME", "COMM");
+}
+
+tracepoint:syscalls:sys_enter_fsync
+{
+    printf("%-14s %s\n", strftime("%H:%M:%S.%f", nsecs), comm);
+}

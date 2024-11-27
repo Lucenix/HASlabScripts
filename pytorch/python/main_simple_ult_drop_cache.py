@@ -1,8 +1,6 @@
 import argparse
 import os
 
-import subprocess
-
 import socket
 
 import torch
@@ -91,7 +89,8 @@ def main():
             torch.save(ckp, PATH)
             my_log(f"{datetime.datetime.now()}: Epoch {epoch} | Checkpoint saved at {PATH}")
 
-        subprocess.run("echo 3 > /proc/sys/drop_caches")
+        with open("/proc/sys/drop_caches", "w") as fd:
+            fd.write(3)
 
         #scheduler.step()
 

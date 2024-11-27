@@ -1,0 +1,9 @@
+#!/usr/bin/env bpftrace
+
+BEGIN{
+    printf("%-17s %s\n", "TIME", "ADVICE");
+}
+
+tracepoint:syscalls:sys_enter_madvise{
+    printf("%-17s %d\n", strftime("%H:%M:%S.%f", nsecs), args->behavior);
+}

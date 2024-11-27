@@ -3,7 +3,7 @@
 sudo bash -c "echo 3 > /proc/sys/vm/drop_caches"
 
 SCRATCH="/home/gsd/andrelucena"
-MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult.py"
+MAIN_PATH="$SCRATCH/scripts/pytorch/python/main_simple_ult_drop_cache.py"
 DSTAT_PATH="$SCRATCH/scripts/pytorch/python/dstat.py"
 DATA_DIR="/home/gsd/goncalo/imagenet_subset"
 VENV_DIR="$SCRATCH/pytorch_venv"

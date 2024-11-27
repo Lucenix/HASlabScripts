@@ -1,0 +1,32 @@
+import re
+
+first_stop = '132'
+second_start = '5319'
+second_stop= '14254'
+filepath = "/home/gsd/andrelucena/statistics/eBPF_small_run_3_epoch_24_11/alexnet_3_64_0_false/biolatency_interval"
+
+with open(filepath, "r") as f:
+    l = re.findall(r'\[128, 256\)\s*(\d+)', f.read())
+    print(l)
+    s1 = 0
+    s2 = 0
+    s3 = 0
+    flag = -1
+    for x in l:
+        if flag == -1:
+            if x != first_stop:
+                s1 += int(x)
+            else:
+                flag = 0
+        if flag == 0 and x == second_start:
+            flag = 1
+        if flag == 1:
+            if x != second_stop:
+                s2 += int(x)
+            else:
+                flag = 2
+        if flag == 2:
+            s3 += int(x)
+    print(s1)
+    print(s2)
+    print(s3)
