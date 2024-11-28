@@ -64,22 +64,25 @@ should not be used}
 
 \section{Background}
 
-    In this section, we elaborate on both the Deep Learning algorithms we seek to analyze, with focus on their I/O description, and the eBPF tools we'll use for that end.
-
-    \subsection{I/O in Deep Learning}
-
-    \textit{Deep learning} (DL) is a subset of machine learning, characterized by its bigger size and heterogeneity of both algorithms and training datasets, needed for accurate predictions \cite{gradient}. State-of-the-art DL utilizes the Stochastic Gradient Descent (SGD) method, which consists in breaking down sequential training epochs in iterations, wherein subsets of the entire dataset, called \textit{mini-batches}, are read, preprocessed in memory and fed to the algorithm. To reduce training time, this computation may be done in accelerators, like GPUs, and may also overlap the I/O of future batches. To maximize accuracy, in each epoch, each data sample is iterated through only once and is chosen randomly to integrate a batch. 
-    
-    DL's I/O patterns have been attributed as the cause for the increasing storage bottleneck found recently in these applications \cite{beegfs}. On the one hand, the usual dataset's average sample is very small, but also very numerous. For example, 75\% of ImageNet's samples are smaller than 147 KB, while the dataset itself consists of over 14 million images. Allied with the random choosing of samples for batches, these patterns don't allow for the typical optimizations of traditional storage systems, directed at large and sequential patterns. On the other hand, the number of samples of each batch has been increasing over the last years, from 32, to 256 and, in some cases, to the 80.000s, in order to better utilize the higher computational power \cite{nvme}. This comes at an increased I/O load per iteration, while also reducing the overlap between I/O and computation, as GPU tends to scale better with higher input sizes than the I/O to fetch them \cite{TFbenchmark}.
     % passing the chosen data as input through the entire network layer by layer, a method called the forward pass. Afterwards, a chosen loss function compares the difference the network's output and the known ground truth, and the gradient of this function is computed in regard to the network's weights. This step is named backpropagation. The gradients are then used to update the weights of all the layers, converging to a minimization of the loss function, through an algorithm called Gradient Descent, that uses the entire dataset as the input. Each pass of the entire dataset is called an epoch, and several are computed in order to converge to the minimum. \cite{gradient} acho que isto está muito grande e fala pouco do I/O
     
     %However, this approach is extremely costly due to the aforementioned dimension of the dataset, so state-of-the-art algorithms use Stochastic Gradient Descent (SGD) instead, an approximation that breaks an epoch into iterations, that go through the only a subset of the dataset, called a \textit{mini-batch}, as input, ensuring that each data sample is iterated through only once \cite{sgd}. Even if the original SGD only fetches a single data sample per iteration, the number of samples has been increasing over the last years, from 32, to 256 and ultimately to the 80.000s, in order to better utilize the increasing computational power afforded by the widespread utilization of GPUs as accelerators, but at an increased I/O load per iteration \cite{nvme}.
 
-    To accelerate the training process, the dataset can be distributed among several workers in Distributed Data Parallel Learning. The model parameters are cloned among all the workers, each of them iterates through a subset of the data, and then the gradients are averaged and shared with all the workers. This way, all replicas of the network are updated with the same gradients, ensuring all workers remain consistent with each other.
+    In this section, we elaborate on both the Deep Learning algorithms we seek to analyze, with focus on their I/O description, and the eBPF tools we'll use for that end.
+
+    \subsection{Deep Learning}
+
+    Deep learning (DL) is a subset of machine learning, characterized by its bigger size and heterogeneity of both algorithms and training datasets, needed for accurate predictions \cite{gradient}. State-of-the-art DL utilizes the Stochastic Gradient Descent (SGD) method, which consists in breaking down sequential training epochs in iterations, wherein subsets of the entire dataset, called \textit{mini-batches}, are read, preprocessed in memory and fed to the algorithm. To reduce training time, this computation may be done in accelerators, like GPUs, and may also be overlapped by the parallel I/O of future batches. For maximum accuracy, each data sample is iterated through only once in each epoch and each batch is composed of random data samples.
+
+    To further accelerate the training process, the dataset can be distributed among several workers in Distributed Data Parallel Learning. The model parameters are cloned among all the workers, each of them iterates through a subset of the data, and then the gradients are averaged and shared with all the workers. This way, all replicas of the network are updated with the same gradients, ensuring all workers remain consistent with each other.
 
     As models get larger and more nodes are used in training, especially in High Performance Computing (HPC) centers, fault tolerance becomes an important issue. To address it, it is common for the model state to be saved periodically to persistent storage. Normally, this is done at epoch boundaries \cite{checkfreq}, which stalls the algorithm, waiting for I/O, whose size depends on the dimension of the network. In case of failure, the model state can be loaded from storage and training can be restarted.
 
     Various frameworks exist to facilitate the Implementation of DL models, and each one tackles I/O differently. \textit{Pytorch} \cite{pytorch} is an up-and-coming open source AI training library, reportedly becoming commonplace in HPC centers. It provides utilities for operating on tensors with GPU support; various customizable data loading and checkpointing specifications, like parallel data treatment by different workers; a library of ready-to-use DNN models; and support for data parallel training of AI models. Its data structure is analogous to those used in other frameworks, like Tensorflow, and common databases used for DL, like LMDB, as it is based on NumPy, which uses memory mapping for its metadata access \cite{LMDB}.
+
+    \subsection{I/O in Deep Learning}
+
+    DL's I/O patterns have been attributed as the cause for the increasing storage bottleneck found recently in these applications \cite{beegfs}. On the one hand, the usual dataset's average sample is very small, but also very numerous. For example, 75\% of ImageNet's samples are smaller than 147 KB, while the dataset itself consists of over 14 million images. Allied with the random choosing of samples for batches, these patterns don't allow for the typical optimizations of traditional storage systems, directed at large and sequential patterns. On the other hand, the number of samples of each batch has been increasing over the last years, from 32, to 256 and, in some cases, to the 80.000s, in order to better utilize the higher computational power \cite{nvme}. This comes at an increased I/O load per iteration, while also reducing the overlap between I/O and computation, as GPU computation tends to scale better than I/O performance when the input sizes are bigger \cite{TFbenchmark}.
 
     \subsection{eBPF}
 
@@ -109,16 +112,20 @@ should not be used}
 
 We categorize related work into three groups: 
 \begin{itemize}
-    \item Characterization of machine learning and deep learning workloads using methods that do not employ in-kernel metric collection;
+    \item Characterization of machine learning and DL workloads using methods that do not employ in-kernel metric collection;
     \item Studies leveraging eBPF to observe system-level interactions in non-machine learning contexts;
     \item Research work utilizing eBPF to characterize machine learning workloads through kernel-level statistics. 
 \end{itemize}
 
+\subsection{Machine Learning Characterization}
 
+\subsection{non-Machine Learning Observation through eBPFs}
+
+\subsection{eBPFs in Kernel-Level Machine Learning analysis}
 
 In there is the characterization of I/O workloads in HPC systems
 
-There is some work that characterizes patterns in Machine Learning \cite{OanaML} and Deep Learning \cite{OanaDL} but is only focused in I/O.
+There is some work that characterizes patterns in Machine Learning \cite{OanaML} and DL \cite{OanaDL} but is only focused in I/O.
 
 \begin{itemize}
     % \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{9229605} \cite{zoomin} 
@@ -155,7 +162,7 @@ There is some work that characterizes patterns in Machine Learning \cite{OanaML}
     %\textit{Parcer}. Responsible for agreggating the collected data into usable forms, the Parcer is divided into two submodules, the parcer, that aggregates the data collected andd the plotter which  
 
 \section{Implementation}
-    The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parcer was imlemented using python and ploted with the matplotlib and plotly python libraries 
+    The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parser was implemented using python and plotted with the matplotlib and plotly python libraries 
 
 \section{Evaluation}
 
