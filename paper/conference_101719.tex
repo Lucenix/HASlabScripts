@@ -106,7 +106,7 @@ such as DIO \cite{DIO} that allow the observation of I/O interactions between th
 
 % eBPFs in Kernel-Level Machine Learning analysis
 There are already some studies that uses eBPF's capability to provide kernel-level information to understand patterns such as \cite{eBPFDLNetwork} that
-leverages eBPF to monitor distributed deep learning training (DDL), investigating network bandiwth utilization in DDL.
+leverages eBPF to monitor distributed deep learning training (DDL), investigating network bandwidth utilization in DDL.
 eBPF has also been utilized to characterize machine and deep learning workloads, focusing on storage and I/O efficiency in training,
 revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}.
 
@@ -166,6 +166,8 @@ provided by \textit{PyTorch}, where they're defined with 50 layers and 13 layers
 
 
 \subsection{Results}
+
+\textbf{Observation 1.} Training images are read concurrently by multiple processes on training with several workers.
 
 \subsubsection{Checkpoint data persistence}
 We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
