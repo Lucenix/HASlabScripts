@@ -121,10 +121,11 @@ In there is the characterization of I/O workloads in HPC systems
 There is some work that characterizes patterns in Machine Learning \cite{OanaML} and Deep Learning \cite{OanaDL} but is only focused in I/O.
 
 \begin{itemize}
-    \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{tfdarshan} \cite{zoomin} 
+    % \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{9229605} \cite{zoomin} 
     \item MLPerf Storage/tese de um aluno da Oana
     \item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD PRELOAD, captura de de I/O request por intrumentação do código fonte.
-    \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{TFbenchmark}
+    % \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{8638422}
+    \item Caracterizar o I/O de LMDB, que é análoga à do PyTorch e do Tensorflow, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{LMDB}
     \item Comparar o overhead das leituras no treino inteiro com e sem shuffling. \cite{initial}
     \item Que métricas analisam principalmente?
     \begin{itemize}
@@ -154,7 +155,7 @@ There is some work that characterizes patterns in Machine Learning \cite{OanaML}
     %\textit{Parcer}. Responsible for agreggating the collected data into usable forms, the Parcer is divided into two submodules, the parcer, that aggregates the data collected andd the plotter which  
 
 \section{Implementation}
-    The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parcer eas imlemented using python and ploted with the matplotlib and plotly python libraries 
+    The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parcer was imlemented using python and ploted with the matplotlib and plotly python libraries 
 
 \section{Evaluation}
 \subsection{Experimental Setup}
@@ -172,7 +173,18 @@ provided by \textit{PyTorch} on a machine with an Intel(R) Core(TM) i9-9900K CPU
     \item grafana dashboard to get data 
 \end{itemize}
 
+
+
 \subsection{Results}
+
+\subsubsection{Checkpoint data persistence}
+We observed that no calls to fsynch() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not garanty data persistance.
+We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
+
+\subsubsection{System call usage comparison between models}
+We found that the overwelming majority(3.7B on tests with 2 epochs and batch size of 64) of system calls performed by the python processes during training of the Resnet50 model were sched_yield(), when looking at the results segregated by thread we found that ... this is not the case for training Alexnet in the same conditions
+
+
 
 \section{Conclusion}
 
