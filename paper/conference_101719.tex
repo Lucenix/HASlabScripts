@@ -91,29 +91,16 @@ To facilitate the creation, compilation and execution of eBPF programs, bpftrace
 
 \section{Related work}
 
-We categorize related work into three groups:
-\begin{itemize}
-	\item Characterization of machine learning and DL workloads using methods that do not employ in-kernel metric collection;
-	\item Studies leveraging eBPF to observe system-level interactions in non-machine learning contexts;
-	\item Research work utilizing eBPF to characterize machine learning workloads through kernel-level statistics.
-\end{itemize}
-
-\subsection{Machine Learning Characterization}
+% Traditional HPC
 
 HPC centers have found a need for quality and agnostic I/O pattern identification for the wide array of scientific applications that run on them. Studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down, system-wide to single-job analysis, that considers both the center's "System Weather", using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, and the application patterns, using Darshan; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}.
 
-\subsection{non-Machine Learning Observation through eBPFs}
-
-\subsection{eBPFs in Kernel-Level Machine Learning analysis}
-
-% Machine Learning Characterization
-
-% Non-Machine Learning Observation through eBPFs
+% Observation through eBPFs
 In terms of eBPF, there are some tools that are used for system tracing and performance analysis,
 such as DIO \cite{DIO} that allow the observation of I/O interactions between the application and in-kernel storage,
 \cite{CAT} which is able to correlate the flow of storage and network requests application and \cite{tracee} that provides runtime security and forensics.  
 
-% eBPFs in Kernel-Level Machine Learning analysis
+% Machine Learning analysis with eBPFs
 There are already some studies that uses eBPF's capability to provide kernel-level information to understand patterns such as \cite{eBPFDLNetwork} that
 leverages eBPF to monitor distributed deep learning training (DDL), investigating network bandwidth utilization in DDL.
 eBPF has also been utilized to characterize machine and deep learning workloads, focusing on storage and I/O efficiency in training,
