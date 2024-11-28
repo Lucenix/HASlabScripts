@@ -92,7 +92,6 @@ To facilitate the creation, compilation and execution of eBPF programs, bpftrace
 \section{Related work}
 
 % Traditional HPC
-
 HPC centers have found a need for quality and agnostic I/O pattern identification for the wide array of scientific applications that run on them. Studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down, system-wide to single-job analysis, that considers both the center's "System Weather", using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, and the application patterns, using Darshan; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}.
 
 % Observation through eBPFs
