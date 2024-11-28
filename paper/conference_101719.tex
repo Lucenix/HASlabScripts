@@ -182,7 +182,7 @@ We observed that no calls to fsynch() were performed by the python processes, fu
 We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
 
 \subsubsection{System call usage comparison between models}
-We found that the overwelming majority(3.7B on tests with 2 epochs and batch size of 64) of system calls performed by the python processes during training of the Resnet50 model were sched_yield(), when looking at the results segregated by thread we found that ... this is not the case for training Alexnet in the same conditions
+We found that the overwelming majority(3.7B on tests with 2 epochs and batch size of 64) of system calls performed by the python processes during training of the Resnet50 model were sched\_yield(), when looking at the results segregated by thread we found that ... this is not the case for training Alexnet in the same conditions
 
 
 
