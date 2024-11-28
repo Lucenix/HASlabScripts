@@ -37,15 +37,17 @@ BEGIN
 }
 
 tracepoint:writeback:writeback_start
+/ comm == "python3" /
 {
 	@start[args.sb_dev] = nsecs;
 }
 
 tracepoint:writeback:writeback_written
+/ comm == "python3" /
 {
 	$sb_dev = args.sb_dev;
 	$s = @start[$sb_dev];
-	delete(@start, $sb_dev);
+	delete(@start[$sb_dev]);
 	$lat = $s ? (nsecs - $s) / 1000 : 0;
 
 	time("%H:%M:%S  ");
