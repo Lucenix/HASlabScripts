@@ -178,6 +178,9 @@ provided by \textit{PyTorch}, where they're defined with 50 layers and 13 layers
 \textbf{Observation 1.} Training images are read concurrently by multiple processes on training with several workers.
 \\
 \textbf{Observation 2.} fsync() is not called by the any processes created by PyTorch, this means that troch.save() does not call fsync(), confirming \cite{checkfreq}.
+\\
+\textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are sched\_yield(), these calls are all made by
+two threads created by the master process.
 
 \subsubsection{Checkpoint data persistence}
 We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
