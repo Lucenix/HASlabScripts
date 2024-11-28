@@ -175,7 +175,8 @@ two threads created by the master process.
 \\
 \textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class with no reads or writes to pipes being performed when num\_workers is set to zero
 \\
-\textbf{Observation 7.} There is a large 
+\textbf{Observation 7.} The pattern of block I/O operations is as follows: A large number of initial accesses followed by a drop until the moment the first epochs finishes, afterwards the accesses are done uniformly until the training finishes. This pattern is persistent through chances in the number of workers however, with less workers the initial spike of accesses lasts for longer.
+This pattern was visible even when the operating system's cache was dropped between epochs.
 
 \subsubsection{Checkpoint data persistence}
 We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
