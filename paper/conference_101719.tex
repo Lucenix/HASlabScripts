@@ -194,6 +194,10 @@ We analysed the write and read patterns to pipes of the Alexnet model, we found 
 each time a pipes as read from there was an initial read of 4 bytes followed by a subsequent read of more bytes.
 This pattern remained with variations of the num\_workers parameter for the pytorch DataLoader class altho the number of operations on pipes reduced in proportion to the number of workers, when this parameter was set to zero there was no reads or writes to pipes
 
+\subsubsection{Pattern of block I/O acceses}
+During the first epoch we found a large number of initial reads followed by drop up until the moment the second epoch begins, after which there is a uniform pattern of read's.
+This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decresed (no workers??).
+This pattern also mantained when the operating systems caches were dropped in between epochs 
 
 \section{Conclusion}
 
