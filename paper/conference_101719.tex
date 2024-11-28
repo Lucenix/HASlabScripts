@@ -100,7 +100,13 @@ We categorize related work into three groups:
 
 \subsection{Machine Learning Characterization}
 
-HPC centers have found a need for quality and agnostic I/O pattern identification for the wide array of scientific applications that run on them. Studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down, system-wide to single-job analysis, that considers both the center's "System Weather", using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, and the application patterns, using Darshan; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}.
+HPC centers' wide array of ran scientific applications has fostered a need for quality and agnostic I/O pattern identification. Other studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to transparently, through \texttt{LD\_PRELOAD}, classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down analysis, from system-wide, using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, to single-job, using Darshan, while also introducing two techniques for I/O analysis, a correlation matrix between runs with different parameters and sweep-line based analysis of file access bottlenecks; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}.
+
+With DL applications gaining ground in HPC centers, studies have adapted to specific analysis of their I/O traits. Some have kept Darshan as their backbone (\cite{IOHPCDLBOOK,CharacterizationMLIOLeadHPC,DFTracerAIHPC,UnderstandingDLIOHPC}), especially TF-Darshan \cite{tfdarshan}, that transparently integrates it with the DL framework Tensorflow's own profiler TensorBoard through runtime linkage. 
+
+However, Darshan itself lacks functionality to adequately track \texttt{mmap} based data manipulation, like \texttt{msync} calls, without additional, intrusive extensions \cite{tfdarshan}.
+
+
 
 \subsection{non-Machine Learning Observation through eBPFs}
 
