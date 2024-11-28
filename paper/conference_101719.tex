@@ -50,12 +50,13 @@ should not be used}
 \section{Introduction}
 \begin{itemize}
     \item Machine learning has increased in popularity
+    \item Deep Learning is a subset of Machine Learning
     \begin{itemize}
         \item image classification
         \item natural language processing
     \end{itemize}
     \item studies have tried to analyze I/O patterns in DL Workflows (source)
-    \item I/O Characterization has served to produce diverse assumptions about DL I/O behavior, like high overhead for random reads, which are commonly used to justify various types of optimization explorations (\cite{LMDB}, \cite{nvme}, \cite{beegfs}). Application-specific storage characterization is required to find unique and worthwhile solutions for newer performance problems.
+    \item I/O Characterization has served to produce diverse assumptions about DL I/O behavior, like high overhead for random reads, which are commonly used to justify various types of optimization explorations (\cite{LMDB}, \cite{nvme}, \cite{beegfs}), and inform other applications based on them, like benchmarks specific to DL \cite{TFbenchmark}. Application-specific storage characterization is required to find unique and worthwhile solutions for newer performance problems.
     \item very few get down to kernel level
     \item eBPF are ...
     \item we seek to provide a tool to Characterize DL workloads using eBPF's
@@ -136,8 +137,8 @@ There is some work that characterizes patterns in Machine Learning \cite{OanaML}
     \item O que falta fazer?
     \begin{itemize}
         \item Análise empírica dos padrões de I/O como parte do processo de treino ao longo do tempo
-        %\item Análise da cache como interveniente no processo de I/O
-        %\item Testes de Rede (para modelos distribuídos)
+        \item Análise da cache como interveniente no processo de I/O
+        \item Testes de Rede (para modelos distribuídos)
         \item Analisar PyTorch com o nível de detalhe que analisaram outras
         \item Analisar kernel-level I/O calls 
     \end{itemize}
