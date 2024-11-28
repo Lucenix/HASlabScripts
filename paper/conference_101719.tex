@@ -178,22 +178,22 @@ two threads created by the master process.
 \textbf{Observation 7.} The pattern of block I/O operations is as follows: A large number of initial accesses followed by a drop until the moment the first epochs finishes, afterwards the accesses are done uniformly until the training finishes. This pattern is persistent through chances in the number of workers however, with less workers the initial spike of accesses lasts for longer.
 This pattern was visible even when the operating system's cache was dropped between epochs.
 
-\subsubsection{Checkpoint data persistence}
-We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
-We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
+% \subsubsection{Checkpoint data persistence}
+% We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
+% We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
 
-\subsubsection{System call usage comparison between models}
-We found that the overwhelming majority(3.7B on tests with 2 epochs and batch size of 64) of system calls performed by the python processes during training of the ResNet50 model were sched\_yield(), when looking at the results segregated by thread we found that ... this is not the case for training AlexNet in the same conditions
+% \subsubsection{System call usage comparison between models}
+% We found that the overwhelming majority(3.7B on tests with 2 epochs and batch size of 64) of system calls performed by the python processes during training of the ResNet50 model were sched\_yield(), when looking at the results segregated by thread we found that ... this is not the case for training AlexNet in the same conditions
 
-\subsubsection{Read and Write patterns on pipes}
-We analyzed the write and read patterns to pipes of the AlexNet model, we found approximately twice as many reads from pipes as there were writes, upon looking into the pattern we noticed that
-each time a pipe was read from, there was an initial read of 4 bytes followed by a subsequent read of more bytes.
-This pattern remained with variations of the num\_workers parameter for the PyTorch DataLoader class, although the number of operations on pipes reduced in proportion to the number of workers. Conclusively, when this parameter was set to zero workers, there were no reads or writes to pipes.
+% \subsubsection{Read and Write patterns on pipes}
+% We analyzed the write and read patterns to pipes of the AlexNet model, we found approximately twice as many reads from pipes as there were writes, upon looking into the pattern we noticed that
+% each time a pipe was read from, there was an initial read of 4 bytes followed by a subsequent read of more bytes.
+% This pattern remained with variations of the num\_workers parameter for the PyTorch DataLoader class, although the number of operations on pipes reduced in proportion to the number of workers. Conclusively, when this parameter was set to zero workers, there were no reads or writes to pipes.
 
-\subsubsection{Pattern of block I/O access}
-During the first epoch we found numerous initial reads followed by drop up until the moment the second epoch begins, after which there is a uniform pattern of read's.
-This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decreased (no workers??).
-This pattern also maintained when the operating systems caches were dropped in between epochs
+% \subsubsection{Pattern of block I/O access}
+% During the first epoch we found numerous initial reads followed by drop up until the moment the second epoch begins, after which there is a uniform pattern of read's.
+% This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decreased (no workers??).
+% This pattern also maintained when the operating systems caches were dropped in between epochs
 
 \section{Conclusion}
 
