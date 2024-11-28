@@ -78,7 +78,7 @@ should not be used}
 
     As models get larger and more nodes are used in training, especially in High Performance Computing (HPC) centers, fault tolerance becomes an important issue. To address it, it is common for the model state to be saved periodically to persistent storage. Normally, this is done at epoch boundaries \cite{checkfreq}, which stalls the algorithm, waiting for I/O, whose size depends on the dimension of the network. In case of failure, the model state can be loaded from storage and training can be restarted.
 
-    Various frameworks exist to facilitate the Implementation of DL models, and each one tackles I/O differently. \textit{Pytorch} \cite{pytorch} is an up-and-coming open source AI training library, reportedly becoming commonplace in HPC centers. It provides utilities for operating on tensors with GPU support; various customizable data loading and checkpointing specifications, like parallel data treatment by different workers; a library of ready-to-use DNN models; and support for data parallel training of AI models.
+    Various frameworks exist to facilitate the Implementation of DL models, and each one tackles I/O differently. \textit{Pytorch} \cite{pytorch} is an up-and-coming open source AI training library, reportedly becoming commonplace in HPC centers. It provides utilities for operating on tensors with GPU support; various customizable data loading and checkpointing specifications, like parallel data treatment by different workers; a library of ready-to-use DNN models; and support for data parallel training of AI models. Its data structure is analogous to those used in other frameworks, like Tensorflow, and common databases used for DL, like LMDB, as it is based on NumPy, which uses memory mapping for its metadata access \cite{LMDB}.
 
     \subsection{eBPF}
 
@@ -119,11 +119,10 @@ In there is the characterization of I/O workloads in HPC systems
 There is some work that characterizes patterns in Machine Learning \cite{OanaML} and Deep Learning \cite{OanaDL} but is only focused in I/O.
 
 \begin{itemize}
-    \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{9229605} \cite{zoomin} 
+    \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{tfdarshan} \cite{zoomin} 
     \item MLPerf Storage/tese de um aluno da Oana
     \item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD PRELOAD, captura de de I/O request por intrumentação do código fonte.
-    \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{8638422}
-    \item Caracterizar o I/O de LMDB, que é análoga à do PyTorch e do Tensorflow, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{LMDB}
+    \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{TFbenchmark}
     \item Comparar o overhead das leituras no treino inteiro com e sem shuffling. \cite{initial}
     \item Que métricas analisam principalmente?
     \begin{itemize}
@@ -136,8 +135,8 @@ There is some work that characterizes patterns in Machine Learning \cite{OanaML}
     \item O que falta fazer?
     \begin{itemize}
         \item Análise empírica dos padrões de I/O como parte do processo de treino ao longo do tempo
-        \item Análise da cache como interveniente no processo de I/O
-        \item Testes de Rede (para modelos distribuídos)
+        %\item Análise da cache como interveniente no processo de I/O
+        %\item Testes de Rede (para modelos distribuídos)
         \item Analisar PyTorch com o nível de detalhe que analisaram outras
         \item Analisar kernel-level I/O calls 
     \end{itemize}
@@ -159,7 +158,7 @@ There is some work that characterizes patterns in Machine Learning \cite{OanaML}
 \subsection{Experimental Setup}
 
 We analyzed the training of the resnet50 \cite{resnet50} and alexnet \cite{alexnet} models
-provided by \textit{PyTorch} on a machine with a Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz with
+provided by \textit{PyTorch} on a machine with an Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz with
 8 physical cores and 16 virtual cores and 16Gi of RAM and TU104 NVIDIA GPU
 
 
