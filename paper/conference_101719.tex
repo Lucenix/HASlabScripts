@@ -130,7 +130,7 @@ There is some work that characterizes patterns in Machine Learning \cite{OanaML}
 \begin{itemize}
     % \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{9229605} \cite{zoomin} 
     \item MLPerf Storage/tese de um aluno da Oana
-    \item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD PRELOAD, captura de de I/O request por intrumentação do código fonte.
+    \item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD\_PRELOAD, captura de de I/O request por intrumentação do código fonte.
     % \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{8638422}
     \item Caracterizar o I/O de LMDB, que é análoga à do PyTorch e do Tensorflow, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{LMDB}
     \item Comparar o overhead das leituras no treino inteiro com e sem shuffling. \cite{initial}
@@ -192,7 +192,8 @@ We observed however that in all tests performed that the checkpoint data was in 
 We found that the overwelming majority(3.7B on tests with 2 epochs and batch size of 64) of system calls performed by the python processes during training of the Resnet50 model were sched\_yield(), when looking at the results segregated by thread we found that ... this is not the case for training Alexnet in the same conditions
 
 \subsubsection{Read and Write patterns on pipes}
-We analysed the write and read patterns to pipes of the Alexnet model, we found aproximately twice as much reads from pipes as there were writes, upon lookin into the patter we noticed that each time a pipes as read from there was an initial read of 4 bytes followed by a subsequent read of more bytes.
+We analysed the write and read patterns to pipes of the Alexnet model, we found aproximately twice as much reads from pipes as there were writes, upon lookin into the patter we noticed that
+each time a pipes as read from there was an initial read of 4 bytes followed by a subsequent read of more bytes.
 This pattern remained with variations of the num\_workers parameter for the pytorch DataLoader class altho the number of operations on pipes reduced in proportion to the number of workers, when this parameter was set to zero there was no reads or writes to pipes
 
 
