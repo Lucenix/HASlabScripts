@@ -2,7 +2,7 @@
 
 BEGIN
 {
-    printf("%-17s %-6s %-16s %-12s %-20s %-12s %s\n", "TIMESTAMP", "PID", "OFFSET", "COUNT(B)", "RET(B)", "LAT(ns)", "FILENAME");
+    printf("%-17s %-6s %-16s %-12s %-20s %-12s %-12s %s\n", "TIMESTAMP", "PID", "OFFSET", "COUNT(B)", "RET(B)", "LAT(ns)", "PROBE", "FILENAME");
 }
 
 tracepoint:syscalls:sys_enter_read,
@@ -13,14 +13,23 @@ tracepoint:syscalls:sys_enter_pread64
     @count[tid] = args->count;
 }
 
-kprobe:vfs_read
+tracepoint:syscalls:sys_enter_readv
+/ comm == "python3" /
+{
+    @start[tid] = nsecs;
+    @count[tid] = args->vlen;
+}
+
+kprobe:vfs_read,
+kprobe:vfs_readv
 / @start[tid] /
 {
     @file[tid] = arg0;
     @offset[tid]   = *arg3;
 }
 
-kretprobe:vfs_read
+kretprobe:vfs_read,
+kretprobe:vfs_readv
 / @start[tid] /
 { 
     @filename[tid] = str(((struct file *)@file[tid])->f_path.dentry->d_name.name);
@@ -28,11 +37,12 @@ kretprobe:vfs_read
 }
 
 tracepoint:syscalls:sys_exit_read,
+tracepoint:syscalls:sys_exit_readv,
 tracepoint:syscalls:sys_exit_pread64
 / @start[tid] /
 {
     $now = nsecs;
-    printf("%-17s %-6d %-16llu %-12lu %-20lu %-12lu %s\n", strftime("%H:%M:%S.%f", $now), pid, @offset[tid], @count[tid], args->ret, $now - @start[tid], @filename[tid]);
+    printf("%-17s %-6d %-16llu %-12lu %-20lu %-12lu %-12s %s\n", strftime("%H:%M:%S.%f", $now), pid, @offset[tid], @count[tid], args->ret, $now - @start[tid], probe, @filename[tid]);
 
     delete(@start[tid]);
     delete(@filename[tid]);
