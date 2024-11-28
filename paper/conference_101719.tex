@@ -171,7 +171,9 @@ here i write text so that the following text is not indented
 two threads created by the master process.
 \\
 \textbf{Observation 4.} Checkpoint data was always written to persistent storage when torch.save() was called, confirmed with biolatency.
-\textbf{Observation 5.} When reading from a pipe, processes will read the first byte and then read a larger chunk of data, this results in there being approximately twice as many reads as there are writes to pipes
+\textbf{Observation 5.} When reading from a pipe, processes will read the first byte and then read a larger chunk of data, this results in there being approximately twice as many reads as there are writes to pipes, this pattern persists through chances to the num_workers parameter in the DataLoader class.
+\\
+\textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class with no reads or writes to pipes being performed when num_workers is set to zero
 
 \subsubsection{Checkpoint data persistence}
 We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
