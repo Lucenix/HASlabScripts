@@ -106,15 +106,18 @@ HPC centers have found a need for quality and agnostic I/O pattern identificatio
 
 \subsection{eBPFs in Kernel-Level Machine Learning analysis}
 
+% Machine Learning Characterization
+
+% Non-Machine Learning Observation through eBPFs
+In terms of eBPF, there are some tools that are used for system tracing and performance analysis,
+such as DIO \cite{DIO} that allow the observation of I/O interactions between the application and in-kernel storage,
+\cite{CAT} which is able to correlate the flow of storage and network requests application and \cite{tracee} that provides runtime security and forensics.  
+
+% eBPFs in Kernel-Level Machine Learning analysis
 There are already some studies that uses eBPF's capability to provide kernel-level information to understand patterns such as \cite{eBPFDLNetwork} that
 leverages eBPF to monitor distributed deep learning training (DDL), investigating network bandiwth utilization in DDL.
 eBPF has also been utilized to characterize machine and deep learning workloads, focusing on storage and I/O efficiency in training,
 revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}.
-
-
-In there is the characterization of I/O workloads in HPC systems
-
-There is some work that characterizes patterns in Machine Learning \cite{OanaML} and DL \cite{OanaDL} but is only focused in I/O.
 
 \begin{itemize}
 	% \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{9229605} \cite{zoomin} 
