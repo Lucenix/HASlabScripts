@@ -170,25 +170,27 @@ provided by \textit{PyTorch}, where they're defined with 50 and 13 layers, respe
 	\item grafana dashboard to get data
 \end{itemize}
 
-
-
 \subsection{Results}
 
-here i write text so that the following text is not indented
+Tables I and II show general statistics regarding the two models and the different parameters we tested for each.
+\\
 \textbf{Observation 1.} Training images are read concurrently by multiple processes on training with several workers.
 \\
-\textbf{Observation 2.} fsync() is not called by the any processes created by PyTorch, this means that troch.save() does not call fsync(), confirming \cite{checkfreq}.
+\textbf{Observation 2.} \texttt{fsync()} is not called by any of the processes created by PyTorch, this means that \texttt{torch.save()} does not call \texttt{fsync()}, confirming the assertion made in \cite{checkfreq}.
 \\
-\textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are sched\_yield(), these calls are all made by
-two threads created by the master process.
+\textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are \texttt{sched\_yield()}, these calls are all made by two threads created by the master process, which runs the main function and schedules the model's training.
 \\
-\textbf{Observation 4.} Checkpoint data was always written to persistent storage when torch.save() was called, confirmed with biolatency.
-\textbf{Observation 5.} When reading from a pipe, processes will read the first byte and then read a larger chunk of data, this results in there being approximately twice as many reads as there are writes to pipes, this pattern persists through chances to the num\_workers parameter in the DataLoader class.
+\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed with biolatency.
 \\
-\textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class with no reads or writes to pipes being performed when num\_workers is set to zero
+\textbf{Observation 5.} When reading from a pipe, processes will read in two times, the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the num\_workers parameter in the DataLoader class.
 \\
-\textbf{Observation 7.} The pattern of block I/O operations is as follows: A large number of initial accesses followed by a drop until the moment the first epochs finishes, afterwards the accesses are done uniformly until the training finishes. This pattern is persistent through chances in the number of workers however, with less workers the initial spike of accesses lasts for longer.
-This pattern was visible even when the operating system's cache was dropped between epochs.
+\textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class. When no workers are allocated, no reads or writes to pipes are performed.
+\\
+\textbf{Observation 7.} The pattern of block read operations is as follows: a large number of initial accesses followed by a gap, a practically complete drop to near 0 reads,  until the moment the first epoch finishes. During the remaining epochs, the accesses are done uniformly. 
+\\
+\textbf{Observation 8.} This pattern is persistent through changes in the number of workers, however, with fewer workers, the initial spike of accesses lasts for longer, and so the gap is smaller. With zero workers, the gap does not exist. 
+\\
+\textbf{Observation 9.} This pattern was visible even when the operating system's cache was dropped between epochs.
 
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
