@@ -37,13 +37,15 @@
 \maketitle
 
 \begin{abstract}
-	This document is a model and instructions for \LaTeX.
-	This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes,
-	or Math in Paper Title or Abstract.
+    Deep learning has seen a massive increase in usage in recent years. Often, the bottleneck in these types of workloads is I/O and because of this a large body of work has gone into 
+    the characterization of training workflows however these don't get down to the lower levels of the kernel and therefore lack some depth. eBPF have gained popularity for being a way
+    of running user space code on the kernel which allows for more in-depth data data gathering. We show that there are novel insights to be gained with the use of these tools.
+
+
 \end{abstract}
 
 \begin{IEEEkeywords}
-	component, formatting, style, styling, insert
+     DeepLearning, ResNet50, AlexNet, Pytorch, eBPF
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -73,7 +75,7 @@ Besides that, eBPF also brings some new challenges, so it is crucial to evaluate
 
 \textbf{Contributions.} The main contributions of this paper are as follows:
 \begin{itemize}
-	\item Provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
+	\item Provide a methodology for characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
 	\item Provide useful insights about the patterns of certain DL workflows based on an analysis of the collected data, as a Proof of Concept of the variety of insights that may be collected this way.
 \end{itemize}
 
@@ -395,7 +397,6 @@ Tables I and II show general statistics regarding the two models and the differe
 
 
 \section{Conclusion and Future Work}
-
 
 Future work will involve scaling up the tests done, not only in terms of dataset and model size, but also investing into Distributed Learning, both for Data and Model distribution. eBPF tools permit the tracking of network calls and data transfers, so they aren't limited to tracking only typical disk I/O.
 
