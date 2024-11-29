@@ -37,13 +37,15 @@
 \maketitle
 
 \begin{abstract}
-	This document is a model and instructions for \LaTeX.
-	This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes,
-	or Math in Paper Title or Abstract.
+    Deep learning has seen a massive increase in usage in recent years. Often, the bottleneck in these types of workloads is I/O and because of this a large body of work has gone into 
+    the characterization of training workflows however these don't get down to the lower levels of the kernel and therefore lack some depth. eBPF have gained popularity for being a way
+    of running user space code on the kernel which allows for more in-depth data data gathering. We show that there are novel insights to be gained with the use of these tools.
+
+
 \end{abstract}
 
 \begin{IEEEkeywords}
-	component, formatting, style, styling, insert
+     DeepLearning, ResNet50, AlexNet, Pytorch, eBPF
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -69,11 +71,11 @@ Existing tools, such as those developed using bpftrace, a high-level language th
 such as CPU, memory, disk, the virtual file system, and network.
 Our goal is to show that eBPF tooling has the possibility to provide an innovative I/O characterization. To that end, we leveraged and modified these tools to collect data at different kernel levels and gather statistics useful for the characterization of DL training workflows.
 
-Besides that, eBPF also brings some new challenges, so it is crucial to evaluate the overhead and limitations of these tools, to determine which are most suitable for our study and understanding the appropriate layers and points within the kernel where they should be applied.
+Besides that, eBPF's also bring some new challenges, so it is crucial to evaluate the overhead and limitations of these tools, to determine which are most suitable for our study and understanding the appropriate layers and points within the kernel where they should be applied.
 
 \textbf{Contributions.} The main contributions of this paper are as follows:
 \begin{itemize}
-	\item Provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
+	\item Provide a methodology for characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
 	\item Provide useful insights about the patterns of certain DL workflows based on an analysis of the collected data, as a Proof of Concept of the variety of insights that may be collected this way.
 \end{itemize}
 
@@ -105,9 +107,9 @@ Deep learning (DL) is a subset of machine learning, characterized by its bigger 
 
 To further accelerate the training process, the dataset can be distributed among several workers in Distributed Deep Learning (DDL). When partitioning data, the model parameters are cloned among all the workers, each of them iterates through a subset of the data, and then the gradients are averaged and shared with all the workers. This way, all replicas of the network are updated with the same gradients, ensuring all workers remain consistent with each other.
 
-As models get larger and more nodes are used in training, especially in High Performance Computing (HPC) centers, fault tolerance becomes an important issue. To address it, it is common for the model state to be saved periodically to persistent storage. Normally, this is done at epoch boundaries \cite{checkfreq}, which stalls the algorithm, waiting for I/O, whose size depends on the dimension of the network. In case of failure, the model state can be loaded from storage and training can be restarted.
+As models get larger and more nodes are used in training, especially in High Performance Computing (HPC) centers, fault tolerance becomes an important issue. To address it, it is common for the model state to be saved periodically to persistent storage. Normally, this is done at epoch boundaries \cite{checkfreq}, which stalls the algorithm, waiting for I/O. In case of failure, the model state can be loaded from storage and training can be restarted.
 
-Various frameworks exist to facilitate the Implementation of DL models, and each one tackles I/O differently. \textit{Pytorch} \cite{pytorch} is an up-and-coming open source AI training library, reportedly becoming commonplace in HPC centers. It provides utilities for operating on tensors with GPU support; various customizable data loading and checkpointing specifications, like parallel data treatment by different workers; a library of ready-to-use DNN models; and support for data parallel training of AI models. Its data structure is analogous to those used in other frameworks, like Tensorflow, and common databases used for DL, like LMDB, as it is based on NumPy, which uses memory mapping for its metadata access \cite{LMDB}.
+Various frameworks exist to facilitate the implementation of DL models, and each one tackles I/O differently. \textit{Pytorch} \cite{pytorch} is an up-and-coming open source AI training library, reportedly becoming commonplace in HPC centers. It provides utilities for operating on tensors with GPU support; various customizable data loading and checkpointing specifications, like parallel data treatment by different workers; a library of ready-to-use DNN models; and support for data parallel training of AI models. Its data structure is analogous to those used in other frameworks, like Tensorflow, and common databases used for DL, like LMDB, as it is based on NumPy, which uses memory mapping for its metadata access \cite{LMDB}.
 
 \subsection{I/O in Deep Learning}
 
@@ -122,7 +124,7 @@ The main advantages are being able to run programs in kernel without modifying t
 It is possible to trace different kernel layers while having distinct targets such as CPU, memory, disk and the file system by using different hook points along the Linux Kernel.
 
 Early on, creating and managing eBPF programs would require profound insights into the Linux Kernel and familiarity with low-level programming languages to generate eBPF bytecode,
-to facilitate the creation, compilation and execution of eBPF programs, bpftrace \cite{bpftrace}, a high-level tracing language inspired in DTrace and awk allow writing intuitive and efficient eBPF scripts,
+to facilitate the creation, compilation and execution of eBPF programs, bpftrace \cite{bpftrace}, a high-level tracing language inspired in DTrace and awk allows writing intuitive and efficient eBPF scripts,
 reducing the burden of low-level programming and simplifying the act of probing system behavior in a more high-level fashion. \cite{eBPFSurvey2} 
 
 Bpftrace can be used alongside a wide range of tools, many of which are provided by its developers. Additional tools and resources can also be found in \cite{bgreggBook}.
@@ -252,7 +254,7 @@ We ran a series of experiments with different parameters, in particular these co
 	\item One or two training epochs.
 	\item With or without checkpointing.
 	\item With or without code generated training logs (marking different training steps).
-	\item With 32 and 64 of batch size.
+	\item With 32 and 64 samples of batch size.
 \end{itemize}
 In order to not have interference between different runs, the operating system's cache was dropped after each run.
 
@@ -265,56 +267,6 @@ After some analyses of the data further, smaller experiments were conducted, in 
 \end{itemize}
 
 \subsection{Results}
-
-Tables I and II show general statistics regarding the two models and the different parameters we tested for each.
-\\
-\textbf{Observation 1.} Training images are read concurrently by multiple processes on training with several workers.
-\\
-\textbf{Observation 2.} \texttt{fsync()} is not called by any of the processes created by PyTorch, this means that \texttt{torch.save()} does not call \texttt{fsync()}, confirming the assertion made in \cite{checkfreq}.
-\\
-\textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are \texttt{sched\_yield()}. These calls are all made by two threads created by the master process, which runs the main function and schedules the model's training.
-\\
-\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write size.
-\\
-\textbf{Observation 5.} When reading from a pipe, processes will read in two moments, reading the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the \texttt{num\_workers} parameter in the DataLoader class.
-\\
-\textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class. When no workers are allocated, no reads or writes to pipes are performed.
-\\
-\textbf{Observation 7.} The pattern of block read operation completions is as follows: a large number of initial operations followed by a gap, i.e., a practically complete drop to near 0 reads, until the end of the first epoch. During the remaining epochs, even to 3 epochs, the accesses are done uniformly.
-\\
-\textbf{Observation 8.} Before the read gap begins, there is a stabilization of the system memory used as cache, at around 12GiB of usage.
-\\
-\textbf{Observation 9.} The size of the gap is proportional to the number of worker processes used to read from disk, and so the gap is smaller the fewer workers used. With zero workers, the gap does not exist.
-\\
-\textbf{Observation 10.} This pattern maintained even when the operating system's cache was dropped between epochs.
-\\
-\textbf{Observation 11.} Regarding the two hook points used for capturing the block read operation completion, that we assumed were exclusive of each other, when tracing with either one active, the union of the results did not equal the results of having both hook points active by an order of magnitude (10.000s against 1.000s for each one).
-\\
-\textbf{Observation 12.} The amount and size of block read operations issued to the disk is constant throughout the whole training.
-\\
-\textbf{Observation 13.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
-\\
-\textbf{Observation 14.} We found the following system calls correlate to the checkpoint when model training with both models: \texttt{rt\_sigprocmask}, \texttt{mprotect}, \texttt{rmdir}, \texttt{exit\_group}, \texttt{rt\_sigreturn}, \texttt{getdents64}, \texttt{madvise}, \texttt{wait4}, \texttt{exit}, \texttt{clone3}, \texttt{rseq}, \texttt{rt\_sigaction}, \texttt{writev}, \texttt{waitid}, \texttt{gettid} and \texttt{set\_robust\_list}.
-\\
-\textbf{Observation 15.} Both AlexNet and ResNet50 exhibit a similar hierarchy of system calls, with the notable exception of ResNet50's inclusion of \texttt{sched\_yield} as the first call. The system calls are as follows: \texttt{read}, \texttt{lseek}, \texttt{close}, \texttt{newfstat}, \texttt{ioctl}, \texttt{openat}, \texttt{futex} and \texttt{write}.
-\\
-\textbf{Observation 16.} Although ResNet50 has a smaller checkpoint size, it performs 209 \texttt{writev} syscalls compared to just 16 by AlexNet.
-% \subsubsection{Checkpoint data persistence}
-% We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
-% We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
-
-% \subsubsection{System call usage comparison between models}
-% We found that the overwhelming majority(3.7B on tests with 2 epochs and batch size of 64) of system calls performed by the python processes during training of the ResNet50 model were sched\_yield(), when looking at the results segregated by thread we found that ... this is not the case for training AlexNet in the same conditions
-
-% \subsubsection{Read and Write patterns on pipes}
-% We analyzed the write and read patterns to pipes of the AlexNet model, we found approximately twice as many reads from pipes as there were writes, upon looking into the pattern we noticed that
-% each time a pipe was read from, there was an initial read of 4 bytes followed by a subsequent read of more bytes.
-% This pattern remained with variations of the num\_workers parameter for the PyTorch DataLoader class, although the number of operations on pipes reduced in proportion to the number of workers. Conclusively, when this parameter was set to zero workers, there were no reads or writes to pipes.
-
-% \subsubsection{Pattern of block I/O access}
-% During the first epoch we found numerous initial reads followed by drop up until the moment the second epoch begins, after which there is a uniform pattern of read's.
-% This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decreased (no workers??).
-% This pattern also maintained when the operating systems caches were dropped in between epochs
 
 \begin{table}
     \caption{System calls}\label{tab:syscalls}
@@ -347,6 +299,108 @@ Tables I and II show general statistics regarding the two models and the differe
         \end{tabular}
     \end{center}
 \end{table}
+
+\begin{table*}
+    \caption{Perf}\label{tab:perf}
+    \begin{center}
+        \begin{tabular}[c]{|l|l|l|l|l|l|l|}
+            \hline
+            \rowcolor{gray}
+            Model & Epoch & Batch Size & Ckeckpoint & Logging & Time w/ eBPF & Time w/o eBPF \\
+            \hline
+            AlexNet & 2 & 32 & 1/epoch & false &    33m47.868s & 33m10.190s \\
+            \hline
+            AlexNet & 2 & 32 & none & true &    34m21.545s & 33m27.275s \\
+            \hline
+            AlexNet & 2 & 32 & 1/epoch & false &    33m53.268s & 33m10.023s \\
+            \hline
+            AlexNet & 2 & 32 & 1/epoch & true &    34m55.783s & 33m24.529s \\
+            \hline
+            AlexNet & 2 & 64 & none & false &    33m43.084s & 33m3.322s \\
+            \hline
+            AlexNet & 2 & 64 & none & true &    34m13.559s & 33m20.241s \\
+            \hline
+            AlexNet & 2 & 64 & 1/epoch & false &    33m53.426s & 33m5.216s \\
+            \hline
+            AlexNet & 2 & 64 & 1/epoch & true &    34m17.983s & 32m58.640s \\
+            \hline
+            ResNet50 & 2 & 32 & none & false &    57m46.997s & 57m46.194s \\
+            \hline
+            ResNet50 & 2 & 32 & none & true &     57m46.116s & 57m45.615s \\
+            \hline
+            ResNet50 & 2 & 32 & 1/epoch & false &    57m43.254s & 57m44.610s \\
+            \hline
+            ResNet50 & 2 & 32 & 1/epoch & true &     57m46.191s & 57m46.028s \\
+            \hline
+            ResNet50 & 2 & 64 & none & false &    55m53.568s & 55m49.152s \\
+            \hline
+            ResNet50 & 2 & 64 & none & true &     55m57.438s & 55m48.515s \\
+            \hline
+            ResNet50 & 2 & 64 & 1/epoch & false &    55m53.242s & 55m52.361s \\
+            \hline
+            ResNet50 & 2 & 64 & 1/epoch & true &     55m52.560s & 55m48.773s \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table*}
+
+
+\hspace{-0.55cm} \textbf{Observation 1.} Training images are read concurrently by multiple processes on training with several workers.
+\\
+\textbf{Observation 2.} \texttt{fsync()} is not called by any of the processes created by PyTorch, this means that \texttt{torch.save()} does not call \texttt{fsync()}, confirming the assertion made in \cite{checkfreq}.
+\\
+\textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are \texttt{sched\_yield()}. These calls are all made by two threads created by the master process, which runs the main function and schedules the model's training.
+\\
+\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write size.
+\\
+\textbf{Observation 5.} When reading from a pipe, processes will read in two moments, reading the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the \texttt{num\_workers} parameter in the DataLoader class.
+\\
+\textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class. When no workers are allocated, no reads or writes to pipes are performed.
+\\
+\textbf{Observation 7.} The pattern of block read operation completions is as follows: a large number of initial operations followed by a gap, i.e., a practically complete drop to near 0 reads, until the end of the first epoch. During the remaining epochs, even to 3 epochs, the accesses are done uniformly.
+\\
+\textbf{Observation 8.} Before the read gap begins, there is a stabilization of the system memory used as cache, at around 12GiB of usage.
+\\
+\textbf{Observation 9.} The size of the gap is proportional to the number of worker processes used to read from disk, and so the gap is smaller the fewer workers used. With zero workers, the gap does not exist.
+\\
+\textbf{Observation 10.} This pattern maintained even when the operating system's cache was dropped between epochs.
+\\
+\textbf{Observation 11.} Regarding the two hook points used for capturing the block read operation completion, that we assumed were exclusive of each other, when tracing with either one active, the union of the results did not equal the results of having both hook points active by an order of magnitude (10.000s against 1.000s for each one).
+\\
+\textbf{Observation 12.} The amount and size of block read operations issued to the disk is constant throughout the whole training.
+\\
+\textbf{Observation 13.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
+\\
+\textbf{Observation 14.} We found the following system calls correlate to the checkpoint when model training with both models: \texttt{rt\_sigprocmask}, \texttt{mprotect}, \texttt{rmdir}, \texttt{exit\_group}, \texttt{rt\_sigreturn}, \texttt{getdents64}, \texttt{madvise}, \texttt{wait4}, \texttt{exit}, \texttt{clone3}, \texttt{rseq}, \texttt{rt\_sigaction}, \texttt{writev}, \texttt{waitid}, \texttt{gettid} and \texttt{set\_robust\_list}.
+\\
+\textbf{Observation 15.} We found the following vfs functions calls correlate to the checkpoint when model training with both models: \texttt{writev} and \texttt{rmdir}.
+\\
+\textbf{Observation 16.} Both AlexNet and ResNet50 exhibit a similar hierarchy of system calls, with the notable exception of ResNet50's inclusion of \texttt{sched\_yield} as the first call. The system calls are as follows: \texttt{read}, \texttt{lseek}, \texttt{close}, \texttt{newfstat}, \texttt{ioctl}, \texttt{openat}, \texttt{futex} and \texttt{write}, also see in Table \ref{tab:syscalls}.
+\\
+\textbf{Observation 17.} Although ResNet50 has a smaller checkpoint size, it performs 209 \texttt{writev} syscalls compared to just 16 by AlexNet.
+\\
+\textbf{Observation 18.} Both models have CPU run queue empty during the entire duration of model training.
+\\
+\textbf{Observation 19.} The run queue latency is similar in both cases, with the interval \([2, 4[\) microseconds being the most dominant, followed by \([1]\), and then \([4, 8[\).
+\\
+\textbf{Observation 20.} As shown in Table \ref{tab:perf}, the eBPF overhead is comparable to runs without tracing tools during model training with ResNet50. However, for AlexNet, the overhead can result in a difference of slightly more than a minute.
+% \subsubsection{Checkpoint data persistence}
+% We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
+% We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
+
+% \subsubsection{System call usage comparison between models}
+% We found that the overwhelming majority(3.7B on tests with 2 epochs and batch size of 64) of system calls performed by the python processes during training of the ResNet50 model were sched\_yield(), when looking at the results segregated by thread we found that ... this is not the case for training AlexNet in the same conditions
+
+% \subsubsection{Read and Write patterns on pipes}
+% We analyzed the write and read patterns to pipes of the AlexNet model, we found approximately twice as many reads from pipes as there were writes, upon looking into the pattern we noticed that
+% each time a pipe was read from, there was an initial read of 4 bytes followed by a subsequent read of more bytes.
+% This pattern remained with variations of the num\_workers parameter for the PyTorch DataLoader class, although the number of operations on pipes reduced in proportion to the number of workers. Conclusively, when this parameter was set to zero workers, there were no reads or writes to pipes.
+
+% \subsubsection{Pattern of block I/O access}
+% During the first epoch we found numerous initial reads followed by drop up until the moment the second epoch begins, after which there is a uniform pattern of read's.
+% This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decreased (no workers??).
+% This pattern also maintained when the operating systems caches were dropped in between epochs
+
 
 \section{Conclusion and Future Work}
 
