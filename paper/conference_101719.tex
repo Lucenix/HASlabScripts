@@ -217,12 +217,12 @@ Additionally, the extension provides the ability to display flamegraphs, and the
 \subsubsection{Limitations}
 
 We found that this setup does not allow us to collect information and analyze it later, as it is a real-time system.
-We still need to modify some bpftrace code to make it compatible with the plots in Grafana.
+We would also still need to modify some bpftrace code to make it compatible with the plots in Grafana.
 
-Moreover, we found that the setup was not easy due to outdated and incomplete documentation, which created difficulties with configuration and setup.
+Moreover, we found that the setup difficult due to outdated and incomplete documentation, which created issues with configuration and setup.
 It also shares the same limitation as the other version, in that it needs to be adapted for other deep learning frameworks and models.
 
-Finally, some statistics, such as GPU usage, cannot be directly displayed with this extension because they are not gathered with bpftrace. To display these metrics, we would need to use an alternative method in grafana.
+Finally, some statistics, such as GPU usage, cannot be directly displayed with this extension because they are not gathered with bpftrace. To display these metrics, we would need to use an alternative method in Grafana.
 
 \section{Evaluation}
 
