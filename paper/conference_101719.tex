@@ -190,11 +190,21 @@ Additionally, we created custom tools to improve data collection.
 Furthermore, we used a GNU Screen \cite{screen} session to allow the scripts to run in the background during long training sessions.
 
 \subsubsection{Backend}
+The raw data is stored in the XFS file system, which ensures efficient handling of large datasets.
+We parse the bpftrace\cite{bpftrace} logs by reading the stored files, and then the data is processed and aggregated into structured formats for analysis,
+some are plotted directly for visualization and stored again pdf and html formats, others are parsed and stored in the pickle format.
 
 \subsubsection{Visualizer}
 
+For visualizing the data, we use Matplotlib, Seaborn, and Plotly from Python.
+Matplotlib and Seaborn are primarily used to generate heatmaps, while Plotly is employed for creating different interactive visualizations.
+
 \subsubsection{Limitations}
 
+Some limitations of this version include the need to build and maintain the entire pipeline using scripts.
+Additionally, if new forms of visualization are required, the parser and visualizer must be adapted to handle different bpftrace log types or generate new types of visualizations.
+Other limitations include the scalability of the system, as the dataset size or model complexity increases, the current data collection and processing pipeline may face performance bottlenecks.
+Also, the custom modifications made to the bpftrace tools may limit the flexibility of the system, as it could require significant adjustments to apply the pipeline to other models, setups and ML/DL frameworks.
 \subsection{Second Version: Grafana pcp-bpftrace}
 
 \subsubsection{Collector}
