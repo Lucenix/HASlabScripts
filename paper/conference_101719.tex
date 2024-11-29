@@ -361,13 +361,13 @@ After some analyses of the data further, smaller experiments were conducted, in 
 	\centering
 	\includegraphics[width=0.45\textwidth]{images/write_pipe.png}
 	\caption{Writes to pipes over time}
-	\label{fig:biogap}
+	\label{fig:pipewrite}
 \end{figure}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.45\textwidth]{images/read_pipe.png}
 	\caption{Reads to pipes over time}
-	\label{fig:biogap}
+	\label{fig:piperead}
 \end{figure}
 \\
 \textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class. When no workers are allocated, no reads or writes to pipes are performed.
