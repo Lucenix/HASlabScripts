@@ -289,13 +289,17 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 10.} This pattern maintained even when the operating system's cache was dropped between epochs.
 \\
-\textbf{Observation 11.} Regarding the two hookpoints used for capturing the block read operation completion, that we assumed were exclusive of each other, when tracing with either one active, the union of the results did not equal the results of having both hookpoints active by an order of magnitude (10.000s against 1.000s for each one).
+\textbf{Observation 11.} Regarding the two hook points used for capturing the block read operation completion, that we assumed were exclusive of each other, when tracing with either one active, the union of the results did not equal the results of having both hook points active by an order of magnitude (10.000s against 1.000s for each one).
 \\
 \textbf{Observation 12.} The amount and size of block read operations issued to the disk is constant throughout the whole training.
 \\
 \textbf{Observation 13.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
 \\
-\textbf{Observation 14.}
+\textbf{Observation 14.} We found the following system calls correlate to the checkpoint when model training with both models: \texttt{rt\_sigprocmask}, \texttt{mprotect}, \texttt{rmdir}, \texttt{exit\_group}, \texttt{rt\_sigreturn}, \texttt{getdents64}, \texttt{madvise}, \texttt{wait4}, \texttt{exit}, \texttt{clone3}, \texttt{rseq}, \texttt{rt\_sigaction}, \texttt{writev}, \texttt{waitid}, \texttt{gettid} and \texttt{set\_robust\_list}.
+\\
+\textbf{Observation 15.} Both AlexNet and ResNet50 exhibit a similar hierarchy of system calls, with the notable exception of ResNet50's inclusion of \texttt{sched\_yield} as the first call. The system calls are as follows: \texttt{read}, \texttt{lseek}, \texttt{close}, \texttt{newfstat}, \texttt{ioctl}, \texttt{openat}, \texttt{futex} and \texttt{write}.
+\\
+\textbf{Observation 16.} % falar dos writevs insane do resnet50
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
