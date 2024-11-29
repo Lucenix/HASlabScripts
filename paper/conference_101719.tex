@@ -6,8 +6,9 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{textcomp}
-\usepackage{xcolor}
+% \usepackage{xcolor}
 \bibliographystyle{IEEEtran}
+\usepackage[table, dvipsnames]{xcolor}
 
 \begin{document}
 
@@ -317,19 +318,34 @@ Tables I and II show general statistics regarding the two models and the differe
     \begin{center}
         \begin{tabular}[c]{|l|l|l|}
             \hline
+            \rowcolor{gray}
             Syscall & ResNet50 & AlexNet\\
             \hline
-            \#1 & a & b\\
+            \rowcolor{lightgray}
+            \#1 & sched\_yield & read\\
             \hline
-            \#2 & c & d\\
+            \#2 & read & lseek\\
             \hline
-            \#3 & c & d\\
+            \rowcolor{lightgray}
+            \#3 & lseek & close\\
             \hline
-            \#4 & c & d\\
+            \#4 & close & newfstat\\
+            \hline
+            \rowcolor{lightgray}
+            \#5 & newfstat & ioctl\\
+            \hline
+            \#6 & ioctl & openat\\
+            \hline
+            \rowcolor{lightgray}
+            \#7 & openat & futex\\
+            \hline
+            \#8 & futex & write\\
             \hline
         \end{tabular}
     \end{center}
 \end{table}
+
+
 
 
 \section{Conclusion and Future Work}
