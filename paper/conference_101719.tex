@@ -65,11 +65,8 @@ eBPF allows for the safe execution of customized kernel code by injecting user-s
 This eliminates the need for rebooting the system or modifying the kernel source code.
 Initially designed for network-related use cases as BPF, eBPF has expanded to support a wide range of applications, including network traffic analysis and filtering, security, tracing, and profiling across various levels of the kernel.
 
-With this in mind, our objective is to address the aforementioned challenges by developing a tool capable of tracing different kernel levels to collect in-kernel statistics.
-This data will enable us to correlate and characterize patterns during deep learning model training.
-
 Existing tools, such as those developed using bpftrace, a high-level language that abstracts some underlying eBPF logic, can be injected into various parts of the kernel to trace diverse targets, such as CPU, memory, disk, the virtual file system, and network.
-Our goal is to leverage and modify these tools to accommodate the specific needs of deep learning training workflows.
+Our goal is to leverage and modify these tools to collect data at different kernel levels and gather statistics useful for the characterization of DL training workflows.
 
 Besides that, eBPF also bring some challenges, it is crucial to evaluate the overhead and limitations of these tools to determine which are most suitable for our study and understanding the appropriate layers and points within the kernel where they should be applied.\\
 \textbf{Contributions.} The main contributions of this paper are as follows
