@@ -53,12 +53,12 @@ and natural language processing.
 Due to these applications' I/O bottlenecks \cite{beegfsDL}, there have been several studies that analyze the I/O patterns of DL Workflows, whose work
 has been used to produce useful assumptions about DL I/O patterns. These have been commonly used to
 justify various types of optimization explorations (\cite{LMDB, nvme, beegfsDL, bamboo}), and inform
-other applications such as benchmarks specific to DL (\cite{TFbenchmark}, \cite{OanaDL}).
+other applications, such as benchmarks specific to DL (\cite{TFbenchmark, OanaDL}).
 Application-specific I/O characterization is therefore a requirement for creating
 unique and worthwhile solutions to
 newer performance problems, as well as, for example, reducing the monetary cost of training an
 DL model \cite{bamboo}. However, very few of the existing I/O characterization tools
-can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{DL\_PRELOAD} \cite{HPCIODarshan}. This approach leaves out important information on what is actively occurring at levels closer to the operating system.
+can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{LD\_PRELOAD} \cite{HPCIODarshan}. This approach leaves out important information on what is actively occurring at levels closer to the operating system.
 
 There are several ways to interact with the kernel at a low level, such as modifying the kernel source code or using kernel modules. While direct modifications offer efficiency and a high degree of customization, maintaining these changes across different kernel versions and configurations poses significant challenges due to the need for repeated compiling, testing, and adaptation. One technology that has gained significant traction in recent years is the extended Berkeley Packet Filter (eBPF).
 eBPF allows for the safe execution of customized kernel code by injecting user-space code into the kernel at runtime.
@@ -146,9 +146,11 @@ such as DIO \cite{DIO} that allow the observation of I/O interactions between th
 There are already some studies that use eBPF's capability to provide kernel-level information to understand patterns, such as \cite{eBPFDLNetwork} that
 leverages eBPF to monitor DDL training, investigating network bandwidth utilization in DDL, without observing many other metrics about its interaction with the I/O system.
 eBPF has also been utilized to characterize machine and deep learning workloads, focusing on storage and I/O efficiency in training,
-revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}, which produced general observations for a more precise benchmark.
+revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}, which produced general observations for a more precise and accurate benchmark for DL.
 
-Considering all previous work, we believe that there is a lack of descriptions of the full impact in the entire I/O stack of DL as a workload, considering all its possible variations, including using PyTorch as a framework. Existing DL's I/O characterization focuses on either providing tools for analysis, providing benchmarks mimicking DL patterns or resolving a specific problem due to a previous observation. The work that has produced observations hasn't gone as deep into the kernel stack and its particularities as we think is needed to provide full and comprehensive insights into that stack. 
+Considering all previous work, we believe that there is a lack of descriptions of the full impact in the entire I/O stack of DL as a workload, considering all its possible variations, including different batch sizes and using PyTorch as a framework. Existing DL's I/O characterization focuses on either providing tools for analysis, providing benchmarks mimicking DL patterns or resolving a specific problem due to a previous observation. The work that has produced observations hasn't gone as deep into the kernel stack and inner workings and its particularities as we think is needed to provide full and comprehensive insights.
+
+In that sense, we aim to show the utility and capacity of deeper kernel analysis using eBPFs for innovative insights into DL patterns, both for its I/O patterns and for other related system impact, by analyzing representative DL models tools that monitor and trace multiple different kernel activities.
 
 \section{Design}
 The system, also described in Figure \ref{fig:Design}, is composed of three main components:
@@ -232,37 +234,34 @@ It also shares the same limitation as the other version, in that it needs to be 
 
 Finally, some statistics, such as GPU usage, cannot be directly displayed with this extension because they are not gathered with bpftrace. To display these metrics, we would need to use an alternative method in Grafana.
 
+For these reasons, we focus our evaluation on the first implementation we presented.
+
 \section{Evaluation}
 
 \subsection{Experimental Setup}
 
-We analyzed the training of the large network ResNet50 \cite{resnet50} and the smaller AlexNet \cite{alexnet}, whose models were
-provided by \textit{PyTorch}, where they're defined with 50 and 13 layers, respectively. Our testing machine is equipped with an Intel® Core™ i9-9900K CPU @ 3.60GHz with
-8 physical cores, 16 virtual cores, 16GiB of total RAM and an NVIDIA Corporation TU104 [GeForce RTX 2070 SUPER]. The OS  Rocky Linux 9.4 (Blue Onyx) with kernel Linux 5.14.0-427.37.1.el9\_4.x86\_64. The dataset we used is the ImageNet \cite{imagenet} dataset, an assemblage of labeled images for the training of image classification models, which is originally comprised of 1.2 million sample images, with an average size of 192KiB and a total size of 240GiB. Due to storage technical limitations, we scaled the dataset down to 45GiB total size (of which 36GiB were used for training) by randomly selecting images. This was done for coherence between this evaluation and a limited Distributed Learning analysis that wasn't concluded by the end of the writing of this paper.
+We analyzed the training of the large network ResNet50 \cite{resnet50} and the smaller AlexNet \cite{alexnet}. Those models were
+provided by the \textit{PyTorch} framework, where they're defined with 50 and 13 layers, respectively. Our testing machine is equipped with an Intel® Core™ i9-9900K CPU @ 3.60GHz with
+8 physical cores, 16 virtual cores, 16GiB of total RAM and an NVIDIA Corporation TU104 [GeForce RTX 2070 SUPER]. The OS runs Rocky Linux 9.4 (Blue Onyx) with kernel Linux 5.14.0-427.37.1.el9\_4.x86\_64. The dataset we used is the ImageNet \cite{imagenet} dataset, an assemblage of labeled images for the training of image classification models, which is originally comprised of 1.2 million sample images, with an average size of 192KiB and a total size of 240GiB. Due to storage technical limitations, we scaled the dataset down to 45GiB total size (of which 36GiB were used for training) by randomly selecting images. This was done for coherence between this evaluation and a limited Distributed Learning analysis that wasn't concluded by the end of the writing of this paper.
 
 \subsection{Methodology}
 
-We ran a series of experiments with different parameters, in particular these are:
+We ran a series of experiments with different parameters, in particular these combinations are:
 \begin{itemize}
-	\item ResNet50 or AlexNet models
+	\item ResNet50 or AlexNet models.
 	\item One or two training epochs.
-	\item With or without checkpointing
-	\item With or without code generated training logs
-	\item With 32 and 64 batch size
+	\item With or without checkpointing.
+	\item With or without code generated training logs (marking different training steps).
+	\item With 32 and 64 of batch size.
 \end{itemize}
-In order to not have interference between different runs the operating system's cache was dropped after each run.
+In order to not have interference between different runs, the operating system's cache was dropped after each run.
 
-A full run with every combination of parameters was run and the data was processes and analyzed.\\
-After some analyses of the data further, smaller experiments were conducted in particular these included:
-Variations of the num\_workers parameter of the PyTorch DataLoader with both the models during two epochs, a batch size of 64, no logging, and with a checkpoint at each epoch boundaries.
-Dropping the system cache at epoch boundaries.
-Changing the biolantency tracer tool by removing some hook points.
-
-
+A full execution was run for every combination of parameters, which was followed by the processing and analysis of the visualization techniques.
+After some analyses of the data further, smaller experiments were conducted, in particular:
 \begin{itemize}
-	\item dstat, nvidia-smi to get cost of using the tool
-	\item python parser and plots
-	\item grafana dashboard to get data
+	\item Varying the \texttt{num\_workers} parameter of the PyTorch DataLoader, with 0, 1 and 4 workers, testing both models during two epochs, a batch size of 64, no logging, and with a checkpoint at each epoch boundaries.
+	\item Dropping the system cache at epoch boundaries.
+	\item Changing some eBPF tools, like \texttt{biolatency}, by altering hook points.
 \end{itemize}
 
 \subsection{Results}
@@ -277,11 +276,11 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write size.
 \\
-\textbf{Observation 5.} When reading from a pipe, processes will read in two moments, reading the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the num\_workers parameter in the DataLoader class.
+\textbf{Observation 5.} When reading from a pipe, processes will read in two moments, reading the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the \texttt{num\_workers} parameter in the DataLoader class.
 \\
 \textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class. When no workers are allocated, no reads or writes to pipes are performed.
 \\
-\textbf{Observation 7.} The pattern of block read operation completions is as follows: a large number of initial operations followed by a gap, i.e., a practically complete drop to near 0 reads, until the end of the first epoch. During the remaining epochs, the accesses are done uniformly.
+\textbf{Observation 7.} The pattern of block read operation completions is as follows: a large number of initial operations followed by a gap, i.e., a practically complete drop to near 0 reads, until the end of the first epoch. During the remaining epochs, even to 3 epochs, the accesses are done uniformly.
 \\
 \textbf{Observation 8.} Before the read gap begins, there is a stabilization of the system memory used as cache, at around 12GiB of usage.
 \\
@@ -349,14 +348,11 @@ Tables I and II show general statistics regarding the two models and the differe
     \end{center}
 \end{table}
 
-
-
-
 \section{Conclusion and Future Work}
 
+With this paper we present a bottom-half analysis of the kernel interactions involved into serving a DL application, with focus on their I/O patterns. We collected multiple different statistics, using eBPF-based tools, transparently and with low overhead on the entire application. We presented those collections and analyzed them, where we found unique patterns we tried to explain through deeper dives into kernel functionality. With them, we concluded that this kind of low level observation is required to completely understand the interaction complex algorithms like DL models have with in-place systems like the I/O stack.
 
-
-Future work will involve scaling up the tests done, not only in terms of dataset and model size, but also investing into Distributed Learning, both for Data and Model distribution. eBPF tools permit the tracking of network calls and data transfers, so they aren't limited to tracking only typical disk I/O.
+Future work will involve scaling up the tests done, not only in terms of dataset and model size, which would require more computational power, but also investing into Distributed Learning, both for Data and Model distribution. eBPF tools permit the tracking of network calls and data transfers, so they aren't limited to tracking only typical disk I/O.
 
 With DL analysis fully complete, there is the need to keep up with DL's latest trends. Large Language Models (LLMs) have taken the world by storm, with the public availability of applications like ChatGPT \cite{chatgpt}, and so the training of these models is looking to become the norm on HPC centers. Their smaller datasets and larger models, as well as their different data consumption patterns, compared to those of traditional DL models, possibly bring different patterns into consideration when such examinations are conducted.
 
