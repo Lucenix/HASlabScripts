@@ -240,19 +240,25 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 2.} \texttt{fsync()} is not called by any of the processes created by PyTorch, this means that \texttt{torch.save()} does not call \texttt{fsync()}, confirming the assertion made in \cite{checkfreq}.
 \\
-\textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are \texttt{sched\_yield()}, these calls are all made by two threads created by the master process, which runs the main function and schedules the model's training.
+\textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are \texttt{sched\_yield()}. These calls are all made by two threads created by the master process, which runs the main function and schedules the model's training.
 \\
-\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write throughput.
+\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write size.
 \\
-\textbf{Observation 5.} When reading from a pipe, processes will read in two times, the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the num\_workers parameter in the DataLoader class.
+\textbf{Observation 5.} When reading from a pipe, processes will read in two moments, reading the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the num\_workers parameter in the DataLoader class.
 \\
 \textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class. When no workers are allocated, no reads or writes to pipes are performed.
 \\
-\textbf{Observation 7.} The pattern of block read operations is as follows: a large number of initial accesses followed by a gap, a practically complete drop to near 0 reads,  until the moment the first epoch finishes. During the remaining epochs, the accesses are done uniformly. 
+\textbf{Observation 7.} The pattern of block read operation completions is as follows: a large number of initial operations followed by a gap, i.e., a practically complete drop to near 0 reads, until the end of the first epoch. During the remaining epochs, the accesses are done uniformly.
 \\
-\textbf{Observation 8.} This pattern is persistent through changes in the number of workers, however, with fewer workers, the initial spike of accesses lasts for longer, and so the gap is smaller. With zero workers, the gap does not exist. 
+\textbf{Observation 8.} Before the read gap begins, there is a stabilization of the system memory used as cache, at around 12GiB of usage.
 \\
-\textbf{Observation 9.} This pattern was visible even when the operating system's cache was dropped between epochs.
+\textbf{Observation 9.} The size of the gap is proportional to the number of worker processes used to read from disk, and so the gap is smaller the fewer workers used. With zero workers, the gap does not exist. 
+\\
+\textbf{Observation 10.} Although the pattern maintained even when the operating system's cache was dropped between epochs, there was a slight increase in the run time. 
+\\
+\textbf{Observation 11.} Regarding the two tracepoints used for capturing the block read operation completion, that we assumed were exclusive with each other, when tracing with either one active, the union of the results did not equal the results of having both tracepoints active by an order of magnitude (10.000s against 1.000s for each one).  
+\\
+\textbf{Observation 12.} The amount and size of block read operations issued to the disk is constant throughout the whole training.
 \\
 \textbf{Observation 10.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
 \\
