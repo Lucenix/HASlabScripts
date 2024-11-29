@@ -154,13 +154,14 @@ There are two versions of the system, each using different approaches for data c
 Next we overview a more detailed breakdown of how each component was developed and integrated for both versions.
 %The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parser was implemented using python and plotted with the matplotlib and plotly python libraries
 
-\subsection{First Version: bpftrace with python plots} % need a better name ngl
+\subsection{Bpftrace and Python}
 
 \subsubsection{Collector}
 
 For data collection, we used bpftrace\cite{bpftrace} in conjunction with pre-built tools available in the official repository and the book\cite{bgreggBook}. 
 However, we modified most of these tools to better suit DL training, as some of them presented all the collected data together, without any time context.
 Others were not detailed enough, capturing system-level metrics instead of focusing on the deep learning training process. 
+
 Additionally, we created custom tools to improve data collection. 
 Furthermore, we used a GNU Screen \cite{screen} session to allow the scripts to run in the background during long training sessions.
 
@@ -177,19 +178,40 @@ Matplotlib and Seaborn are primarily used to generate heatmaps, while Plotly is 
 \subsubsection{Limitations}
 
 Some limitations of this version include the need to build and maintain the entire pipeline using handmade scripts, to connect the different tools and ways of execution.
+
 Additionally, if new forms of visualization are required, the parser and visualizer must be adapted to handle different bpftrace log types or generate new types of visualizations.
+
 Other limitations include the scalability of the system, as the dataset size or model complexity increases, the current data collection and processing pipeline may face performance bottlenecks.
 Also, the custom modifications made to the bpftrace tools may limit the flexibility of the system, as it could require significant adjustments to apply the pipeline to other models, setups and ML/DL frameworks.
 
-\subsection{Second Version: Grafana pcp-bpftrace}
+\subsection{Grafana pcp-bpftrace}
 
 \subsubsection{Collector}
 
+The collector is implemented using bpftrace, but the execution of the programs is managed by the pcp-bpftrace extension in Grafana, giving Grafana control over the lifecycle of the programs.
+
 \subsubsection{Backend}
+
+For the backend, we used PCP, which provides a flexible infrastructure for storing, aggregating, and analyzing performance data at scale over time.
+It integrates with bpftrace, enabling more granular tracing of specific events via the extension.
 
 \subsubsection{Visualizer}
 
+The visualizer is built on Grafana, which connects to the PCP backend to retrieve performance data and presents it through customizable dashboards.
+The use of Grafana allows for real-time, interactive monitoring of system metrics, enabling users to gain insights into the performance of the model training process.
+
+With the pcp-bpftrace extension, it is possible to write bpftrace code directly in Grafana and apply filters and transformations, taking advantage of the wide range of plots that Grafana offers.
+Additionally, the extension provides the ability to display framegraphs, and there is no need to modify the code that collects and presents all the information in one place, since Copilot restarts the bpftrace programs over time.
+
 \subsubsection{Limitations}
+
+In terms of limitations, we found that this setup does not allow us to collect information and analyze it later, as it is a real-time system.
+We still need to modify some bpftrace code to make it compatible with the plots in Grafana.
+
+Additionally, we found that the setup was not easy due to outdated and incomplete documentation, which created difficulties with configuration and setup.
+It also shares the same limitation as the other version, in that it needs to be adapted for other deep learning frameworks and models.
+
+Finally, some statistics, such as GPU usage, cannot be directly displayed with this extension because they are not gathered with bpftrace. To display these metrics, we would need to use an alternative method in grafana.
 
 \section{Evaluation}
 
