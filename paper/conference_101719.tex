@@ -339,9 +339,8 @@ Changing the biolantency tracer tool by removing some hook points.
     \end{center}
 \end{table*}
 
-Tables I and II show general statistics regarding the two models and the different parameters we tested for each.
-\\
-\textbf{Observation 1.} Training images are read concurrently by multiple processes on training with several workers.
+
+\hspace{-0.55cm} \textbf{Observation 1.} Training images are read concurrently by multiple processes on training with several workers.
 \\
 \textbf{Observation 2.} \texttt{fsync()} is not called by any of the processes created by PyTorch, this means that \texttt{torch.save()} does not call \texttt{fsync()}, confirming the assertion made in \cite{checkfreq}.
 \\
