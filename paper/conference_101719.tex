@@ -58,8 +58,20 @@ unique and worthwhile solutions to
 newer performance problems, as well as, for example reducing the monetary cost of training an 
 DL model \cite{bamboo}, however very few of the existing I/O characterization tools
 can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{DL\_PRELOAD} \cite{HPCIODarshan}, this approach leaves out important information about whats happening at levels closer to the operating system.\\
-\textbf{eBPF's} are a tool that allows for programs to be run on the kernel without changes to
-the source code and without having to reboot the kernel for code changes to take effect.\\
+There are several ways to interact with the kernel at a low level, such as modifying the kernel source code or using kernel modules. While direct modifications offer efficiency and a high degree of customization, maintaining these changes across different kernel versions and configurations poses significant challenges due to the need for repeated compiling, testing, and adaptation.
+
+One technology that has gained significant traction is the extended Berkeley Packet Filter (eBPF).
+eBPF allows for the safe execution of customized kernel code by injecting user-space code into the kernel at runtime.
+This eliminates the need for rebooting the system or modifying the kernel source code.
+Initially designed for network-related use cases as BPF, eBPF has expanded to support a wide range of applications, including network traffic analysis and filtering, security, tracing, and profiling across various levels of the kernel.
+
+With this in mind, our objective is to address the aforementioned challenges by developing a tool capable of tracing different kernel levels to collect in-kernel statistics.
+This data will enable us to correlate and characterize patterns during deep learning model training.
+
+Existing tools, such as those developed using bpftrace, a high-level language that abstracts some of the underlying eBPF logic, can be injected into various parts of the kernel to trace diverse targets, such as CPU, memory, disk, the virtual file system, and network.
+Our goal is to leverage and modify these tools to accommodate the specific needs of deep learning training workflows.
+
+Besides that, it is crucial to evaluate the overhead and limitations of these tools to determine which are most suitable for our study. Understanding the appropriate layers and points within the kernel where they should be applied will be an essential part of this process.
 \textbf{Contributions.} The main contributions of this paper are as follows
 \begin{itemize}
     \item To provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
@@ -133,7 +145,7 @@ eBPF has also been utilized to characterize machine and deep learning workloads,
 revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}.
 
 \section{Design}
-The system is composed of three main components:
+The system, also described in Figure \ref{fig:Design}, is composed of three main components:
 \begin{itemize}
 	\item \textit{Collector}. Allows collecting system information during model training.
 	\item \textit{Backend}. Offers a method for storing, searching and analyzing the raw data collected.
