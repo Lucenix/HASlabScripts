@@ -220,7 +220,7 @@ Finally, some statistics, such as GPU usage, cannot be directly displayed with t
 
 We analyzed the training of the large network ResNet50 \cite{resnet50} and the smaller AlexNet \cite{alexnet}, whose models were
 provided by \textit{PyTorch}, where they're defined with 50 and 13 layers, respectively. Our testing machine is equipped with an Intel® Core™ i9-9900K CPU @ 3.60GHz with
-8 physical cores, 16 virtual cores, 16GiB of total RAM and an NVIDIA GeForce RTX 2070 Super TU104 GPU. The dataset we used is the ImageNet \cite{imagenet} dataset, which is originally comprised of 1.2 million sample images, with an average size of 192KiB and a total size of 240GiB. Due to storage technical limitations, we scaled the dataset down to 45GiB total size (of which 36GiB were used for training) by randomly selecting images.
+8 physical cores, 16 virtual cores, 16GiB of total RAM and an NVIDIA GeForce RTX 2070 Super TU104 GPU. The OS runs ... with kernel .... The dataset we used is the ImageNet \cite{imagenet} dataset, an assemblage of labeled images for the training of image classification models, which is originally comprised of 1.2 million sample images, with an average size of 192KiB and a total size of 240GiB. Due to storage technical limitations, we scaled the dataset down to 45GiB total size (of which 36GiB were used for training) by randomly selecting images. This was done for coherence between this evaluation and a limited Distributed Learning analysis that wasn't concluded by the end of the writing of this paper.
 
 \subsection{Methodology}
 
