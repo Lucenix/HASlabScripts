@@ -224,6 +224,23 @@ provided by \textit{PyTorch}, where they're defined with 50 and 13 layers, respe
 
 \subsection{Methodology}
 
+To evaluate out ... we run a series of experiments with different parameters, in particular these are: 
+\begin{itemize}
+    \item ResNet50 or AlexNet models
+    \item One or two training epochs.
+    \item With or without checkpointing
+    \item With or without code generated training logs
+    \item With 32 and 64 batch size
+\end{itemize}
+In order to not have interference between different runs the operating system's cache was dropped after each run.
+
+A full run with every combination of parameters was run and the data was processes and analyzed.\\
+After some analyses of the data further, smaller experiments were conducted in particular these included: 
+Variations of the num\_workers parameter of the PyTorch DataLoader with both the models during two epochs, a batch size of 64, no logging, and with a checkpoint at each epoch boundaries.
+Dropping the system cache at epoch boundaries.
+...
+
+
 \begin{itemize}
 	\item dstat, nvidia-smi to get cost of using the tool
 	\item python parser and plots
