@@ -399,6 +399,20 @@ After some analyses of the data further, smaller experiments were conducted, in 
 \textbf{Observation 22.} AlexNet is I/O bottlenecked, when comparing GPU utilization of both models, while ResNet-50 achieves practically 100\% GPU utilization, AlexNet exhibits poor GPU usage, with utilization not only remaining below 30\% but also fluctuating significantly, showing spikes instead of a steady rate. 
 \\
 \textbf{Observation 23.} Worker processes are not reused in different epochs, for both models.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.45\textwidth]{images/syscount_alexnet.pdf}
+	\caption{AlexNet system calls}
+	\label{fig:alex}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.45\textwidth]{images/syscount_resnet50.pdf}
+	\caption{ResNet50 system calls}
+	\label{fig:res}
+\end{figure}
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
