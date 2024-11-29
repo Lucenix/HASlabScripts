@@ -357,6 +357,18 @@ After some analyses of the data further, smaller experiments were conducted, in 
 \textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write size.
 \\
 \textbf{Observation 5.} When reading from a pipe, processes will read in two moments, reading the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the \texttt{num\_workers} parameter in the DataLoader class.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.45\textwidth]{images/write_pipe.png}
+	\caption{Writes to pipes over time}
+	\label{fig:biogap}
+\end{figure}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.45\textwidth]{images/read_pipe.png}
+	\caption{Reads to pipes over time}
+	\label{fig:biogap}
+\end{figure}
 \\
 \textbf{Observation 6.} The amount of reads and writes to pipes is proportional to the amount of workers allocated in the DataLoader PyTorch class. When no workers are allocated, no reads or writes to pipes are performed.
 \\
