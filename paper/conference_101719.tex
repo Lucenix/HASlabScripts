@@ -93,18 +93,11 @@ To facilitate the creation, compilation and execution of eBPF programs, bpftrace
 
 \section{Related work}
 
-We categorize related work into three groups:
-\begin{itemize}
-	\item Characterization of machine learning and DL workloads using methods that do not employ in-kernel metric collection;
-	\item Studies leveraging eBPF to observe system-level interactions in non-machine learning contexts;
-	\item Research work utilizing eBPF to characterize machine learning workloads through kernel-level statistics.
-\end{itemize}
-
-\subsection{Machine Learning Characterization}
+% Machine Learning in and out of HPC
 
 HPC centers' wide array of hosted scientific applications has fostered a need for quality and agnostic I/O pattern identification. Other studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to transparently, through \texttt{LD\_PRELOAD}, classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down analysis, from system-wide, using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, to single-job, using Darshan, while also introducing two techniques for I/O analysis, a correlation matrix between runs with different parameters and sweep-line based analysis of file access bottlenecks; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}. None of these investigations ends up focusing on DL's patterns, so their conclusions cannot be easily applied to that context.
 
-However, with DL applications gaining ground in HPC centers, studies have adapted to specific analysis of their I/O traits. Some have kept Darshan as their backbone, either to do general DL pattern descriptions, with focus on HPC's response to those workloads (\cite{IOHPCDLBOOK,CharacterizationMLIOLeadHPC, UnderstandingDLIOHPC}), or to develop more advanced tools for that end (\cite{DFTracerAIHPC}). TF-Darshan \cite{tfdarshan} is one of those tools, transparently integrating Darshan with the DL framework Tensorflow's own profiler TensorBoard through runtime linkage, although it doesn't integrate with any other DL frameworks. Others sought to explore the performance bottlenecks around DL's data representation, 
+However, with DL applications gaining ground in HPC centers, studies have adapted to specific analysis of their I/O traits. Some have kept Darshan as their backbone, either to do general DL pattern descriptions, with focus on HPC's response to those workloads (\cite{IOHPCDLBOOK,CharacterizationMLIOLeadHPC, UnderstandingDLIOHPC}), or to develop more advanced tools for that end (\cite{DFTracerAIHPC}). TF-Darshan \cite{tfdarshan} is one of those tools, transparently integrating Darshan with the DL framework Tensorflow's own profiler TensorBoard through runtime linkage, although it doesn't integrate with any other DL frameworks. Others sought to explore the performance bottlenecks around DL's data representation, be it at the database level, for example, LMDBIO \cite{LMDB}, a proposed optimization for LMDB, one of the most used DL databases, and its \texttt{mmap} and randomization related shortcomings, or be it at the file system layer, especially considering parallel systems at HPC centers, proposing alternatives like BeeGFS \cite{beegfs} and ways to leverage it towards DL I/O optimization \cite{beegfsDL}, through their I/O patterns.  
 
 Due to DL's overwhelming majority of read operations, the most common examined metrics include the I/O file skew and full read time per process; the read bandwidth for each block size and the number of context switches.
 
@@ -214,6 +207,8 @@ Tables I and II show general statistics regarding the two models and the differe
 % This pattern also maintained when the operating systems caches were dropped in between epochs
 
 \section{Conclusion}
+
+Future work will certainly involve scaling up the tests done, not only in terms of dataset and model size, but also investing into Distributed Learning, both for Data and Model distribution. eBPF tools permit the tracking of network calls and data transfers, so they aren't limited to tracking only typical disk I/O.
 
 With this analysis fully complete, there is the need to keep up with DL's latest trends. Large Language Models (LLMs) have taken the world by storm, with the public availability of applications like ChatGPT \cite{chatgpt}, and so the training of these models is looking to become the norm on HPC centers. Their smaller datasets and larger models, as well as their different data consumption patterns, compared to those of traditional DL models, possibly bring different patterns into consideration when such examinations are conducted. 
 
