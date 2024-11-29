@@ -46,19 +46,39 @@
 \end{IEEEkeywords}
 
 \section{Introduction}
+
+In recent years Machine Learning has seen a massive increase in popularity.
+Specifically Deep Learning (DL) has been in several tasks such as image classification
+and natural language processing.\\
+There have been several studies that analyze the I/O patterns of DL Workflows and this work
+has been used to produce useful assumptions about DL I/O patterns. These have been commonly used to
+justify various types of optimization explorations \cite{LMDB, nvme, beegfs, bamboo}, and inform 
+other applications such as benchmarks specific to DL \cite{TFbenchmark}. \\
+Application-specific I/O characterization is a requirement unique and worthwhile solutions to
+newer performance problems, as well as, for example reducing the monetary cost of training an 
+DL model \cite{bamboo}, however very few of the existing I/O characterization tools
+can get down to the kernel level.\\
+\textbf{eBPF's} are a tool that allows for programs to be run on the kernel without changes to
+the source code and without having to reboot the kernel for code changes to take effect.\\
+\textbf{Contributions.} The main contributions of this paper are as follows
 \begin{itemize}
-	\item Machine learning has increased in popularity
-	\item Deep Learning is a subset of Machine Learning
-	      \begin{itemize}
-		      \item image classification
-		      \item natural language processing
-	      \end{itemize}
-	\item studies have tried to analyze I/O patterns in DL Workflows (source)
-	\item \item I/O Characterization has served to produce diverse assumptions about DL I/O behavior, like high overhead for random reads, which are commonly used to justify various types of optimization explorations (\cite{LMDB}, \cite{nvme}, \cite{beegfs}), and inform other applications based on them, like benchmarks specific to DL \cite{TFbenchmark}. Application-specific storage characterization is required to find unique and worthwhile solutions for newer performance problems.
-	\item very few get down to kernel level
-	\item eBPF are ...
-	\item we seek to provide a tool to Characterize DL workloads using eBPF's
+    \item To provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
+    \item Provide useful insights about the I/O patterns of certain DL workflows based on an analyses of the data collected.
 \end{itemize}
+
+% \begin{itemize}
+% 	\item Machine learning has increased in popularity
+% 	\item Deep Learning is a subset of Machine Learning
+% 	      \begin{itemize}
+% 		      \item image classification
+% 		      \item natural language processing
+% 	      \end{itemize}
+% 	\item studies have tried to analyze I/O patterns in DL Workflows (source)
+% 	\item \item I/O Characterization has served to produce diverse assumptions about DL I/O behavior, like high overhead for random reads, which are commonly used to justify various types of optimization explorations (\cite{LMDB}, \cite{nvme}, \cite{beegfs}), and inform other applications based on them, like benchmarks specific to DL \cite{TFbenchmark}. Application-specific storage characterization is required to find unique and worthwhile solutions for newer performance problems.
+% 	\item very few get down to kernel level
+% 	\item eBPF are ...
+% 	\item we seek to provide a tool to Characterize DL workloads using eBPF's
+% \end{itemize}
 
 \section{Background}
 
