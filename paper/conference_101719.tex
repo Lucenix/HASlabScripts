@@ -373,7 +373,9 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 17.} Although ResNet50 has a smaller checkpoint size, it performs 209 \texttt{writev} syscalls compared to just 16 by AlexNet.
 \\
-\textbf{Observation 18.} 
+\textbf{Observation 18.} Both models have CPU run queue empty during the entire duration of model training.
+\\
+\textbf{Observation 19.} The run queue latency is similar in both cases, with the interval \([2, 4[\) microseconds being the most dominant, followed by \([1]\), and then \([4, 8[\).
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
