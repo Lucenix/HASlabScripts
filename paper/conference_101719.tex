@@ -53,10 +53,11 @@ There have been several studies that analyze the I/O patterns of DL Workflows an
 has been used to produce useful assumptions about DL I/O patterns. These have been commonly used to
 justify various types of optimization explorations \cite{LMDB, nvme, beegfsDL, bamboo}, and inform 
 other applications such as benchmarks specific to DL \cite{TFbenchmark}. \\
-Application-specific I/O characterization is a requirement unique and worthwhile solutions to
+Application-specific I/O characterization is therefore a requirement for creating
+unique and worthwhile solutions to
 newer performance problems, as well as, for example reducing the monetary cost of training an 
 DL model \cite{bamboo}, however very few of the existing I/O characterization tools
-can get down to the kernel level.\\
+can get down to the kernel level, instead opting, for example for intercepting system calls \cite{tfdarshan}, this approach leaves out important information about whats happening at levels closer to the operating system.\\
 \textbf{eBPF's} are a tool that allows for programs to be run on the kernel without changes to
 the source code and without having to reboot the kernel for code changes to take effect.\\
 \textbf{Contributions.} The main contributions of this paper are as follows
