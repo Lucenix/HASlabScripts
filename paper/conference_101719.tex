@@ -51,11 +51,11 @@ Specifically Deep Learning (DL) has been in several tasks such as image classifi
 and natural language processing.\\
 There have been several studies that analyze the I/O patterns of DL Workflows and this work
 has been used to produce useful assumptions about DL I/O patterns. These have been commonly used to
-justify various types of optimization explorations \cite{LMDB, nvme, beegfsDL, bamboo}, and inform 
+justify various types of optimization explorations \cite{LMDB, nvme, beegfsDL, bamboo}, and inform
 other applications such as benchmarks specific to DL \cite{TFbenchmark}. \\
 Application-specific I/O characterization is therefore a requirement for creating
 unique and worthwhile solutions to
-newer performance problems, as well as, for example reducing the monetary cost of training an 
+newer performance problems, as well as, for example reducing the monetary cost of training an
 DL model \cite{bamboo}, however very few of the existing I/O characterization tools
 can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{DL\_PRELOAD} \cite{HPCIODarshan}, this approach leaves out important information about what is happening at levels closer to the operating system.\\
 There are several ways to interact with the kernel at a low level, such as modifying the kernel source code or using kernel modules. While direct modifications offer efficiency and a high degree of customization, maintaining these changes across different kernel versions and configurations poses significant challenges due to the need for repeated compiling, testing, and adaptation.
@@ -72,8 +72,8 @@ Our goal is to leverage and modify these tools to collect data at different kern
 Besides that, eBPF also bring some challenges, it is crucial to evaluate the overhead and limitations of these tools to determine which are most suitable for our study and understanding the appropriate layers and points within the kernel where they should be applied.\\
 \textbf{Contributions.} The main contributions of this paper are as follows
 \begin{itemize}
-    \item To provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
-    \item Provide useful insights about the patterns of certain DL workflows based on an analysis of the data collected.
+	\item To provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
+	\item Provide useful insights about the patterns of certain DL workflows based on an analysis of the data collected.
 \end{itemize}
 
 % \begin{itemize}
@@ -110,7 +110,7 @@ Various frameworks exist to facilitate the Implementation of DL models, and each
 
 \subsection{I/O in Deep Learning}
 
-DL's I/O patterns have been attributed as the cause for the increasing storage bottleneck found recently in these applications \cite{beegfs}. On the one hand, the usual dataset's average sample is very small, but also very numerous. For example, 75\% of ImageNet's samples are smaller than 147 KB, while the dataset itself consists of over 14 million images. Allied with the random choosing of samples for batches and the scan nature of each epoch's full dataset traversal, these patterns don't allow for the typical optimizations of traditional storage systems, directed at large and sequential patterns, like prefetching and caching \cite{initial}. On the other hand, the number of samples used for each batch has been increasing over the last years, from 32, to 256 and, in some cases, to the 80.000s, in order to better utilize the higher computational power \cite{nvme}. This comes at an increased I/O load per iteration, while also reducing the overlap between I/O and computation, as GPU utilization tends to scale better than I/O performance when the input sizes are bigger \cite{TFbenchmark}. 
+DL's I/O patterns have been attributed as the cause for the increasing storage bottleneck found recently in these applications \cite{beegfs}. On the one hand, the usual dataset's average sample is very small, but also very numerous. For example, 75\% of ImageNet's samples are smaller than 147 KB, while the dataset itself consists of over 14 million images. Allied with the random choosing of samples for batches and the scan nature of each epoch's full dataset traversal, these patterns don't allow for the typical optimizations of traditional storage systems, directed at large and sequential patterns, like prefetching and caching \cite{initial}. On the other hand, the number of samples used for each batch has been increasing over the last years, from 32, to 256 and, in some cases, to the 80.000s, in order to better utilize the higher computational power \cite{nvme}. This comes at an increased I/O load per iteration, while also reducing the overlap between I/O and computation, as GPU utilization tends to scale better than I/O performance when the input sizes are bigger \cite{TFbenchmark}.
 
 Although DL is based primarily upon a read workload, when checkpointing is enabled there are moments of heavy writes. Checkpointing sizes depend on the size of the network, as they can be defined with wholly different numbers of layers and weights, which impacts differently the overall distribution.
 
@@ -125,16 +125,16 @@ To facilitate the creation, compilation and execution of eBPF programs, bpftrace
 
 % Machine Learning in and out of HPC
 
-HPC centers' wide array of hosted scientific applications has fostered a need for quality and application agnostic I/O pattern identification. Other studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to transparently, through \texttt{LD\_PRELOAD}, classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down analysis, from system-wide, using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, to single-job, using Darshan, while also introducing two techniques for I/O analysis, a correlation matrix between runs with different parameters and sweep-line based analysis of file access bottlenecks; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}. 
+HPC centers' wide array of hosted scientific applications has fostered a need for quality and application agnostic I/O pattern identification. Other studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to transparently, through \texttt{LD\_PRELOAD}, classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down analysis, from system-wide, using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, to single-job, using Darshan, while also introducing two techniques for I/O analysis, a correlation matrix between runs with different parameters and sweep-line based analysis of file access bottlenecks; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}.
 
 However, with DL applications gaining ground in HPC centers, studies have adapted to specific analysis of their I/O traits. Some have kept Darshan as their backbone, either to conduct general DL pattern descriptions, with focus on HPC's response to those workloads (\cite{IOHPCDLBOOK,CharacterizationMLIOLeadHPC, UnderstandingDLIOHPC}), or to develop more advanced tools for that end (\cite{DFTracerAIHPC}). TF-Darshan \cite{tfdarshan} is one of those tools, transparently integrating Darshan with the DL framework Tensorflow's own profiler TensorBoard through runtime linkage, although it doesn't integrate with any other DL frameworks. Others sought to explore the performance bottlenecks around DL's data usage, be it at the database level, for example, LMDBIO \cite{LMDB}, a proposed optimization for LMDB, one of the most used DL databases, and its \texttt{mmap} and randomization related shortcomings, or be it at the file system layer, especially considering parallel systems at HPC centers, proposing alternatives like BeeGFS \cite{beegfs} and ways to leverage it towards DL I/O optimization \cite{beegfsDL}.
 
-Due to DL's overwhelming majority of read operations, the most common examined metrics include the I/O file skew and full read time per process; the read bandwidth for each block size and the number of context switches happening on I/O blocked processes. We've identified some gaps in all analysis overall, like the lack of focus on cache utilization during the epoch dataset scan, lack of network characterization in Distributed Learning communication between workers and, most of all, lack of full I/O stack analysis, considering each step of the training process, over time. Additionally, Darshan itself lacks functionality to adequately track \texttt{mmap} based data manipulation, like \texttt{msync} calls, without additional, intrusive extensions \cite{tfdarshan}, which limits their interaction with DL's most used data representation techniques \cite{LMDB}. 
+Due to DL's overwhelming majority of read operations, the most common examined metrics include the I/O file skew and full read time per process; the read bandwidth for each block size and the number of context switches happening on I/O blocked processes. We've identified some gaps in all analysis overall, like the lack of focus on cache utilization during the epoch dataset scan, lack of network characterization in Distributed Learning communication between workers and, most of all, lack of full I/O stack analysis, considering each step of the training process, over time. Additionally, Darshan itself lacks functionality to adequately track \texttt{mmap} based data manipulation, like \texttt{msync} calls, without additional, intrusive extensions \cite{tfdarshan}, which limits their interaction with DL's most used data representation techniques \cite{LMDB}.
 
 % Observation through eBPFs
 In terms of eBPF, there are some tools that are used for system tracing and performance analysis,
 such as DIO \cite{DIO} that allow the observation of I/O interactions between the application and in-kernel storage,
-\cite{CAT} which is able to correlate the flow of storage and network requests application and \cite{tracee} that provides runtime security and forensics.  
+\cite{CAT} which is able to correlate the flow of storage and network requests application and \cite{tracee} that provides runtime security and forensics.
 
 % Machine Learning analysis with eBPFs
 There are already some studies that uses eBPF's capability to provide kernel-level information to understand patterns such as \cite{eBPFDLNetwork} that
@@ -148,13 +148,13 @@ The system, also described in Figure \ref{fig:Design}, is composed of three main
 	\item \textit{Collector}. Allows collecting system information during model training.
 	\item \textit{Backend}. Offers a method for storing, searching and analyzing the raw data collected.
 	\item \textit{Visualizer}. Provides a way to represent the data collected through different graphical formats in order to facilitate the understanding and analysis of complex logs by transforming them into more intuitive visual representations.
-\end{itemize} 
+\end{itemize}
 
 \begin{figure}[htbp]
-    \centering
+	\centering
 	\includegraphics[width=0.45\textwidth]{images/DesignPIV3.pdf}
-    \caption{Design}
-    \label{fig:Design}
+	\caption{Design}
+	\label{fig:Design}
 \end{figure}
 
 \section{Implementation}
@@ -167,9 +167,9 @@ Next we overview a more detailed breakdown of how each component was developed a
 
 \subsubsection{Collector}
 
-For data collection, we used bpftrace\cite{bpftrace} in conjunction with pre-built tools available in the official repository and the book\cite{bgreggBook}. 
+For data collection, we used bpftrace\cite{bpftrace} in conjunction with pre-built tools available in the official repository and the book\cite{bgreggBook}.
 However, we modified most of these tools to better suit DL training, as some of them presented all the collected data together, without any time context.
-Others were not detailed enough, capturing system-level metrics instead of focusing on the deep learning training process. 
+Others were not detailed enough, capturing system-level metrics instead of focusing on the deep learning training process.
 
 Additionally, we created custom tools to improve data collection, and we used a GNU Screen \cite{screen} session to allow the scripts to run in the background during long training sessions.
 
@@ -216,7 +216,7 @@ Additionally, the extension provides the ability to display flamegraphs, and the
 
 \subsubsection{Limitations}
 
-In terms of limitations, we found that this setup does not allow us to collect information and analyze it later, as it is a real-time system.
+We found that this setup does not allow us to collect information and analyze it later, as it is a real-time system.
 We still need to modify some bpftrace code to make it compatible with the plots in Grafana.
 
 Moreover, we found that the setup was not easy due to outdated and incomplete documentation, which created difficulties with configuration and setup.
@@ -234,18 +234,18 @@ provided by \textit{PyTorch}, where they're defined with 50 and 13 layers, respe
 
 \subsection{Methodology}
 
-To evaluate out ... we run a series of experiments with different parameters, in particular these are: 
+To evaluate out ... we run a series of experiments with different parameters, in particular these are:
 \begin{itemize}
-    \item ResNet50 or AlexNet models
-    \item One or two training epochs.
-    \item With or without checkpointing
-    \item With or without code generated training logs
-    \item With 32 and 64 batch size
+	\item ResNet50 or AlexNet models
+	\item One or two training epochs.
+	\item With or without checkpointing
+	\item With or without code generated training logs
+	\item With 32 and 64 batch size
 \end{itemize}
 In order to not have interference between different runs the operating system's cache was dropped after each run.
 
 A full run with every combination of parameters was run and the data was processes and analyzed.\\
-After some analyses of the data further, smaller experiments were conducted in particular these included: 
+After some analyses of the data further, smaller experiments were conducted in particular these included:
 Variations of the num\_workers parameter of the PyTorch DataLoader with both the models during two epochs, a batch size of 64, no logging, and with a checkpoint at each epoch boundaries.
 Dropping the system cache at epoch boundaries.
 ...
@@ -277,17 +277,17 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 8.} Before the read gap begins, there is a stabilization of the system memory used as cache, at around 12GiB of usage.
 \\
-\textbf{Observation 9.} The size of the gap is proportional to the number of worker processes used to read from disk, and so the gap is smaller the fewer workers used. With zero workers, the gap does not exist. 
+\textbf{Observation 9.} The size of the gap is proportional to the number of worker processes used to read from disk, and so the gap is smaller the fewer workers used. With zero workers, the gap does not exist.
 \\
-\textbf{Observation 10.} This pattern maintained even when the operating system's cache was dropped between epochs. 
+\textbf{Observation 10.} This pattern maintained even when the operating system's cache was dropped between epochs.
 \\
-\textbf{Observation 11.} Regarding the two tracepoints used for capturing the block read operation completion, that we assumed were exclusive of each other, when tracing with either one active, the union of the results did not equal the results of having both tracepoints active by an order of magnitude (10.000s against 1.000s for each one).  
+\textbf{Observation 11.} Regarding the two tracepoints used for capturing the block read operation completion, that we assumed were exclusive of each other, when tracing with either one active, the union of the results did not equal the results of having both tracepoints active by an order of magnitude (10.000s against 1.000s for each one).
 \\
 \textbf{Observation 12.} The amount and size of block read operations issued to the disk is constant throughout the whole training.
 \\
 \textbf{Observation 13.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
 \\
-\textbf{Observation 14.} 
+\textbf{Observation 14.}
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
@@ -311,7 +311,7 @@ Tables I and II show general statistics regarding the two models and the differe
 
 Future work will involve scaling up the tests done, not only in terms of dataset and model size, but also investing into Distributed Learning, both for Data and Model distribution. eBPF tools permit the tracking of network calls and data transfers, so they aren't limited to tracking only typical disk I/O.
 
-With DL analysis fully complete, there is the need to keep up with DL's latest trends. Large Language Models (LLMs) have taken the world by storm, with the public availability of applications like ChatGPT \cite{chatgpt}, and so the training of these models is looking to become the norm on HPC centers. Their smaller datasets and larger models, as well as their different data consumption patterns, compared to those of traditional DL models, possibly bring different patterns into consideration when such examinations are conducted. 
+With DL analysis fully complete, there is the need to keep up with DL's latest trends. Large Language Models (LLMs) have taken the world by storm, with the public availability of applications like ChatGPT \cite{chatgpt}, and so the training of these models is looking to become the norm on HPC centers. Their smaller datasets and larger models, as well as their different data consumption patterns, compared to those of traditional DL models, possibly bring different patterns into consideration when such examinations are conducted.
 
 \bibliography{IEEEabrv, refs}
 
