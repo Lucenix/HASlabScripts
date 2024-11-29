@@ -261,6 +261,82 @@ Changing the biolantency tracer tool by removing some hook points.
 
 \subsection{Results}
 
+\begin{table}
+    \caption{System calls}\label{tab:syscalls}
+    \begin{center}
+        \begin{tabular}[c]{|l|l|l|}
+            \hline
+            \rowcolor{gray}
+            Syscall & ResNet50 & AlexNet\\
+            \hline
+            \rowcolor{lightgray}
+            \#1 & sched\_yield & read\\
+            \hline
+            \#2 & read & lseek\\
+            \hline
+            \rowcolor{lightgray}
+            \#3 & lseek & close\\
+            \hline
+            \#4 & close & newfstat\\
+            \hline
+            \rowcolor{lightgray}
+            \#5 & newfstat & ioctl\\
+            \hline
+            \#6 & ioctl & openat\\
+            \hline
+            \rowcolor{lightgray}
+            \#7 & openat & futex\\
+            \hline
+            \#8 & futex & write\\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\begin{table*}
+    \caption{Perf}\label{tab:perf}
+    \begin{center}
+        \begin{tabular}[c]{|l|l|l|l|l|l|l|}
+            \hline
+            \rowcolor{gray}
+            Model & Epoch & Batch Size & Ckeckpoint & Logging & Time w/ eBPF & Time w/o eBPF \\
+            \hline
+            AlexNet & 2 & 32 & 0 & false &    33m47.868s & 33m10.190s \\
+            \hline
+            AlexNet & 2 & 32 & 0 & true &    34m21.545s & 33m27.275s \\
+            \hline
+            AlexNet & 2 & 32 & 1 & false &    33m53.268s & 33m10.023s \\
+            \hline
+            AlexNet & 2 & 32 & 1 & true &    34m55.783s & 33m24.529s \\
+            \hline
+            AlexNet & 2 & 64 & 0 & false &    33m43.084s & 33m3.322s \\
+            \hline
+            AlexNet & 2 & 64 & 0 & true &    34m13.559s & 33m20.241s \\
+            \hline
+            AlexNet & 2 & 64 & 1 & false &    33m53.426s & 33m5.216s \\
+            \hline
+            AlexNet & 2 & 64 & 1 & true &    34m17.983s & 32m58.640s \\
+            \hline
+            ResNet50 & 2 & 32 & 0 & false &    57m46.997s & 57m46.194s \\
+            \hline
+            ResNet50 & 2 & 32 & 0 & true &     57m46.116s & 57m45.615s \\
+            \hline
+            ResNet50 & 2 & 32 & 1 & false &    57m43.254s & 57m44.610s \\
+            \hline
+            ResNet50 & 2 & 32 & 1 & true &     57m46.191s & 57m46.028s \\
+            \hline
+            ResNet50 & 2 & 64 & 0 & false &    55m53.568s & 55m49.152s \\
+            \hline
+            ResNet50 & 2 & 64 & 0 & true &     55m57.438s & 55m48.515s \\
+            \hline
+            ResNet50 & 2 & 64 & 1 & false &    55m53.242s & 55m52.361s \\
+            \hline
+            ResNet50 & 2 & 64 & 1 & true &     55m52.560s & 55m48.773s \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table*}
+
 Tables I and II show general statistics regarding the two models and the different parameters we tested for each.
 \\
 \textbf{Observation 1.} Training images are read concurrently by multiple processes on training with several workers.
@@ -315,43 +391,8 @@ Tables I and II show general statistics regarding the two models and the differe
 % This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decreased (no workers??).
 % This pattern also maintained when the operating systems caches were dropped in between epochs
 
-\begin{table}
-    \caption{System calls}\label{tab:syscalls}
-    \begin{center}
-        \begin{tabular}[c]{|l|l|l|}
-            \hline
-            \rowcolor{gray}
-            Syscall & ResNet50 & AlexNet\\
-            \hline
-            \rowcolor{lightgray}
-            \#1 & sched\_yield & read\\
-            \hline
-            \#2 & read & lseek\\
-            \hline
-            \rowcolor{lightgray}
-            \#3 & lseek & close\\
-            \hline
-            \#4 & close & newfstat\\
-            \hline
-            \rowcolor{lightgray}
-            \#5 & newfstat & ioctl\\
-            \hline
-            \#6 & ioctl & openat\\
-            \hline
-            \rowcolor{lightgray}
-            \#7 & openat & futex\\
-            \hline
-            \#8 & futex & write\\
-            \hline
-        \end{tabular}
-    \end{center}
-\end{table}
-
-
-
 
 \section{Conclusion and Future Work}
-
 
 
 Future work will involve scaling up the tests done, not only in terms of dataset and model size, but also investing into Distributed Learning, both for Data and Model distribution. eBPF tools permit the tracking of network calls and data transfers, so they aren't limited to tracking only typical disk I/O.
