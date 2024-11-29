@@ -165,7 +165,7 @@ Additionally, we created custom tools to improve data collection, and we used a 
 
 \subsubsection{Backend}
 
-The raw data is stored in the XFS file system, which ensures efficient handling of large datasets, this file system also hosts our dataset.
+The raw data is stored in the XFS file system, which ensures efficient handling of large datasets, the file system that also hosts our dataset.
 We process the stored files by parsing the bpftrace logs, after which the data is aggregated into structured formats for analysis.
 Some results are plotted directly for visualization and saved in PDF and HTML formats, while others are stored in pickle format for direct querying or interactive visualizations.
 
@@ -252,15 +252,15 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 9.} The size of the gap is proportional to the number of worker processes used to read from disk, and so the gap is smaller the fewer workers used. With zero workers, the gap does not exist. 
 \\
-\textbf{Observation 10.} Although the pattern maintained even when the operating system's cache was dropped between epochs, there was a slight increase in the run time. 
+\textbf{Observation 10.} This pattern maintained even when the operating system's cache was dropped between epochs. 
 \\
-\textbf{Observation 11.} Regarding the two tracepoints used for capturing the block read operation completion, that we assumed were exclusive with each other, when tracing with either one active, the union of the results did not equal the results of having both tracepoints active by an order of magnitude (10.000s against 1.000s for each one).  
+\textbf{Observation 11.} Regarding the two tracepoints used for capturing the block read operation completion, that we assumed were exclusive of each other, when tracing with either one active, the union of the results did not equal the results of having both tracepoints active by an order of magnitude (10.000s against 1.000s for each one).  
 \\
 \textbf{Observation 12.} The amount and size of block read operations issued to the disk is constant throughout the whole training.
 \\
-\textbf{Observation 10.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
+\textbf{Observation 13.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
 \\
-\textbf{Observation 11.} 
+\textbf{Observation 14.} 
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
