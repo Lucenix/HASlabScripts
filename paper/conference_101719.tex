@@ -239,7 +239,7 @@ provided by \textit{PyTorch}, where they're defined with 50 and 13 layers, respe
 
 \subsection{Methodology}
 
-To evaluate out ... we run a series of experiments with different parameters, in particular these are:
+We ran a series of experiments with different parameters, in particular these are:
 \begin{itemize}
 	\item ResNet50 or AlexNet models
 	\item One or two training epochs.
@@ -253,7 +253,7 @@ A full run with every combination of parameters was run and the data was process
 After some analyses of the data further, smaller experiments were conducted in particular these included:
 Variations of the num\_workers parameter of the PyTorch DataLoader with both the models during two epochs, a batch size of 64, no logging, and with a checkpoint at each epoch boundaries.
 Dropping the system cache at epoch boundaries.
-...
+Changing the biolantency tracer tool by removing some hook points.
 
 
 \begin{itemize}
