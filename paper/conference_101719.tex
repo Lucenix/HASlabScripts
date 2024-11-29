@@ -131,29 +131,6 @@ leverages eBPF to monitor distributed deep learning training (DDL), investigatin
 eBPF has also been utilized to characterize machine and deep learning workloads, focusing on storage and I/O efficiency in training,
 revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}.
 
-\begin{itemize}
-	% \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{9229605} \cite{zoomin} 
-	\item MLPerf Storage/tese de um aluno da Oana
-	\item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD\_PRELOAD, captura de de I/O request por intrumentação do código fonte.
-	      % \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{8638422}
-	% \item Caracterizar o I/O de LMDB, que é análoga à do PyTorch e do Tensorflow, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{LMDB}
-	\item Que métricas analisam principalmente?
-	      \begin{itemize}
-		      % \item I/O skew por processo;
-		      % \item tempo de leitura por processo;
-		      % \item bandwidth do read por cada I/O block size;
-		      \item número de context switches;
-	      \end{itemize}
-	\item O que falta fazer?
-	      \begin{itemize}
-		      \item Análise empírica dos padrões de I/O como parte do processo de treino ao longo do tempo
-		      \item Análise da cache como interveniente no processo de I/O
-		      \item Testes de Rede (para modelos distribuídos)
-		      \item Analisar PyTorch com o nível de detalhe que analisaram outras
-		      \item Analisar kernel-level I/O calls
-	      \end{itemize}
-\end{itemize}
-
 \section{Design}
 The system is composed of three main components:
 \begin{itemize}
@@ -162,7 +139,6 @@ The system is composed of three main components:
 	\item \textit{Visualizer}. Provides a way to represent the data collected through different graphical formats in order to facilitate the understanding and analysis of complex logs by transforming them into more intuitive visual representations.
 \end{itemize}
 %\textit{Parcer}. Responsible for agreggating the collected data into usable forms, the Parcer is divided into two submodules, the parcer, that aggregates the data collected andd the plotter which  
-
 
 \begin{figure}[htbp]
     \centering
