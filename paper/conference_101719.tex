@@ -183,6 +183,12 @@ Next we overview a more detailed breakdown of how each component was developed a
 
 \subsubsection{Collector}
 
+For data collection, we used bpftrace\cite{bpftrace} in conjunction with pre-built tools available in the official repository and the book\cite{bgreggBook}. 
+However, we modified most of these tools to better suit DL training, as some of them presented all the collected data together, without any time context.
+Others were not detailed enough, capturing system-level metrics instead of focusing on the deep learning training process. 
+Additionally, we created custom tools to improve data collection. 
+Furthermore, we used a GNU Screen \cite{screen} session to allow the scripts to run in the background during long training sessions.
+
 \subsubsection{Backend}
 
 \subsubsection{Visualizer}
