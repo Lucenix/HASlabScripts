@@ -241,7 +241,7 @@ provided by \textit{PyTorch}, where they're defined with 50 and 13 layers, respe
 
 \subsection{Methodology}
 
-To evaluate out ... we run a series of experiments with different parameters, in particular these are:
+We ran a series of experiments with different parameters, in particular these are:
 \begin{itemize}
 	\item ResNet50 or AlexNet models
 	\item One or two training epochs.
@@ -255,7 +255,7 @@ A full run with every combination of parameters was run and the data was process
 After some analyses of the data further, smaller experiments were conducted in particular these included:
 Variations of the num\_workers parameter of the PyTorch DataLoader with both the models during two epochs, a batch size of 64, no logging, and with a checkpoint at each epoch boundaries.
 Dropping the system cache at epoch boundaries.
-...
+Changing the biolantency tracer tool by removing some hook points.
 
 
 \begin{itemize}
@@ -312,8 +312,24 @@ Tables I and II show general statistics regarding the two models and the differe
 % This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decreased (no workers??).
 % This pattern also maintained when the operating systems caches were dropped in between epochs
 
-\subsection{Limitation}
-
+\begin{table}
+    \caption{System calls}\label{tab:syscalls}
+    \begin{center}
+        \begin{tabular}[c]{|l|l|l|}
+            \hline
+            Syscall & ResNet50 & AlexNet\\
+            \hline
+            \#1 & a & b\\
+            \hline
+            \#2 & c & d\\
+            \hline
+            \#3 & c & d\\
+            \hline
+            \#4 & c & d\\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
 
 
 \section{Conclusion and Future Work}
