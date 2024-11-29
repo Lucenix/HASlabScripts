@@ -160,7 +160,7 @@ revealing how storage interactions impact overall performance \cite{OanaDL, Oana
 The system is composed of three main components:
 \begin{itemize}
 	\item \textit{Collector}. Allows collecting system information during model training.
-	\item \textit{BackEnd}. Offers a method for storing, searching and analyzing the raw data collected.
+	\item \textit{Backend}. Offers a method for storing, searching and analyzing the raw data collected.
 	\item \textit{Visualizer}. Provides a way to represent the data collected through different graphical formats in order to facilitate the understanding and analysis of complex logs by transforming them into more intuitive visual representations.
 \end{itemize}
 %\textit{Parcer}. Responsible for agreggating the collected data into usable forms, the Parcer is divided into two submodules, the parcer, that aggregates the data collected andd the plotter which  
@@ -174,7 +174,30 @@ The system is composed of three main components:
 \end{figure}
 
 \section{Implementation}
-The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parser was implemented using python and plotted with the matplotlib and plotly python libraries
+The implementation of the system is divided into the three main components described in the design section.
+There are two versions of the system, each using different approaches for data collection, storing and visualization.
+Next we overview a more detailed breakdown of how each component was developed and integrated for both versions.
+%The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parser was implemented using python and plotted with the matplotlib and plotly python libraries
+
+\subsection{First Version: bpftrace with python plots} % need a better name ngl
+
+\subsubsection{Collector}
+
+\subsubsection{Backend}
+
+\subsubsection{Visualizer}
+
+\subsubsection{Limitations}
+
+\subsection{Second Version: Grafana pcp-bpftrace}
+
+\subsubsection{Collector}
+
+\subsubsection{Backend}
+
+\subsubsection{Visualizer}
+
+\subsubsection{Limitations}
 
 \section{Evaluation}
 
