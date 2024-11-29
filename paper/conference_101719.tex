@@ -14,19 +14,19 @@
 \title{Characterization of Patterns in Deep Learning Models using eBPF\\
 }
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} André Lucena Ribas Ferreira}
+\author{\IEEEauthorblockN{André Lucena Ribas Ferreira}
 	\IEEEauthorblockA{
 		\textit{University of Minho}\\
 		Braga, Portugal \\
 		pg52672@uminho.pt}
 	\and
-	\IEEEauthorblockN{1\textsuperscript{st} Carlos Eduardo da Silva Machado}
+	\IEEEauthorblockN{Carlos Eduardo da Silva Machado}
 	\IEEEauthorblockA{
 		\textit{University of Minho}\\
 		Braga, Portugal \\
 		pg52675@uminho.pt}
 	\and
-	\IEEEauthorblockN{1\textsuperscript{st} Gonçalo Manuel Maia de Sousa}
+	\IEEEauthorblockN{Gonçalo Manuel Maia de Sousa}
 	\IEEEauthorblockA{
 		\textit{University of Minho}\\
 		Braga, Portugal \\
@@ -184,7 +184,7 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are \texttt{sched\_yield()}, these calls are all made by two threads created by the master process, which runs the main function and schedules the model's training.
 \\
-\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write latency.
+\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write throughput.
 \\
 \textbf{Observation 5.} When reading from a pipe, processes will read in two times, the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the num\_workers parameter in the DataLoader class.
 \\
@@ -195,7 +195,10 @@ Tables I and II show general statistics regarding the two models and the differe
 \textbf{Observation 8.} This pattern is persistent through changes in the number of workers, however, with fewer workers, the initial spike of accesses lasts for longer, and so the gap is smaller. With zero workers, the gap does not exist. 
 \\
 \textbf{Observation 9.} This pattern was visible even when the operating system's cache was dropped between epochs.
-
+\\
+\textbf{Observation 10.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
+\\
+\textbf{Observation 11.} 
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
