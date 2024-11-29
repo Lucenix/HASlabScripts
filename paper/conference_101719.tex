@@ -299,7 +299,7 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 15.} Both AlexNet and ResNet50 exhibit a similar hierarchy of system calls, with the notable exception of ResNet50's inclusion of \texttt{sched\_yield} as the first call. The system calls are as follows: \texttt{read}, \texttt{lseek}, \texttt{close}, \texttt{newfstat}, \texttt{ioctl}, \texttt{openat}, \texttt{futex} and \texttt{write}.
 \\
-\textbf{Observation 16.} % falar dos writevs insane do resnet50
+\textbf{Observation 16.} Although ResNet50 has a smaller checkpoint size, it performs 209 \texttt{writev} syscalls compared to just 16 by AlexNet.
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
