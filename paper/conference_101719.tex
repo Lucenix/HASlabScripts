@@ -57,7 +57,7 @@ Application-specific I/O characterization is therefore a requirement for creatin
 unique and worthwhile solutions to
 newer performance problems, as well as, for example reducing the monetary cost of training an 
 DL model \cite{bamboo}, however very few of the existing I/O characterization tools
-can get down to the kernel level, instead opting, for example for intercepting system calls \cite{HPCIODarshan}.\\
+can get down to the kernel level, instead opting, for example for intercepting system calls \cite{HPCIODarshan}, this approach leaves out important information about whats happening at levels closer to the operating system.\\
 \textbf{eBPF's} are a tool that allows for programs to be run on the kernel without changes to
 the source code and without having to reboot the kernel for code changes to take effect.\\
 \textbf{Contributions.} The main contributions of this paper are as follows
@@ -115,13 +115,11 @@ To facilitate the creation, compilation and execution of eBPF programs, bpftrace
 
 % Machine Learning in and out of HPC
 
-HPC centers' wide array of hosted scientific applications has fostered a need for quality and agnostic I/O pattern identification. Other studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to transparently, through \texttt{LD\_PRELOAD}, classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down analysis, from system-wide, using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, to single-job, using Darshan, while also introducing two techniques for I/O analysis, a correlation matrix between runs with different parameters and sweep-line based analysis of file access bottlenecks; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}. 
+HPC centers' wide array of hosted scientific applications has fostered a need for quality and application agnostic I/O pattern identification. Other studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to transparently, through \texttt{LD\_PRELOAD}, classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down analysis, from system-wide, using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, to single-job, using Darshan, while also introducing two techniques for I/O analysis, a correlation matrix between runs with different parameters and sweep-line based analysis of file access bottlenecks; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}. 
 
 However, with DL applications gaining ground in HPC centers, studies have adapted to specific analysis of their I/O traits. Some have kept Darshan as their backbone, either to conduct general DL pattern descriptions, with focus on HPC's response to those workloads (\cite{IOHPCDLBOOK,CharacterizationMLIOLeadHPC, UnderstandingDLIOHPC}), or to develop more advanced tools for that end (\cite{DFTracerAIHPC}). TF-Darshan \cite{tfdarshan} is one of those tools, transparently integrating Darshan with the DL framework Tensorflow's own profiler TensorBoard through runtime linkage, although it doesn't integrate with any other DL frameworks. Others sought to explore the performance bottlenecks around DL's data usage, be it at the database level, for example, LMDBIO \cite{LMDB}, a proposed optimization for LMDB, one of the most used DL databases, and its \texttt{mmap} and randomization related shortcomings, or be it at the file system layer, especially considering parallel systems at HPC centers, proposing alternatives like BeeGFS \cite{beegfs} and ways to leverage it towards DL I/O optimization \cite{beegfsDL}.
 
-However, Darshan itself lacks functionality to adequately track \texttt{mmap} based data manipulation, like \texttt{msync} calls, without additional, intrusive extensions \cite{tfdarshan}, which limits their interaction with DL's most used data representation techniques \cite{LMDB}.
-
-Due to DL's overwhelming majority of read operations, the most common examined metrics include the I/O file skew and full read time per process; the read bandwidth for each block size and the number of context switches happening on I/O blocked processes. We've identified some gaps in all analysis overall, like focusing on cache utilization (or lack thereof) during the epoch scan, network characterization in Distributed Learning communication between workers,  
+Due to DL's overwhelming majority of read operations, the most common examined metrics include the I/O file skew and full read time per process; the read bandwidth for each block size and the number of context switches happening on I/O blocked processes. We've identified some gaps in all analysis overall, like the lack of focus on cache utilization during the epoch dataset scan, lack of network characterization in Distributed Learning communication between workers and, most of all, lack of full I/O stack analysis, considering each step of the training process, over time. Additionally, Darshan itself lacks functionality to adequately track \texttt{mmap} based data manipulation, like \texttt{msync} calls, without additional, intrusive extensions \cite{tfdarshan}, which limits their interaction with DL's most used data representation techniques \cite{LMDB}. 
 
 % Observation through eBPFs
 In terms of eBPF, there are some tools that are used for system tracing and performance analysis,
@@ -134,29 +132,6 @@ leverages eBPF to monitor distributed deep learning training (DDL), investigatin
 eBPF has also been utilized to characterize machine and deep learning workloads, focusing on storage and I/O efficiency in training,
 revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}.
 
-\begin{itemize}
-	% \item papers que usam darshan/tf-darshan, como per-file statistics, para caracterizar padrões \cite{9229605} \cite{zoomin} 
-	\item MLPerf Storage/tese de um aluno da Oana
-	\item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD\_PRELOAD, captura de de I/O request por intrumentação do código fonte.
-	      % \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{8638422}
-	% \item Caracterizar o I/O de LMDB, que é análoga à do PyTorch e do Tensorflow, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{LMDB}
-	\item Que métricas analisam principalmente?
-	      \begin{itemize}
-		      % \item I/O skew por processo;
-		      % \item tempo de leitura por processo;
-		      % \item bandwidth do read por cada I/O block size;
-		      \item número de context switches;
-	      \end{itemize}
-	\item O que falta fazer?
-	      \begin{itemize}
-		      \item Análise empírica dos padrões de I/O como parte do processo de treino ao longo do tempo
-		      \item Análise da cache como interveniente no processo de I/O
-		      \item Testes de Rede (para modelos distribuídos)
-		      \item Analisar PyTorch com o nível de detalhe que analisaram outras
-		      \item Analisar kernel-level I/O calls
-	      \end{itemize}
-\end{itemize}
-
 \section{Design}
 The system is composed of three main components:
 \begin{itemize}
@@ -166,10 +141,9 @@ The system is composed of three main components:
 \end{itemize}
 %\textit{Parcer}. Responsible for agreggating the collected data into usable forms, the Parcer is divided into two submodules, the parcer, that aggregates the data collected andd the plotter which  
 
-
 \begin{figure}[htbp]
     \centering
-	\includegraphics[width=0.45\textwidth]{images/DesignPIV2.pdf}
+	\includegraphics[width=0.45\textwidth]{images/DesignPIV3.pdf}
     \caption{Design}
     \label{fig:Design}
 \end{figure}
@@ -180,20 +154,21 @@ There are two versions of the system, each using different approaches for data c
 Next we overview a more detailed breakdown of how each component was developed and integrated for both versions.
 %The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parser was implemented using python and plotted with the matplotlib and plotly python libraries
 
-\subsection{First Version: bpftrace with python plots} % need a better name ngl
+\subsection{Bpftrace and Python}
 
 \subsubsection{Collector}
 
 For data collection, we used bpftrace\cite{bpftrace} in conjunction with pre-built tools available in the official repository and the book\cite{bgreggBook}. 
 However, we modified most of these tools to better suit DL training, as some of them presented all the collected data together, without any time context.
 Others were not detailed enough, capturing system-level metrics instead of focusing on the deep learning training process. 
+
 Additionally, we created custom tools to improve data collection. 
 Furthermore, we used a GNU Screen \cite{screen} session to allow the scripts to run in the background during long training sessions.
 
 \subsubsection{Backend}
-The raw data is stored in the XFS file system, which ensures efficient handling of large datasets.
+The raw data is stored in the XFS file system, which ensures efficient handling of large datasets. This is the same file system where our dataset is hosted in. 
 We parse the bpftrace\cite{bpftrace} logs by reading the stored files, and then the data is processed and aggregated into structured formats for analysis,
-some are plotted directly for visualization and stored again pdf and html formats, others are parsed and stored in the pickle format.
+some are plotted directly for visualization and stored in pdf and html formats, others are parsed and stored in the pickle format for direct query access or loading of the interactive visualizations.
 
 \subsubsection{Visualizer}
 
@@ -202,19 +177,41 @@ Matplotlib and Seaborn are primarily used to generate heatmaps, while Plotly is 
 
 \subsubsection{Limitations}
 
-Some limitations of this version include the need to build and maintain the entire pipeline using scripts.
+Some limitations of this version include the need to build and maintain the entire pipeline using handmade scripts, to connect the different tools and ways of execution.
+
 Additionally, if new forms of visualization are required, the parser and visualizer must be adapted to handle different bpftrace log types or generate new types of visualizations.
+
 Other limitations include the scalability of the system, as the dataset size or model complexity increases, the current data collection and processing pipeline may face performance bottlenecks.
 Also, the custom modifications made to the bpftrace tools may limit the flexibility of the system, as it could require significant adjustments to apply the pipeline to other models, setups and ML/DL frameworks.
-\subsection{Second Version: Grafana pcp-bpftrace}
+
+\subsection{Grafana pcp-bpftrace}
 
 \subsubsection{Collector}
 
+The collector is implemented using bpftrace, but the execution of the programs is managed by the pcp-bpftrace extension in Grafana, giving Grafana control over the lifecycle of the programs.
+
 \subsubsection{Backend}
+
+For the backend, we used PCP, which provides a flexible infrastructure for storing, aggregating, and analyzing performance data at scale over time.
+It integrates with bpftrace, enabling more granular tracing of specific events via the extension.
 
 \subsubsection{Visualizer}
 
+The visualizer is built on Grafana, which connects to the PCP backend to retrieve performance data and presents it through customizable dashboards.
+The use of Grafana allows for real-time, interactive monitoring of system metrics, enabling users to gain insights into the performance of the model training process.
+
+With the pcp-bpftrace extension, it is possible to write bpftrace code directly in Grafana and apply filters and transformations, taking advantage of the wide range of plots that Grafana offers.
+Additionally, the extension provides the ability to display framegraphs, and there is no need to modify the code that collects and presents all the information in one place, since Copilot restarts the bpftrace programs over time.
+
 \subsubsection{Limitations}
+
+In terms of limitations, we found that this setup does not allow us to collect information and analyze it later, as it is a real-time system.
+We still need to modify some bpftrace code to make it compatible with the plots in Grafana.
+
+Additionally, we found that the setup was not easy due to outdated and incomplete documentation, which created difficulties with configuration and setup.
+It also shares the same limitation as the other version, in that it needs to be adapted for other deep learning frameworks and models.
+
+Finally, some statistics, such as GPU usage, cannot be directly displayed with this extension because they are not gathered with bpftrace. To display these metrics, we would need to use an alternative method in grafana.
 
 \section{Evaluation}
 
