@@ -47,33 +47,33 @@
 
 \section{Introduction}
 In recent years Machine Learning has seen a massive increase in popularity.
-Specifically Deep Learning (DL) has been in several tasks such as image classification
-and natural language processing.\\
-There have been several studies that analyze the I/O patterns of DL Workflows and this work
+Specifically, Deep Learning (DL) has been used extensively in several modern Computer Science tasks such as image classification
+and natural language processing.
+Due to these applications' I/O bottlenecks \cite{beegfsDL}, there have been several studies that analyze the I/O patterns of DL Workflows, whose work
 has been used to produce useful assumptions about DL I/O patterns. These have been commonly used to
-justify various types of optimization explorations \cite{LMDB, nvme, beegfsDL, bamboo}, and inform
-other applications such as benchmarks specific to DL \cite{TFbenchmark}. \\
+justify various types of optimization explorations (\cite{LMDB, nvme, beegfsDL, bamboo}), and inform
+other applications such as benchmarks specific to DL (\cite{TFbenchmark}, \cite{OanaDL}).
 Application-specific I/O characterization is therefore a requirement for creating
 unique and worthwhile solutions to
-newer performance problems, as well as, for example reducing the monetary cost of training an
-DL model \cite{bamboo}, however very few of the existing I/O characterization tools
-can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{DL\_PRELOAD} \cite{HPCIODarshan}, this approach leaves out important information about what is happening at levels closer to the operating system.\\
-There are several ways to interact with the kernel at a low level, such as modifying the kernel source code or using kernel modules. While direct modifications offer efficiency and a high degree of customization, maintaining these changes across different kernel versions and configurations poses significant challenges due to the need for repeated compiling, testing, and adaptation.
+newer performance problems, as well as, for example, reducing the monetary cost of training an
+DL model \cite{bamboo}. However, very few of the existing I/O characterization tools
+can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{DL\_PRELOAD} \cite{HPCIODarshan}. This approach leaves out important information on what is actively occurring at levels closer to the operating system.
 
-One technology that has gained significant traction in recent years is the extended Berkeley Packet Filter (eBPF).
+There are several ways to interact with the kernel at a low level, such as modifying the kernel source code or using kernel modules. While direct modifications offer efficiency and a high degree of customization, maintaining these changes across different kernel versions and configurations poses significant challenges due to the need for repeated compiling, testing, and adaptation. One technology that has gained significant traction in recent years is the extended Berkeley Packet Filter (eBPF).
 eBPF allows for the safe execution of customized kernel code by injecting user-space code into the kernel at runtime.
 This eliminates the need for rebooting the system or modifying the kernel source code.
 Initially designed for network-related use cases as BPF, eBPF has expanded to support a wide range of applications, including network traffic analysis and filtering, security, tracing, and profiling across various levels of the kernel \cite{eBPFSurvey2}.
 
 Existing tools, such as those developed using bpftrace, a high-level language that abstracts some underlying eBPF logic, can be injected into various parts of the kernel to trace diverse targets,
 such as CPU, memory, disk, the virtual file system, and network.
-Our goal is to leverage and modify these tools to collect data at different kernel levels and gather statistics useful for the characterization of DL training workflows.
+Our goal is to show that eBPF tooling has the possibility to provide an innovative I/O characterization. To that end, we leveraged and modified these tools to collect data at different kernel levels and gather statistics useful for the characterization of DL training workflows.
 
-Besides that, eBPF also bring some challenges, it is crucial to evaluate the overhead and limitations of these tools to determine which are most suitable for our study and understanding the appropriate layers and points within the kernel where they should be applied.\\
-\textbf{Contributions.} The main contributions of this paper are as follows
+Besides that, eBPF also brings some new challenges, so it is crucial to evaluate the overhead and limitations of these tools, to determine which are most suitable for our study and understanding the appropriate layers and points within the kernel where they should be applied.
+
+\textbf{Contributions.} The main contributions of this paper are as follows:
 \begin{itemize}
-	\item To provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
-	\item Provide useful insights about the patterns of certain DL workflows based on an analysis of the data collected.
+	\item Provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
+	\item Provide useful insights about the patterns of certain DL workflows based on an analysis of the collected data, as a Proof of Concept of the variety of insights that may be collected this way.
 \end{itemize}
 
 % \begin{itemize}
@@ -102,7 +102,7 @@ In this section, we elaborate on both the Deep Learning algorithms we seek to an
 
 Deep learning (DL) is a subset of machine learning, characterized by its bigger size and heterogeneity of both algorithms and training datasets, needed for accurate predictions \cite{gradient}. State-of-the-art DL utilizes the Stochastic Gradient Descent (SGD) method, which consists in breaking down sequential training epochs in iterations, wherein subsets of the entire dataset, called \textit{mini-batches}, are read, preprocessed in memory and fed to the algorithm. To reduce training time, this computation may be done in accelerators, like GPUs, and may also be overlapped by the parallel I/O of future batches. For maximum accuracy, each data sample is iterated through only once in each epoch and each batch is shuffled, that is, it is composed of random data samples.
 
-To further accelerate the training process, the dataset can be distributed among several workers in Distributed Data Parallel Learning. The model parameters are cloned among all the workers, each of them iterates through a subset of the data, and then the gradients are averaged and shared with all the workers. This way, all replicas of the network are updated with the same gradients, ensuring all workers remain consistent with each other.
+To further accelerate the training process, the dataset can be distributed among several workers in Distributed Deep Learning (DDL). When partitioning data, the model parameters are cloned among all the workers, each of them iterates through a subset of the data, and then the gradients are averaged and shared with all the workers. This way, all replicas of the network are updated with the same gradients, ensuring all workers remain consistent with each other.
 
 As models get larger and more nodes are used in training, especially in High Performance Computing (HPC) centers, fault tolerance becomes an important issue. To address it, it is common for the model state to be saved periodically to persistent storage. Normally, this is done at epoch boundaries \cite{checkfreq}, which stalls the algorithm, waiting for I/O, whose size depends on the dimension of the network. In case of failure, the model state can be loaded from storage and training can be restarted.
 
@@ -143,11 +143,11 @@ such as DIO \cite{DIO} that allow the observation of I/O interactions between th
 
 % Machine Learning analysis with eBPFs
 There are already some studies that use eBPF's capability to provide kernel-level information to understand patterns, such as \cite{eBPFDLNetwork} that
-leverages eBPF to monitor distributed deep learning training (DDL), investigating network bandwidth utilization in DDL.
+leverages eBPF to monitor DDL training, investigating network bandwidth utilization in DDL, without observing many other metrics about its interaction with the I/O system.
 eBPF has also been utilized to characterize machine and deep learning workloads, focusing on storage and I/O efficiency in training,
-revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}, to .
+revealing how storage interactions impact overall performance \cite{OanaDL, OanaML}, which produced general observations for a more precise benchmark.
 
-Considering all previous work, we believe that there is a lack of descriptions of the full impact in the entire I/O stack, of DL's workload, considering all its possible variations, including PyTorch. DL's I/O characterization focuses on either providing tools for analysis, providing benchmarks mimicking DL patterns or resolving a specific problem due to a previous observation. The work that has produced observations hasn't gone as deep into the kernel stack and its particularities as we think is needed to provide full and comprehensive insights into that stack. 
+Considering all previous work, we believe that there is a lack of descriptions of the full impact in the entire I/O stack of DL as a workload, considering all its possible variations, including using PyTorch as a framework. Existing DL's I/O characterization focuses on either providing tools for analysis, providing benchmarks mimicking DL patterns or resolving a specific problem due to a previous observation. The work that has produced observations hasn't gone as deep into the kernel stack and its particularities as we think is needed to provide full and comprehensive insights into that stack. 
 
 \section{Design}
 The system, also described in Figure \ref{fig:Design}, is composed of three main components:
