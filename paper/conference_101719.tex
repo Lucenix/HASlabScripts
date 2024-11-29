@@ -371,7 +371,7 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 15.} We found the following vfs functions calls correlate to the checkpoint when model training with both models: \texttt{writev} and \texttt{rmdir}.
 \\
-\textbf{Observation 16.} Both AlexNet and ResNet50 exhibit a similar hierarchy of system calls, with the notable exception of ResNet50's inclusion of \texttt{sched\_yield} as the first call. The system calls are as follows: \texttt{read}, \texttt{lseek}, \texttt{close}, \texttt{newfstat}, \texttt{ioctl}, \texttt{openat}, \texttt{futex} and \texttt{write}.
+\textbf{Observation 16.} Both AlexNet and ResNet50 exhibit a similar hierarchy of system calls, with the notable exception of ResNet50's inclusion of \texttt{sched\_yield} as the first call. The system calls are as follows: \texttt{read}, \texttt{lseek}, \texttt{close}, \texttt{newfstat}, \texttt{ioctl}, \texttt{openat}, \texttt{futex} and \texttt{write}, also see in Table \ref{tab:syscalls}.
 \\
 \textbf{Observation 17.} Although ResNet50 has a smaller checkpoint size, it performs 209 \texttt{writev} syscalls compared to just 16 by AlexNet.
 \\
