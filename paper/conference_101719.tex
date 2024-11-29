@@ -63,7 +63,7 @@ There are several ways to interact with the kernel at a low level, such as modif
 One technology that has gained significant traction in recent years is the extended Berkeley Packet Filter (eBPF).
 eBPF allows for the safe execution of customized kernel code by injecting user-space code into the kernel at runtime.
 This eliminates the need for rebooting the system or modifying the kernel source code.
-Initially designed for network-related use cases as BPF, eBPF has expanded to support a wide range of applications, including network traffic analysis and filtering, security, tracing, and profiling across various levels of the kernel.
+Initially designed for network-related use cases as BPF, eBPF has expanded to support a wide range of applications, including network traffic analysis and filtering, security, tracing, and profiling across various levels of the kernel \cite{eBPFSurvey2}.
 
 Existing tools, such as those developed using bpftrace, a high-level language that abstracts some underlying eBPF logic, can be injected into various parts of the kernel to trace diverse targets,
 such as CPU, memory, disk, the virtual file system, and network.
@@ -118,8 +118,13 @@ Although DL is based primarily upon a read workload, when checkpointing is enabl
 
 \textit{Extended Berkeley Packet Filter} (eBPF) is a technology that has attracted massive adoption by both industry and academia, with a wide range of applications such as network, storage, security and sandboxing.
 The main advantages are being able to run programs in kernel without modifying the kernel source code nor rebooting the system in order to take effect \cite{eBPFSurvey}.
+It is possible to trace different kernel layers while having distinct targets such as CPU, memory, disk and the file system by using different hook points along the Linux Kernel.
 
-To facilitate the creation, compilation and execution of eBPF programs, bpftrace \cite{bpftrace}, a high-level tracing language inspired in DTrace, can be used in conjunction to a wide collection of tools, some are also available in \cite{bgreggBook}.
+Early on, creating and managing eBPF programs would require profound insights into the Linux Kernel and familiarity with low-level programming languages to generate eBPF bytecode,
+to facilitate the creation, compilation and execution of eBPF programs, bpftrace \cite{bpftrace}, a high-level tracing language inspired in DTrace and awk allow writing intuitive and efficient eBPF scripts,
+reducing the burden of low-level programming and simplifying the act of probing system behavior in a more high-level fashion. \cite{eBPFSurvey2} 
+
+Bpftrace can be used alongside a wide range of tools, many of which are provided by its developers. Additional tools and resources can also be found in \cite{bgreggBook}.
 
 \section{Related work}
 
