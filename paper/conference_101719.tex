@@ -366,7 +366,7 @@ After some analyses of the data further, smaller experiments were conducted, in 
 \\
 \textbf{Observation 11.} Regarding the two hook points used for capturing the block read operation completion, that we assumed were exclusive of each other, when tracing with either one active, the union of the results did not equal the results of having both hook points active by an order of magnitude (10.000s against 1.000s for each one).
 \\
-\textbf{Observation 12.} The amount and size of block read operations issued to the disk is constant throughout the whole training.
+\textbf{Observation 12.} The amount and size of block read operations issued to the disk is constant throughout the whole training, even inside the timeframe of the gap, that indicates that no block read operation is completed during that time.
 \\
 \textbf{Observation 13.} When writing the checkpoint, the process writes using \texttt{writev} system calls, with the final chunk of data written using a \texttt{write} system call.
 \\
@@ -378,7 +378,7 @@ After some analyses of the data further, smaller experiments were conducted, in 
 \\
 \textbf{Observation 17.} Although ResNet50 has a smaller checkpoint size, it performs 209 \texttt{writev} syscalls compared to just 16 by AlexNet.
 \\
-\textbf{Observation 18.} Both models have CPU run queue empty during the entire duration of model training.
+\textbf{Observation 18.} Both models have CPU run queue empty during the entire duration of model training, which shows no contention between processes.
 \\
 \textbf{Observation 19.} The run queue latency is similar in both cases, with the interval \([2, 4[\) microseconds being the most dominant, followed by \([1]\), and then \([4, 8[\).
 \\
@@ -400,6 +400,9 @@ After some analyses of the data further, smaller experiments were conducted, in 
 % This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decreased (no workers??).
 % This pattern also maintained when the operating systems caches were dropped in between epochs
 
+\subsubsection{Summary}
+
+Overall, the analysis shows novel DL characterizations that wouldn't be possible without deep and precise kernel instrumentation. In particular, the issue of the checkpoint as block I/O write size to the disk shows the checkpoint is persisted to disk (Observation 4), but without deeper analysis it isn't conclusive how their persistence is guaranteed by the PyTorch framework (Observation 2), if at all. The block read operation completions gap (Observation 7) is another observation that needs a more comprehensive understanding of kernel functionality, especially the completion of block requests, to pinpoint the functionality at display. We tried to understand it through Observations 8-11, but the inconsistency with Observation 12 is still unexplained.
 
 \section{Conclusion and Future Work}
 
