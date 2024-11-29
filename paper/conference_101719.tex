@@ -46,13 +46,12 @@
 \end{IEEEkeywords}
 
 \section{Introduction}
-
 In recent years Machine Learning has seen a massive increase in popularity.
 Specifically Deep Learning (DL) has been in several tasks such as image classification
 and natural language processing.\\
 There have been several studies that analyze the I/O patterns of DL Workflows and this work
 has been used to produce useful assumptions about DL I/O patterns. These have been commonly used to
-justify various types of optimization explorations \cite{LMDB, nvme, beegfs, bamboo}, and inform 
+justify various types of optimization explorations \cite{LMDB, nvme, beegfsDL, bamboo}, and inform 
 other applications such as benchmarks specific to DL \cite{TFbenchmark}. \\
 Application-specific I/O characterization is a requirement unique and worthwhile solutions to
 newer performance problems, as well as, for example reducing the monetary cost of training an 
@@ -100,7 +99,7 @@ Various frameworks exist to facilitate the Implementation of DL models, and each
 
 \subsection{I/O in Deep Learning}
 
-DL's I/O patterns have been attributed as the cause for the increasing storage bottleneck found recently in these applications \cite{beegfs}. On the one hand, the usual dataset's average sample is very small, but also very numerous. For example, 75\% of ImageNet's samples are smaller than 147 KB, while the dataset itself consists of over 14 million images. Allied with the random choosing of samples for batches and the scan nature of each epoch's full dataset traversal, these patterns don't allow for the typical optimizations of traditional storage systems, directed at large and sequential patterns, like prefetching and caching. On the other hand, the number of samples used for each batch has been increasing over the last years, from 32, to 256 and, in some cases, to the 80.000s, in order to better utilize the higher computational power \cite{nvme}. This comes at an increased I/O load per iteration, while also reducing the overlap between I/O and computation, as GPU utilization tends to scale better than I/O performance when the input sizes are bigger \cite{TFbenchmark}. 
+DL's I/O patterns have been attributed as the cause for the increasing storage bottleneck found recently in these applications \cite{beegfs}. On the one hand, the usual dataset's average sample is very small, but also very numerous. For example, 75\% of ImageNet's samples are smaller than 147 KB, while the dataset itself consists of over 14 million images. Allied with the random choosing of samples for batches and the scan nature of each epoch's full dataset traversal, these patterns don't allow for the typical optimizations of traditional storage systems, directed at large and sequential patterns, like prefetching and caching \cite{initial}. On the other hand, the number of samples used for each batch has been increasing over the last years, from 32, to 256 and, in some cases, to the 80.000s, in order to better utilize the higher computational power \cite{nvme}. This comes at an increased I/O load per iteration, while also reducing the overlap between I/O and computation, as GPU utilization tends to scale better than I/O performance when the input sizes are bigger \cite{TFbenchmark}. 
 
 Although DL is based primarily upon a read workload, when checkpointing is enabled there are moments of heavy writes. Checkpointing sizes depend on the size of the network, as they can be defined with wholly different numbers of layers and weights, which impacts differently the overall distribution.
 
@@ -115,13 +114,13 @@ To facilitate the creation, compilation and execution of eBPF programs, bpftrace
 
 % Machine Learning in and out of HPC
 
-HPC centers' wide array of hosted scientific applications has fostered a need for quality and agnostic I/O pattern identification. Other studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to transparently, through \texttt{LD\_PRELOAD}, classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down analysis, from system-wide, using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, to single-job, using Darshan, while also introducing two techniques for I/O analysis, a correlation matrix between runs with different parameters and sweep-line based analysis of file access bottlenecks; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}. None of these investigations ends up focusing on DL's patterns, so their conclusions cannot be easily applied to that context.
+HPC centers' wide array of hosted scientific applications has fostered a need for quality and agnostic I/O pattern identification. Other studies have developed tools for that end, like Darshan \cite{HPCIO24/7}, that seeks to transparently, through \texttt{LD\_PRELOAD}, classify the per-file access statistics of different processes of a given application, while minimally impacting the system it is running on. Various more specialized approaches have built upon Darshan as a base, in order to better depict a distributed environment. These include Wang et al. \cite{zoomin} and their top-down analysis, from system-wide, using HPC's specific monitoring tools Lustre Monitoring Toolkit and Slurm Logs, to single-job, using Darshan, while also introducing two techniques for I/O analysis, a correlation matrix between runs with different parameters and sweep-line based analysis of file access bottlenecks; or Darshan's own HPC focused enhancement \cite{HPCIODarshan}. 
 
-However, with DL applications gaining ground in HPC centers, studies have adapted to specific analysis of their I/O traits. Some have kept Darshan as their backbone, either to do general DL pattern descriptions, with focus on HPC's response to those workloads (\cite{IOHPCDLBOOK,CharacterizationMLIOLeadHPC, UnderstandingDLIOHPC}), or to develop more advanced tools for that end (\cite{DFTracerAIHPC}). TF-Darshan \cite{tfdarshan} is one of those tools, transparently integrating Darshan with the DL framework Tensorflow's own profiler TensorBoard through runtime linkage, although it doesn't integrate with any other DL frameworks. Others sought to explore the performance bottlenecks around DL's data representation, be it at the database level, for example, LMDBIO \cite{LMDB}, a proposed optimization for LMDB, one of the most used DL databases, and its \texttt{mmap} and randomization related shortcomings, or be it at the file system layer, especially considering parallel systems at HPC centers, proposing alternatives like BeeGFS \cite{beegfs} and ways to leverage it towards DL I/O optimization \cite{beegfsDL}, through their I/O patterns.  
+However, with DL applications gaining ground in HPC centers, studies have adapted to specific analysis of their I/O traits. Some have kept Darshan as their backbone, either to conduct general DL pattern descriptions, with focus on HPC's response to those workloads (\cite{IOHPCDLBOOK,CharacterizationMLIOLeadHPC, UnderstandingDLIOHPC}), or to develop more advanced tools for that end (\cite{DFTracerAIHPC}). TF-Darshan \cite{tfdarshan} is one of those tools, transparently integrating Darshan with the DL framework Tensorflow's own profiler TensorBoard through runtime linkage, although it doesn't integrate with any other DL frameworks. Others sought to explore the performance bottlenecks around DL's data usage, be it at the database level, for example, LMDBIO \cite{LMDB}, a proposed optimization for LMDB, one of the most used DL databases, and its \texttt{mmap} and randomization related shortcomings, or be it at the file system layer, especially considering parallel systems at HPC centers, proposing alternatives like BeeGFS \cite{beegfs} and ways to leverage it towards DL I/O optimization \cite{beegfsDL}.
 
-Due to DL's overwhelming majority of read operations, the most common examined metrics include the I/O file skew and full read time per process; the read bandwidth for each block size and the number of context switches.
+However, Darshan itself lacks functionality to adequately track \texttt{mmap} based data manipulation, like \texttt{msync} calls, without additional, intrusive extensions \cite{tfdarshan}, which limits their interaction with DL's most used data representation techniques \cite{LMDB}.
 
-However, Darshan itself lacks functionality to adequately track \texttt{mmap} based data manipulation, like \texttt{msync} calls, without additional, intrusive extensions \cite{tfdarshan}, which limits their interaction with DL's most used data representation techniques, as mentioned before. Beyond that, 
+Due to DL's overwhelming majority of read operations, the most common examined metrics include the I/O file skew and full read time per process; the read bandwidth for each block size and the number of context switches happening on I/O blocked processes. We've identified some gaps in all analysis overall, like focusing on cache utilization (or lack thereof) during the epoch scan, network characterization in Distributed Learning communication between workers,  
 
 % Observation through eBPFs
 In terms of eBPF, there are some tools that are used for system tracing and performance analysis,
@@ -139,15 +138,13 @@ revealing how storage interactions impact overall performance \cite{OanaDL, Oana
 	\item MLPerf Storage/tese de um aluno da Oana
 	\item DIO e tools de observabilidade que usam eBPF e outras (related work do DIO), LD\_PRELOAD, captura de de I/O request por intrumentação do código fonte.
 	      % \item Utilizar a descrição do I/O pipeline de Tensorflow workloads para benchmark \cite{8638422}
-	\item Caracterizar o I/O de LMDB, que é análoga à do PyTorch e do Tensorflow, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{LMDB}
-	\item Comparar o overhead das leituras no treino inteiro com e sem shuffling. \cite{initial}
+	% \item Caracterizar o I/O de LMDB, que é análoga à do PyTorch e do Tensorflow, a \textbf{database} usada como base do Caffe, baseada em \textit{mmap} e numa \textit{B+-tree}. \cite{LMDB}
 	\item Que métricas analisam principalmente?
 	      \begin{itemize}
-		      \item I/O skew por processo;
-		      \item tempo de leitura por processo;
-		      \item bandwidth do read por cada I/O block size;
+		      % \item I/O skew por processo;
+		      % \item tempo de leitura por processo;
+		      % \item bandwidth do read por cada I/O block size;
 		      \item número de context switches;
-		      \item latência com/sem shuffle
 	      \end{itemize}
 	\item O que falta fazer?
 	      \begin{itemize}
