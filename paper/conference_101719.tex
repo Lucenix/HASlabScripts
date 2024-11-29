@@ -9,6 +9,7 @@
 % \usepackage{xcolor}
 \bibliographystyle{IEEEtran}
 \usepackage[table, dvipsnames]{xcolor}
+\usepackage{url}
 
 \begin{document}
 
@@ -204,7 +205,9 @@ In addition, if new forms of visualization are required, the parser and visualiz
 
 Other limitations include the scalability of the system, as the dataset size or model complexity increases, the current data collection and processing pipeline may face performance bottlenecks.
 
-Also, the custom modifications made to the bpftrace tools may limit the flexibility of the system, as it could require significant adjustments to apply the pipeline to other models, setups and ML/DL frameworks.
+Also, the custom modifications made to the bpftrace tools may limit the flexibility of the system, as it could require significant adjustments to apply the pipeline to other models, setups and ML/DL frameworks.\\
+
+\footnote{All the scripts can be fount in the GitHub repository: \url{https://github.com/Lucenix/PI-DL-eBPF}}
 
 \subsection{Grafana pcp-bpftrace}
 
