@@ -57,10 +57,10 @@ Application-specific I/O characterization is therefore a requirement for creatin
 unique and worthwhile solutions to
 newer performance problems, as well as, for example reducing the monetary cost of training an 
 DL model \cite{bamboo}, however very few of the existing I/O characterization tools
-can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{DL\_PRELOAD} \cite{HPCIODarshan}, this approach leaves out important information about whats happening at levels closer to the operating system.\\
+can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{DL\_PRELOAD} \cite{HPCIODarshan}, this approach leaves out important information about what is happening at levels closer to the operating system.\\
 There are several ways to interact with the kernel at a low level, such as modifying the kernel source code or using kernel modules. While direct modifications offer efficiency and a high degree of customization, maintaining these changes across different kernel versions and configurations poses significant challenges due to the need for repeated compiling, testing, and adaptation.
 
-One technology that has gained significant traction is the extended Berkeley Packet Filter (eBPF).
+One technology that has gained significant traction in the recent years is the extended Berkeley Packet Filter (eBPF).
 eBPF allows for the safe execution of customized kernel code by injecting user-space code into the kernel at runtime.
 This eliminates the need for rebooting the system or modifying the kernel source code.
 Initially designed for network-related use cases as BPF, eBPF has expanded to support a wide range of applications, including network traffic analysis and filtering, security, tracing, and profiling across various levels of the kernel.
@@ -68,14 +68,14 @@ Initially designed for network-related use cases as BPF, eBPF has expanded to su
 With this in mind, our objective is to address the aforementioned challenges by developing a tool capable of tracing different kernel levels to collect in-kernel statistics.
 This data will enable us to correlate and characterize patterns during deep learning model training.
 
-Existing tools, such as those developed using bpftrace, a high-level language that abstracts some of the underlying eBPF logic, can be injected into various parts of the kernel to trace diverse targets, such as CPU, memory, disk, the virtual file system, and network.
+Existing tools, such as those developed using bpftrace, a high-level language that abstracts some underlying eBPF logic, can be injected into various parts of the kernel to trace diverse targets, such as CPU, memory, disk, the virtual file system, and network.
 Our goal is to leverage and modify these tools to accommodate the specific needs of deep learning training workflows.
 
-Besides that, it is crucial to evaluate the overhead and limitations of these tools to determine which are most suitable for our study. Understanding the appropriate layers and points within the kernel where they should be applied will be an essential part of this process.\\
+Besides that, eBPF also bring some challenges, it is crucial to evaluate the overhead and limitations of these tools to determine which are most suitable for our study and understanding the appropriate layers and points within the kernel where they should be applied.\\
 \textbf{Contributions.} The main contributions of this paper are as follows
 \begin{itemize}
     \item To provide a methodology for I/O characterization of DL, including methods for collecting data using existing and custom tools based on eBPF's, and tools to gather and visualize the collected data.
-    \item Provide useful insights about the I/O patterns of certain DL workflows based on an analyses of the data collected.
+    \item Provide useful insights about the patterns of certain DL workflows based on an analysis of the data collected.
 \end{itemize}
 
 % \begin{itemize}
