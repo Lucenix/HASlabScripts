@@ -138,8 +138,7 @@ The system is composed of three main components:
 	\item \textit{Collector}. Allows collecting system information during model training.
 	\item \textit{Backend}. Offers a method for storing, searching and analyzing the raw data collected.
 	\item \textit{Visualizer}. Provides a way to represent the data collected through different graphical formats in order to facilitate the understanding and analysis of complex logs by transforming them into more intuitive visual representations.
-\end{itemize}
-%\textit{Parcer}. Responsible for agreggating the collected data into usable forms, the Parcer is divided into two submodules, the parcer, that aggregates the data collected andd the plotter which  
+\end{itemize} 
 
 \begin{figure}[htbp]
     \centering
@@ -151,8 +150,8 @@ The system is composed of three main components:
 \section{Implementation}
 The implementation of the system is divided into the three main components described in the design section.
 There are two versions of the system, each using different approaches for data collection, storing and visualization.
+
 Next we overview a more detailed breakdown of how each component was developed and integrated for both versions.
-%The collector was implemented using (eBPF's maybe por mais especifico) and ran using GNU screen, the Parser was implemented using python and plotted with the matplotlib and plotly python libraries
 
 \subsection{Bpftrace and Python}
 
@@ -162,13 +161,13 @@ For data collection, we used bpftrace\cite{bpftrace} in conjunction with pre-bui
 However, we modified most of these tools to better suit DL training, as some of them presented all the collected data together, without any time context.
 Others were not detailed enough, capturing system-level metrics instead of focusing on the deep learning training process. 
 
-Additionally, we created custom tools to improve data collection. 
-Furthermore, we used a GNU Screen \cite{screen} session to allow the scripts to run in the background during long training sessions.
+Additionally, we created custom tools to improve data collection, and we used a GNU Screen \cite{screen} session to allow the scripts to run in the background during long training sessions.
 
 \subsubsection{Backend}
-The raw data is stored in the XFS file system, which ensures efficient handling of large datasets. This is the same file system where our dataset is hosted in. 
-We parse the bpftrace\cite{bpftrace} logs by reading the stored files, and then the data is processed and aggregated into structured formats for analysis,
-some are plotted directly for visualization and stored in pdf and html formats, others are parsed and stored in the pickle format for direct query access or loading of the interactive visualizations.
+
+The raw data is stored in the XFS file system, which ensures efficient handling of large datasets, this file system also hosts our dataset.
+We process the stored files by parsing the bpftrace logs, after which the data is aggregated into structured formats for analysis.
+Some results are plotted directly for visualization and saved in PDF and HTML formats, while others are stored in pickle format for direct querying or interactive visualizations.
 
 \subsubsection{Visualizer}
 
@@ -179,9 +178,10 @@ Matplotlib and Seaborn are primarily used to generate heatmaps, while Plotly is 
 
 Some limitations of this version include the need to build and maintain the entire pipeline using handmade scripts, to connect the different tools and ways of execution.
 
-Additionally, if new forms of visualization are required, the parser and visualizer must be adapted to handle different bpftrace log types or generate new types of visualizations.
+In addition, if new forms of visualization are required, the parser and visualizer must be adapted to handle different bpftrace log types or generate new types of visualizations.
 
 Other limitations include the scalability of the system, as the dataset size or model complexity increases, the current data collection and processing pipeline may face performance bottlenecks.
+
 Also, the custom modifications made to the bpftrace tools may limit the flexibility of the system, as it could require significant adjustments to apply the pipeline to other models, setups and ML/DL frameworks.
 
 \subsection{Grafana pcp-bpftrace}
@@ -201,14 +201,15 @@ The visualizer is built on Grafana, which connects to the PCP backend to retriev
 The use of Grafana allows for real-time, interactive monitoring of system metrics, enabling users to gain insights into the performance of the model training process.
 
 With the pcp-bpftrace extension, it is possible to write bpftrace code directly in Grafana and apply filters and transformations, taking advantage of the wide range of plots that Grafana offers.
-Additionally, the extension provides the ability to display framegraphs, and there is no need to modify the code that collects and presents all the information in one place, since Copilot restarts the bpftrace programs over time.
+
+Additionally, the extension provides the ability to display flamegraphs, and there is no need to modify the code that collects and presents all the information in one place, since Copilot restarts the bpftrace programs over time.
 
 \subsubsection{Limitations}
 
 In terms of limitations, we found that this setup does not allow us to collect information and analyze it later, as it is a real-time system.
 We still need to modify some bpftrace code to make it compatible with the plots in Grafana.
 
-Additionally, we found that the setup was not easy due to outdated and incomplete documentation, which created difficulties with configuration and setup.
+Moreover, we found that the setup was not easy due to outdated and incomplete documentation, which created difficulties with configuration and setup.
 It also shares the same limitation as the other version, in that it needs to be adapted for other deep learning frameworks and models.
 
 Finally, some statistics, such as GPU usage, cannot be directly displayed with this extension because they are not gathered with bpftrace. To display these metrics, we would need to use an alternative method in grafana.
