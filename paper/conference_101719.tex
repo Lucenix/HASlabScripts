@@ -60,12 +60,13 @@ DL model \cite{bamboo}, however very few of the existing I/O characterization to
 can get down to the kernel level, instead opting, for example for intercepting system calls using \texttt{DL\_PRELOAD} \cite{HPCIODarshan}, this approach leaves out important information about what is happening at levels closer to the operating system.\\
 There are several ways to interact with the kernel at a low level, such as modifying the kernel source code or using kernel modules. While direct modifications offer efficiency and a high degree of customization, maintaining these changes across different kernel versions and configurations poses significant challenges due to the need for repeated compiling, testing, and adaptation.
 
-One technology that has gained significant traction in the recent years is the extended Berkeley Packet Filter (eBPF).
+One technology that has gained significant traction in recent years is the extended Berkeley Packet Filter (eBPF).
 eBPF allows for the safe execution of customized kernel code by injecting user-space code into the kernel at runtime.
 This eliminates the need for rebooting the system or modifying the kernel source code.
 Initially designed for network-related use cases as BPF, eBPF has expanded to support a wide range of applications, including network traffic analysis and filtering, security, tracing, and profiling across various levels of the kernel.
 
-Existing tools, such as those developed using bpftrace, a high-level language that abstracts some underlying eBPF logic, can be injected into various parts of the kernel to trace diverse targets, such as CPU, memory, disk, the virtual file system, and network.
+Existing tools, such as those developed using bpftrace, a high-level language that abstracts some underlying eBPF logic, can be injected into various parts of the kernel to trace diverse targets,
+such as CPU, memory, disk, the virtual file system, and network.
 Our goal is to leverage and modify these tools to collect data at different kernel levels and gather statistics useful for the characterization of DL training workflows.
 
 Besides that, eBPF also bring some challenges, it is crucial to evaluate the overhead and limitations of these tools to determine which are most suitable for our study and understanding the appropriate layers and points within the kernel where they should be applied.\\
