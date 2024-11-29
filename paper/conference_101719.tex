@@ -259,12 +259,6 @@ Dropping the system cache at epoch boundaries.
 Changing the biolantency tracer tool by removing some hook points.
 
 
-\begin{itemize}
-	\item dstat, nvidia-smi to get cost of using the tool
-	\item python parser and plots
-	\item grafana dashboard to get data
-\end{itemize}
-
 \subsection{Results}
 
 Tables I and II show general statistics regarding the two models and the different parameters we tested for each.
@@ -297,9 +291,13 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 14.} We found the following system calls correlate to the checkpoint when model training with both models: \texttt{rt\_sigprocmask}, \texttt{mprotect}, \texttt{rmdir}, \texttt{exit\_group}, \texttt{rt\_sigreturn}, \texttt{getdents64}, \texttt{madvise}, \texttt{wait4}, \texttt{exit}, \texttt{clone3}, \texttt{rseq}, \texttt{rt\_sigaction}, \texttt{writev}, \texttt{waitid}, \texttt{gettid} and \texttt{set\_robust\_list}.
 \\
-\textbf{Observation 15.} Both AlexNet and ResNet50 exhibit a similar hierarchy of system calls, with the notable exception of ResNet50's inclusion of \texttt{sched\_yield} as the first call. The system calls are as follows: \texttt{read}, \texttt{lseek}, \texttt{close}, \texttt{newfstat}, \texttt{ioctl}, \texttt{openat}, \texttt{futex} and \texttt{write}.
+\textbf{Observation 15.} We found the following vfs functions calls correlate to the checkpoint when model training with both models: \texttt{writev} and \texttt{rmdir}.
 \\
-\textbf{Observation 16.} Although ResNet50 has a smaller checkpoint size, it performs 209 \texttt{writev} syscalls compared to just 16 by AlexNet.
+\textbf{Observation 16.} Both AlexNet and ResNet50 exhibit a similar hierarchy of system calls, with the notable exception of ResNet50's inclusion of \texttt{sched\_yield} as the first call. The system calls are as follows: \texttt{read}, \texttt{lseek}, \texttt{close}, \texttt{newfstat}, \texttt{ioctl}, \texttt{openat}, \texttt{futex} and \texttt{write}.
+\\
+\textbf{Observation 17.} Although ResNet50 has a smaller checkpoint size, it performs 209 \texttt{writev} syscalls compared to just 16 by AlexNet.
+\\
+\textbf{Observation 18.} 
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
