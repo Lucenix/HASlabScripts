@@ -310,6 +310,26 @@ Tables I and II show general statistics regarding the two models and the differe
 % This pattern was consistent with changes to the number of epochs, but the length of the initial burst of read's increased as the number of data loading workers decreased (no workers??).
 % This pattern also maintained when the operating systems caches were dropped in between epochs
 
+\begin{table}
+    \caption{System calls}\label{tab:syscalls}
+    \begin{center}
+        \begin{tabular}[c]{|l|l|l|}
+            \hline
+            Syscall & ResNet50 & AlexNet\\
+            \hline
+            \#1 & a & b\\
+            \hline
+            \#2 & c & d\\
+            \hline
+            \#3 & c & d\\
+            \hline
+            \#4 & c & d\\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+
 \section{Conclusion and Future Work}
 
 
