@@ -180,7 +180,7 @@ Tables I and II show general statistics regarding the two models and the differe
 \\
 \textbf{Observation 3.} The vast majority of system calls performed by ResNet50 (3.7 Billion with 2 epochs and batch size 64) are \texttt{sched\_yield()}, these calls are all made by two threads created by the master process, which runs the main function and schedules the model's training.
 \\
-\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed with biolatency.
+\textbf{Observation 4.} Checkpoint data was always written to persistent storage when \texttt{torch.save()} was called, confirmed by checking the block I/O write latency.
 \\
 \textbf{Observation 5.} When reading from a pipe, processes will read in two times, the first byte and then a larger chunk of data. This results in there being approximately twice as many reads as there are writes to pipes, this pattern is persistent even through changes to the num\_workers parameter in the DataLoader class.
 \\
