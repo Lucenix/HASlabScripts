@@ -246,11 +246,11 @@ provided by \textit{PyTorch}, where they're defined with 50 and 13 layers, respe
 
 We ran a series of experiments with different parameters, in particular these are:
 \begin{itemize}
-	\item ResNet50 or AlexNet models
+	\item ResNet50 or AlexNet models.
 	\item One or two training epochs.
 	\item With or without checkpointing
-	\item With or without code generated training logs
-	\item With 32 and 64 batch size
+	\item With or without code generated training logs.
+	\item With 32 and 64 batch size.
 \end{itemize}
 In order to not have interference between different runs the operating system's cache was dropped after each run.
 
@@ -303,37 +303,37 @@ Changing the biolantency tracer tool by removing some hook points.
             \rowcolor{gray}
             Model & Epoch & Batch Size & Ckeckpoint & Logging & Time w/ eBPF & Time w/o eBPF \\
             \hline
-            AlexNet & 2 & 32 & 0 & false &    33m47.868s & 33m10.190s \\
+            AlexNet & 2 & 32 & 1/epoch & false &    33m47.868s & 33m10.190s \\
             \hline
-            AlexNet & 2 & 32 & 0 & true &    34m21.545s & 33m27.275s \\
+            AlexNet & 2 & 32 & none & true &    34m21.545s & 33m27.275s \\
             \hline
-            AlexNet & 2 & 32 & 1 & false &    33m53.268s & 33m10.023s \\
+            AlexNet & 2 & 32 & 1/epoch & false &    33m53.268s & 33m10.023s \\
             \hline
-            AlexNet & 2 & 32 & 1 & true &    34m55.783s & 33m24.529s \\
+            AlexNet & 2 & 32 & 1/epoch & true &    34m55.783s & 33m24.529s \\
             \hline
-            AlexNet & 2 & 64 & 0 & false &    33m43.084s & 33m3.322s \\
+            AlexNet & 2 & 64 & none & false &    33m43.084s & 33m3.322s \\
             \hline
-            AlexNet & 2 & 64 & 0 & true &    34m13.559s & 33m20.241s \\
+            AlexNet & 2 & 64 & none & true &    34m13.559s & 33m20.241s \\
             \hline
-            AlexNet & 2 & 64 & 1 & false &    33m53.426s & 33m5.216s \\
+            AlexNet & 2 & 64 & 1/epoch & false &    33m53.426s & 33m5.216s \\
             \hline
-            AlexNet & 2 & 64 & 1 & true &    34m17.983s & 32m58.640s \\
+            AlexNet & 2 & 64 & 1/epoch & true &    34m17.983s & 32m58.640s \\
             \hline
-            ResNet50 & 2 & 32 & 0 & false &    57m46.997s & 57m46.194s \\
+            ResNet50 & 2 & 32 & none & false &    57m46.997s & 57m46.194s \\
             \hline
-            ResNet50 & 2 & 32 & 0 & true &     57m46.116s & 57m45.615s \\
+            ResNet50 & 2 & 32 & none & true &     57m46.116s & 57m45.615s \\
             \hline
-            ResNet50 & 2 & 32 & 1 & false &    57m43.254s & 57m44.610s \\
+            ResNet50 & 2 & 32 & 1/epoch & false &    57m43.254s & 57m44.610s \\
             \hline
-            ResNet50 & 2 & 32 & 1 & true &     57m46.191s & 57m46.028s \\
+            ResNet50 & 2 & 32 & 1/epoch & true &     57m46.191s & 57m46.028s \\
             \hline
-            ResNet50 & 2 & 64 & 0 & false &    55m53.568s & 55m49.152s \\
+            ResNet50 & 2 & 64 & none & false &    55m53.568s & 55m49.152s \\
             \hline
-            ResNet50 & 2 & 64 & 0 & true &     55m57.438s & 55m48.515s \\
+            ResNet50 & 2 & 64 & none & true &     55m57.438s & 55m48.515s \\
             \hline
-            ResNet50 & 2 & 64 & 1 & false &    55m53.242s & 55m52.361s \\
+            ResNet50 & 2 & 64 & 1/epoch & false &    55m53.242s & 55m52.361s \\
             \hline
-            ResNet50 & 2 & 64 & 1 & true &     55m52.560s & 55m48.773s \\
+            ResNet50 & 2 & 64 & 1/epoch & true &     55m52.560s & 55m48.773s \\
             \hline
         \end{tabular}
     \end{center}
@@ -378,6 +378,8 @@ Tables I and II show general statistics regarding the two models and the differe
 \textbf{Observation 18.} Both models have CPU run queue empty during the entire duration of model training.
 \\
 \textbf{Observation 19.} The run queue latency is similar in both cases, with the interval \([2, 4[\) microseconds being the most dominant, followed by \([1]\), and then \([4, 8[\).
+\\
+\textbf{Observation 20.} As shown in Table \ref{tab:perf}, the eBPF overhead is comparable to runs without tracing tools during model training with ResNet50. However, for AlexNet, the overhead can result in a difference of slightly more than a minute.
 % \subsubsection{Checkpoint data persistence}
 % We observed that no calls to fsync() were performed by the python processes, furthermore, the calls that were performed happened either some time before or some time after the checkpoint was performed, confirming the observation made in \cite{checkfreq} that the torch.save() does not guaranty data persistence.
 % We observed however that in all tests performed that the checkpoint data was in fact being persisted to disk.
